@@ -61,10 +61,10 @@
 		8C4CEF401ADAC54B00F1E139 /* Neuron.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Neuron.m; sourceTree = "<group>"; };
 		8C4CEF411ADAC54B00F1E139 /* NeuronLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuronLayer.h; sourceTree = "<group>"; };
 		8C4CEF421ADAC54B00F1E139 /* NeuronLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeuronLayer.m; sourceTree = "<group>"; };
-		8C4CEF581ADACE4500F1E139 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		8C4CEF591ADACE4500F1E139 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		8C4CEF5C1ADADE6800F1E139 /* Network States.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network States.png"; sourceTree = "<group>"; };
-		8C4CEF5D1ADADE6800F1E139 /* 3-Input Perceptron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "3-Input Perceptron.png"; sourceTree = "<group>"; };
+		8C4CEF581ADACE4500F1E139 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		8C4CEF591ADACE4500F1E139 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		8C4CEF5E1ADAED9300F1E139 /* 3-Input Perceptron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "3-Input Perceptron.png"; sourceTree = "<group>"; };
+		8C4CEF5F1ADAED9300F1E139 /* Network States.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network States.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +90,10 @@
 			isa = PBXGroup;
 			children = (
 				8C4CEF1A1ADAC51200F1E139 /* MAChineLearning */,
+				8C4CEF581ADACE4500F1E139 /* LICENSE */,
+				8C4CEF591ADACE4500F1E139 /* README.md */,
+				8C4CEF5E1ADAED9300F1E139 /* 3-Input Perceptron.png */,
+				8C4CEF5F1ADAED9300F1E139 /* Network States.png */,
 				8C4CEF271ADAC51200F1E139 /* MAChineLearningTests */,
 				8C4CEF191ADAC51200F1E139 /* Products */,
 			);
@@ -124,10 +128,6 @@
 				8C4CEF3B1ADAC54B00F1E139 /* NeuralNetworkException.h */,
 				8C4CEF3C1ADAC54B00F1E139 /* NeuralNetworkException.m */,
 				8C4CEF1B1ADAC51200F1E139 /* Supporting Files */,
-				8C4CEF581ADACE4500F1E139 /* LICENSE */,
-				8C4CEF591ADACE4500F1E139 /* README.md */,
-				8C4CEF5C1ADADE6800F1E139 /* Network States.png */,
-				8C4CEF5D1ADADE6800F1E139 /* 3-Input Perceptron.png */,
 			);
 			path = MAChineLearning;
 			sourceTree = "<group>";
