@@ -10,6 +10,21 @@
 		8C4CEF1E1ADAC51200F1E139 /* MAChineLearning.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF1D1ADAC51200F1E139 /* MAChineLearning.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C4CEF241ADAC51200F1E139 /* MAChineLearning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */; };
 		8C4CEF2B1ADAC51200F1E139 /* MAChineLearningTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF2A1ADAC51200F1E139 /* MAChineLearningTests.m */; };
+		8C4CEF431ADAC54B00F1E139 /* ActivationFunctionType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF341ADAC54B00F1E139 /* ActivationFunctionType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C4CEF441ADAC54B00F1E139 /* InputLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF351ADAC54B00F1E139 /* InputLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C4CEF451ADAC54B00F1E139 /* InputLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF361ADAC54B00F1E139 /* InputLayer.m */; };
+		8C4CEF471ADAC54B00F1E139 /* Layer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF371ADAC54B00F1E139 /* Layer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C4CEF481ADAC54B00F1E139 /* Layer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF381ADAC54B00F1E139 /* Layer.m */; };
+		8C4CEF4A1ADAC54B00F1E139 /* NeuralNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF391ADAC54B00F1E139 /* NeuralNetwork.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C4CEF4B1ADAC54B00F1E139 /* NeuralNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF3A1ADAC54B00F1E139 /* NeuralNetwork.m */; };
+		8C4CEF4D1ADAC54B00F1E139 /* NeuralNetworkException.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF3B1ADAC54B00F1E139 /* NeuralNetworkException.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C4CEF4E1ADAC54B00F1E139 /* NeuralNetworkException.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF3C1ADAC54B00F1E139 /* NeuralNetworkException.m */; };
+		8C4CEF501ADAC54B00F1E139 /* NeuralNetworkReal.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF3D1ADAC54B00F1E139 /* NeuralNetworkReal.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C4CEF511ADAC54B00F1E139 /* NeuralNetworkStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF3E1ADAC54B00F1E139 /* NeuralNetworkStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C4CEF521ADAC54B00F1E139 /* Neuron.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF3F1ADAC54B00F1E139 /* Neuron.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C4CEF531ADAC54B00F1E139 /* Neuron.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF401ADAC54B00F1E139 /* Neuron.m */; };
+		8C4CEF551ADAC54B00F1E139 /* NeuronLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF411ADAC54B00F1E139 /* NeuronLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C4CEF561ADAC54B00F1E139 /* NeuronLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF421ADAC54B00F1E139 /* NeuronLayer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +44,21 @@
 		8C4CEF231ADAC51200F1E139 /* MAChineLearningTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MAChineLearningTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C4CEF291ADAC51200F1E139 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C4CEF2A1ADAC51200F1E139 /* MAChineLearningTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MAChineLearningTests.m; sourceTree = "<group>"; };
+		8C4CEF341ADAC54B00F1E139 /* ActivationFunctionType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivationFunctionType.h; sourceTree = "<group>"; };
+		8C4CEF351ADAC54B00F1E139 /* InputLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputLayer.h; sourceTree = "<group>"; };
+		8C4CEF361ADAC54B00F1E139 /* InputLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputLayer.m; sourceTree = "<group>"; };
+		8C4CEF371ADAC54B00F1E139 /* Layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Layer.h; sourceTree = "<group>"; };
+		8C4CEF381ADAC54B00F1E139 /* Layer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Layer.m; sourceTree = "<group>"; };
+		8C4CEF391ADAC54B00F1E139 /* NeuralNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuralNetwork.h; sourceTree = "<group>"; };
+		8C4CEF3A1ADAC54B00F1E139 /* NeuralNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeuralNetwork.m; sourceTree = "<group>"; };
+		8C4CEF3B1ADAC54B00F1E139 /* NeuralNetworkException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuralNetworkException.h; sourceTree = "<group>"; };
+		8C4CEF3C1ADAC54B00F1E139 /* NeuralNetworkException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeuralNetworkException.m; sourceTree = "<group>"; };
+		8C4CEF3D1ADAC54B00F1E139 /* NeuralNetworkReal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuralNetworkReal.h; sourceTree = "<group>"; };
+		8C4CEF3E1ADAC54B00F1E139 /* NeuralNetworkStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuralNetworkStatus.h; sourceTree = "<group>"; };
+		8C4CEF3F1ADAC54B00F1E139 /* Neuron.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Neuron.h; sourceTree = "<group>"; };
+		8C4CEF401ADAC54B00F1E139 /* Neuron.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Neuron.m; sourceTree = "<group>"; };
+		8C4CEF411ADAC54B00F1E139 /* NeuronLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuronLayer.h; sourceTree = "<group>"; };
+		8C4CEF421ADAC54B00F1E139 /* NeuronLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeuronLayer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +102,21 @@
 			isa = PBXGroup;
 			children = (
 				8C4CEF1D1ADAC51200F1E139 /* MAChineLearning.h */,
+				8C4CEF391ADAC54B00F1E139 /* NeuralNetwork.h */,
+				8C4CEF3A1ADAC54B00F1E139 /* NeuralNetwork.m */,
+				8C4CEF3D1ADAC54B00F1E139 /* NeuralNetworkReal.h */,
+				8C4CEF3E1ADAC54B00F1E139 /* NeuralNetworkStatus.h */,
+				8C4CEF371ADAC54B00F1E139 /* Layer.h */,
+				8C4CEF381ADAC54B00F1E139 /* Layer.m */,
+				8C4CEF351ADAC54B00F1E139 /* InputLayer.h */,
+				8C4CEF361ADAC54B00F1E139 /* InputLayer.m */,
+				8C4CEF411ADAC54B00F1E139 /* NeuronLayer.h */,
+				8C4CEF421ADAC54B00F1E139 /* NeuronLayer.m */,
+				8C4CEF3F1ADAC54B00F1E139 /* Neuron.h */,
+				8C4CEF401ADAC54B00F1E139 /* Neuron.m */,
+				8C4CEF341ADAC54B00F1E139 /* ActivationFunctionType.h */,
+				8C4CEF3B1ADAC54B00F1E139 /* NeuralNetworkException.h */,
+				8C4CEF3C1ADAC54B00F1E139 /* NeuralNetworkException.m */,
 				8C4CEF1B1ADAC51200F1E139 /* Supporting Files */,
 			);
 			path = MAChineLearning;
@@ -109,7 +154,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C4CEF511ADAC54B00F1E139 /* NeuralNetworkStatus.h in Headers */,
+				8C4CEF4D1ADAC54B00F1E139 /* NeuralNetworkException.h in Headers */,
+				8C4CEF4A1ADAC54B00F1E139 /* NeuralNetwork.h in Headers */,
+				8C4CEF501ADAC54B00F1E139 /* NeuralNetworkReal.h in Headers */,
+				8C4CEF441ADAC54B00F1E139 /* InputLayer.h in Headers */,
+				8C4CEF431ADAC54B00F1E139 /* ActivationFunctionType.h in Headers */,
+				8C4CEF471ADAC54B00F1E139 /* Layer.h in Headers */,
 				8C4CEF1E1ADAC51200F1E139 /* MAChineLearning.h in Headers */,
+				8C4CEF521ADAC54B00F1E139 /* Neuron.h in Headers */,
+				8C4CEF551ADAC54B00F1E139 /* NeuronLayer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +263,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C4CEF451ADAC54B00F1E139 /* InputLayer.m in Sources */,
+				8C4CEF481ADAC54B00F1E139 /* Layer.m in Sources */,
+				8C4CEF531ADAC54B00F1E139 /* Neuron.m in Sources */,
+				8C4CEF4B1ADAC54B00F1E139 /* NeuralNetwork.m in Sources */,
+				8C4CEF561ADAC54B00F1E139 /* NeuronLayer.m in Sources */,
+				8C4CEF4E1ADAC54B00F1E139 /* NeuralNetworkException.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
