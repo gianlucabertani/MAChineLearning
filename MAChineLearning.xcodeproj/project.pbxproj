@@ -1,0 +1,414 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8C4CEF1E1ADAC51200F1E139 /* MAChineLearning.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF1D1ADAC51200F1E139 /* MAChineLearning.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C4CEF241ADAC51200F1E139 /* MAChineLearning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */; };
+		8C4CEF2B1ADAC51200F1E139 /* MAChineLearningTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF2A1ADAC51200F1E139 /* MAChineLearningTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8C4CEF251ADAC51200F1E139 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8C4CEF0F1ADAC51200F1E139 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8C4CEF171ADAC51200F1E139;
+			remoteInfo = MAChineLearning;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MAChineLearning.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C4CEF1C1ADAC51200F1E139 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8C4CEF1D1ADAC51200F1E139 /* MAChineLearning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MAChineLearning.h; sourceTree = "<group>"; };
+		8C4CEF231ADAC51200F1E139 /* MAChineLearningTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MAChineLearningTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C4CEF291ADAC51200F1E139 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8C4CEF2A1ADAC51200F1E139 /* MAChineLearningTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MAChineLearningTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8C4CEF141ADAC51200F1E139 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C4CEF201ADAC51200F1E139 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C4CEF241ADAC51200F1E139 /* MAChineLearning.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8C4CEF0E1ADAC51200F1E139 = {
+			isa = PBXGroup;
+			children = (
+				8C4CEF1A1ADAC51200F1E139 /* MAChineLearning */,
+				8C4CEF271ADAC51200F1E139 /* MAChineLearningTests */,
+				8C4CEF191ADAC51200F1E139 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8C4CEF191ADAC51200F1E139 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */,
+				8C4CEF231ADAC51200F1E139 /* MAChineLearningTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8C4CEF1A1ADAC51200F1E139 /* MAChineLearning */ = {
+			isa = PBXGroup;
+			children = (
+				8C4CEF1D1ADAC51200F1E139 /* MAChineLearning.h */,
+				8C4CEF1B1ADAC51200F1E139 /* Supporting Files */,
+			);
+			path = MAChineLearning;
+			sourceTree = "<group>";
+		};
+		8C4CEF1B1ADAC51200F1E139 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				8C4CEF1C1ADAC51200F1E139 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8C4CEF271ADAC51200F1E139 /* MAChineLearningTests */ = {
+			isa = PBXGroup;
+			children = (
+				8C4CEF2A1ADAC51200F1E139 /* MAChineLearningTests.m */,
+				8C4CEF281ADAC51200F1E139 /* Supporting Files */,
+			);
+			path = MAChineLearningTests;
+			sourceTree = "<group>";
+		};
+		8C4CEF281ADAC51200F1E139 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				8C4CEF291ADAC51200F1E139 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8C4CEF151ADAC51200F1E139 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C4CEF1E1ADAC51200F1E139 /* MAChineLearning.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8C4CEF171ADAC51200F1E139 /* MAChineLearning */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C4CEF2E1ADAC51200F1E139 /* Build configuration list for PBXNativeTarget "MAChineLearning" */;
+			buildPhases = (
+				8C4CEF131ADAC51200F1E139 /* Sources */,
+				8C4CEF141ADAC51200F1E139 /* Frameworks */,
+				8C4CEF151ADAC51200F1E139 /* Headers */,
+				8C4CEF161ADAC51200F1E139 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MAChineLearning;
+			productName = MAChineLearning;
+			productReference = 8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		8C4CEF221ADAC51200F1E139 /* MAChineLearningTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C4CEF311ADAC51200F1E139 /* Build configuration list for PBXNativeTarget "MAChineLearningTests" */;
+			buildPhases = (
+				8C4CEF1F1ADAC51200F1E139 /* Sources */,
+				8C4CEF201ADAC51200F1E139 /* Frameworks */,
+				8C4CEF211ADAC51200F1E139 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8C4CEF261ADAC51200F1E139 /* PBXTargetDependency */,
+			);
+			name = MAChineLearningTests;
+			productName = MAChineLearningTests;
+			productReference = 8C4CEF231ADAC51200F1E139 /* MAChineLearningTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8C4CEF0F1ADAC51200F1E139 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = "Flying Dolphin Studio";
+				TargetAttributes = {
+					8C4CEF171ADAC51200F1E139 = {
+						CreatedOnToolsVersion = 6.3;
+					};
+					8C4CEF221ADAC51200F1E139 = {
+						CreatedOnToolsVersion = 6.3;
+					};
+				};
+			};
+			buildConfigurationList = 8C4CEF121ADAC51200F1E139 /* Build configuration list for PBXProject "MAChineLearning" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 8C4CEF0E1ADAC51200F1E139;
+			productRefGroup = 8C4CEF191ADAC51200F1E139 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8C4CEF171ADAC51200F1E139 /* MAChineLearning */,
+				8C4CEF221ADAC51200F1E139 /* MAChineLearningTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8C4CEF161ADAC51200F1E139 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C4CEF211ADAC51200F1E139 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8C4CEF131ADAC51200F1E139 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C4CEF1F1ADAC51200F1E139 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C4CEF2B1ADAC51200F1E139 /* MAChineLearningTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8C4CEF261ADAC51200F1E139 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8C4CEF171ADAC51200F1E139 /* MAChineLearning */;
+			targetProxy = 8C4CEF251ADAC51200F1E139 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		8C4CEF2C1ADAC51200F1E139 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		8C4CEF2D1ADAC51200F1E139 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		8C4CEF2F1ADAC51200F1E139 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = MAChineLearning/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		8C4CEF301ADAC51200F1E139 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = MAChineLearning/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		8C4CEF321ADAC51200F1E139 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = MAChineLearningTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		8C4CEF331ADAC51200F1E139 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = MAChineLearningTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8C4CEF121ADAC51200F1E139 /* Build configuration list for PBXProject "MAChineLearning" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C4CEF2C1ADAC51200F1E139 /* Debug */,
+				8C4CEF2D1ADAC51200F1E139 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8C4CEF2E1ADAC51200F1E139 /* Build configuration list for PBXNativeTarget "MAChineLearning" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C4CEF2F1ADAC51200F1E139 /* Debug */,
+				8C4CEF301ADAC51200F1E139 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		8C4CEF311ADAC51200F1E139 /* Build configuration list for PBXNativeTarget "MAChineLearningTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C4CEF321ADAC51200F1E139 /* Debug */,
+				8C4CEF331ADAC51200F1E139 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8C4CEF0F1ADAC51200F1E139 /* Project object */;
+}
