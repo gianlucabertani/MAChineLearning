@@ -22,14 +22,14 @@ The framework supports:
 Internal code makes heavy use of vDSP and vecLib functions. It is as fast as it can get on a CPU, but not as fast as it could get with OpenCL on a GPU. An OpenCL version may come in the future.
 
 
-## Use on iOS
+### Use on iOS
 
 The library should work well on iOS too. Ideally, one could write a program on the Mac to train the network, save its status and then load it on an iPhone or iPad and use it pre-trained. Haven't tested this scenario, but I see no reason it should not work.
 
 
-## Examples
+## Tutorial
 
-The library contains 3 unit/integration tests that show how to use it, including the [NAND](http://en.wikipedia.org/wiki/Perceptron#Example) use case discussed on Wikipedia. Anyway here is a quick tutorial.
+The library contains 3 unit/integration tests that show how to use it, including the [NAND](http://en.wikipedia.org/wiki/Perceptron#Example) use case discussed on Wikipedia. Anyway here it is a quick tutorial.
 
 ### Set up the network
 
@@ -60,13 +60,13 @@ The network object exposes all you need to control it, namely:
 - methods to feed forward, back propagate and update weights;
 - methods to save the status and create a new network from a saved state.
 
-Buffers are exposed as C arrays of type `nnREAL`, which by default is a typedef of `float`. You can redefine this type to a `double` in the `NeuralNetworkReal.h` file and then recompiling, just follow the comments.
+Buffers are exposed as C arrays for performance reason. They are of type `nnREAL`, which by default is a typedef of `float`. You can redefine this type to `double` in the `NeuralNetworkReal.h` file and then recompile. Just follow the comments.
 
 **Be careful when reading and writing these arrays** since there's no bounds checking, you may easily cause an `EXC_BAD_ACCESS`.
 
 ### Loading input
 
-So, this is how you load your input data:
+This is how you load your input data:
 
 ```obj-c
 // Clear the input buffer using vDSP
@@ -74,11 +74,10 @@ nnVDSP_VCLR(net.inputBuffer, 1, net.inputSize);
 
 // Fill appropriate buffer elements
 net.inputBuffer[0]= 1.0;
-net.inputBuffer[1]= 0.0;
-net.inputBuffer[2]= 0.0;
+net.inputBuffer[2]= 0.5;
 ```
 
-To clear the buffer with vDSP you need the import of Accelerate, shown above. Here we use the nnVDSP_VCLR macro, which is appropriately defined for the `nnREAL` type. Using Accelerate to clear the buffer is advised as it is quicker than a simple loop.
+To clear the buffer with vDSP you need the import of Accelerate, shown above. Here we use the `nnVDSP_VCLR` macro, which is appropriately defined for type `nnREAL` in the `NeuralNetworkReal.h` file. Using Accelerate to clear the buffer is advised as it is quicker than a simple loop.
 
 ### Computing the output
 
@@ -98,15 +97,15 @@ If the output is not satisfactory (as it always happen on first iterations), you
 
 ```obj-c
 // Set the expected output
-net.expectedOutputBuffer[0]= 1.0;
+net.expectedOutputBuffer[0]= 0.5;
 
 // Backpropagate the error
 [net backPropagateWithLearningRate:0.1];
 ```
 
-The network automatically computes the error and applies the gradient descent algorithm to obtain new weights. The *learning rate* parameter makes learning faster (and more uncertain) or slower (but more certain). More on this later.
+The network automatically computes the error and applies the gradient descent algorithm to obtain new weights. The *learning rate* parameter makes learning faster (and more uncertain) for greater values, or slower (but more certain) for lower values.
 
-**New weights are not applied immediately**: they are stored inside the network, so that you may run multiple feed forwards and backpropagations before applying them (i.e. train by epochs, see below).
+**New weights are not applied immediately**: they are stored inside the network, so that you may run multiple feed forwards and backpropagations before applying them (i.e. train by epochs).
 
 Once your training is done, update the weights in the following way:
 
@@ -115,71 +114,96 @@ Once your training is done, update the weights in the following way:
 [net updateWeights];
 ```
 
+### Training loop example
+
 You may update the weights after each backpropagation, and this is called *training by sample*, or wait until an entire training set has been performed, and this is called *training by epochs* (a training set is an "epoch", don't ask me why).
 
-To be more clear, a typical training by sample loop is the following:
+A typical training-by-sample loop is the following:
 
 ```obj-c
 for (int i= 0; i < numberOfSets; i++) {
 
-    // Load the set of samples
+	// Load the i-th set of samples
     // ...
 
     for (int i= 0; i < numberOfSamples; i++) {
+		nnVDSP_VCLR(net.inputBuffer, 1, net.inputSize);
 
-        // Load the current sample
+		// Load the j-th training sample
         net.inputBuffer[0]= 1.0;
+		net.inputBuffer[2]= 0.5;
         // ...
 
         [net feedForward];
 
-        // Set the expected output
-        net.expectedOutputBuffer[0]= 1.0;
-        // ...
+		// Check if output is correct
+		if (net.outputBuffer[0] == 0.5) {
+			matches++;
 
-        [net backPropagateWithLearningRate:0.1];
-        [net updateWeights];
+		} else {
+
+			// Set the expected output
+			net.expectedOutputBuffer[0]= 0.5;
+			// ...
+
+			[net backPropagateWithLearningRate:0.1];
+
+			// Update weights for just this sample
+			[net updateWeights];
+		}
     }
 }
 ```
 
-While a typical training by epoch loop is the following:
+While a typical training-by-epoch loop is the following:
 
 ```obj-c
 for (int i= 0; i < numberOfSets; i++) {
 
-    // Load the set of samples
+    // Load the i-th set of samples
     // ...
 
     for (int j= 0; j < numberOfSamples; j++) {
+		nnVDSP_VCLR(net.inputBuffer, 1, net.inputSize);
 
-        // Load the current sample
+        // Load the j-th training sample
         net.inputBuffer[0]= 1.0;
+		net.inputBuffer[2]= 0.5;
         // ...
 
         [net feedForward];
 
-        // Set the expected output
-        net.expectedOutputBuffer[0]= 1.0;
-        // ...
+		// Check if output is correct
+		if (net.outputBuffer[0] == 0.5) {
+			matches++;
 
-        [net backPropagateWithLearningRate:0.1];
+		} else {
+
+			// Set the expected output
+			net.expectedOutputBuffer[0]= 0.5;
+			// ...
+
+			[net backPropagateWithLearningRate:0.1];
+		}
     }
 
+	// Update weights for all samples
     [net updateWeights];
 }
 ```
 
-The network object tries to enforce the correct calling sequence by keeping trace of a status. Check the following state diagram:
+At the end of the loop you usually check the number of matches and decide if the confidence level is high enough or not. If it is not, the training restarts from the beginning.
+
+The network tries to enforce the correct calling sequence by using a simple state machine. Check the following state diagram:
 
 ![Network States](Network%20States.png)
 
-If you try a call that does not correspond to an arrow in the above diagram, the network object will throw an exception.
+If you try a call that does not correspond to state transition in the above diagram, the network will throw an exception.
 
 
 ## Choosing the appropriate model
 
-This is the hardest part. Your neural network depends on a number of  parameters:
+This is the hardest part. Your neural network depends on a number of high-level parameters:
 
 * dimension of the input layer (i.e. how you format the input data);
 * number and dimensions of the hidden layers;
@@ -191,14 +215,24 @@ Choosing the right values is quite difficult and is exactly why frameworks like 
 
 Some simple advices from a beginner like me:
 
-* generally speaking, let the network discover the pattern: bigger input layers slow down the network but may improve the results;
-* start with simple models: don't add hidden layers if they are not needed, they will slow down the network consistently and may not improve its prediction abilities;
-* if your output is in range \[0..1\] (i.e. for classification), the logistic function is your friend, if you need an output in the range \[-1..1\] then move to the hyperbolic function, but beware: it easily diverges when input values are greater than 1, apply some sort of normalization;
-* start with training by sample, switch to training by epoch only if you know what you are doing;
-* finally, keep the learning rate small: 0.1, or even lower; you may even dynamically lower it as the network approaches the expected results (i.e. higher learning rates with higher discrepancies, lower learning rates for lower discrepancies).
+* the network may easily diverge if input data contains higher values (logistic and hyperbolic functions makes use of exponentials), **normalize your input data** in some way;
+* **keep your model simple**: don't add hidden layers if they are not needed, they will slow down the network consistently and may not improve its prediction abilities;
+* if your output is in range \[0..1\] (i.e. for **classification**), use the step or the logistic function, if you need an output in the range \[-1..1\] then move to the hyperbolic function, if you need a more wide-ranged output (i.e. for **regression**) use the linear function;
+* start with **training by sample**, switch to training by epoch only if you know what you are doing;
+* finally, **keep the learning rate small**: 0.1, or even lower.
 
 
-## Summing things up
+## References
+
+There are a lot articles out there explaining how neural networks work, but I have found these two in particular well written and clear enough to base my coding on them:
+
+* [Machine Learning: Multi Layer Perceptrons](http://ml.informatik.uni-freiburg.de/_media/teaching/ss10/05_mlps.printer.pdf) [PDF]
+* [Designing And Implementing A Neural Network Library For Handwriting Detection, Image Analysis etc.](http://www.codeproject.com/Articles/14342/Designing-And-Implementing-A-Neural-Network-Librar)
+
+I am grateful to these people for taking the time to share their knowledge.
+
+
+## About
 
 I am a professional developer but not a data scientist. I wrote this library because, you know, they say you haven't really understood something until you code it. So, here it is. Use it to experiment and have fun, and if you find it useful I will be happy to hear it at [@foolish_dev](http://www.twitter.com/foolish_dev).
 

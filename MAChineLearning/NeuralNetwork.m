@@ -159,9 +159,8 @@
 - (id) initWithLayerSizes:(NSArray *)sizes outputFunctionType:(ActivationFunctionType)funcType {
 	if ((self = [super init])) {
 		
-		// Initialize the layers: layer 0 is the input layer (we use
-		// a neuron layer just for practicity), while the last layer
-		// is the output layer
+		// Initialize the layers: layer 0 is the input layer,
+		// while the last layer is the output layer
 		_layers= [NSMutableArray array];
 		_funcType= funcType;
 
@@ -271,9 +270,9 @@
 		
 		if (i == [_layers count] -1) {
 			
-			// Error on output layer is the difference between expected and actual output;
-			// NOTE: operands are inverted compared to documentation (see function
-			// definition for nnREAL order)
+			// Error on output layer is the difference between expected and actual output
+			// NOTE: VSUB operands are inverted compared to documentation (see function
+			// definition for operand order)
 			nnVDSP_VSUB(_outputBuffer, 1, _expectedOutputBuffer, 1, _errorBuffer, 1, _outputSize);
 			
 		} else

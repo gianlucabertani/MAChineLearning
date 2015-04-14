@@ -329,6 +329,8 @@
 
 			// Apply formula: output[i] = (1 - exp(-2 * output[i])) / (1 + exp(-2 * output[i]))
 			// Equivalent to: output[i] = tanh(output[i])
+			// NOTE: VDIV operands are inverted compared to documentation (see function
+			// definition for operand order)
 			nnVDSP_VSMUL(_outputBuffer, 1, _minusTwo, _tempBuffer, 1, _size);
 			nnVVEXP(_tempBuffer, _tempBuffer, &_size);
 			nnVDSP_VSADD(_tempBuffer, 1, _one, _outputBuffer, 1, _size);
