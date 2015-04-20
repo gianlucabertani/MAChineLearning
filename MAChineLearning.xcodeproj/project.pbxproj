@@ -25,8 +25,7 @@
 		8C4CEF531ADAC54B00F1E139 /* Neuron.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF401ADAC54B00F1E139 /* Neuron.m */; };
 		8C4CEF551ADAC54B00F1E139 /* NeuronLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF411ADAC54B00F1E139 /* NeuronLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C4CEF561ADAC54B00F1E139 /* NeuronLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF421ADAC54B00F1E139 /* NeuronLayer.m */; };
-		8C4CEF5A1ADACE4500F1E139 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 8C4CEF581ADACE4500F1E139 /* LICENSE */; };
-		8C4CEF5B1ADACE4500F1E139 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF591ADACE4500F1E139 /* README.md */; };
+		8C4E43A41AE56DD0005FD73D /* MAChineLearningSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4E43A31AE56DCF005FD73D /* MAChineLearningSwiftTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +64,8 @@
 		8C4CEF591ADACE4500F1E139 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8C4CEF5E1ADAED9300F1E139 /* 3-Input Perceptron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "3-Input Perceptron.png"; sourceTree = "<group>"; };
 		8C4CEF5F1ADAED9300F1E139 /* Network States.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network States.png"; sourceTree = "<group>"; };
+		8C4E43A21AE56DCF005FD73D /* MAChineLearningTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MAChineLearningTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		8C4E43A31AE56DCF005FD73D /* MAChineLearningSwiftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAChineLearningSwiftTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +145,8 @@
 			isa = PBXGroup;
 			children = (
 				8C4CEF2A1ADAC51200F1E139 /* MAChineLearningTests.m */,
+				8C4E43A21AE56DCF005FD73D /* MAChineLearningTests-Bridging-Header.h */,
+				8C4E43A31AE56DCF005FD73D /* MAChineLearningSwiftTests.swift */,
 				8C4CEF281ADAC51200F1E139 /* Supporting Files */,
 			);
 			path = MAChineLearningTests;
@@ -256,7 +259,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C4CEF5A1ADACE4500F1E139 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,7 +279,6 @@
 				8C4CEF451ADAC54B00F1E139 /* InputLayer.m in Sources */,
 				8C4CEF481ADAC54B00F1E139 /* Layer.m in Sources */,
 				8C4CEF531ADAC54B00F1E139 /* Neuron.m in Sources */,
-				8C4CEF5B1ADACE4500F1E139 /* README.md in Sources */,
 				8C4CEF4B1ADAC54B00F1E139 /* NeuralNetwork.m in Sources */,
 				8C4CEF561ADAC54B00F1E139 /* NeuronLayer.m in Sources */,
 				8C4CEF4E1ADAC54B00F1E139 /* NeuralNetworkException.m in Sources */,
@@ -289,6 +290,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C4CEF2B1ADAC51200F1E139 /* MAChineLearningTests.m in Sources */,
+				8C4E43A41AE56DD0005FD73D /* MAChineLearningSwiftTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,6 +425,7 @@
 		8C4CEF321ADAC51200F1E139 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
@@ -435,12 +438,15 @@
 				INFOPLIST_FILE = MAChineLearningTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MAChineLearningTests/MAChineLearningTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		8C4CEF331ADAC51200F1E139 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
@@ -449,6 +455,7 @@
 				INFOPLIST_FILE = MAChineLearningTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MAChineLearningTests/MAChineLearningTests-Bridging-Header.h";
 			};
 			name = Release;
 		};
