@@ -4,7 +4,7 @@ Machine Learning for the Mac
 
 ## Intro
 
-This framework provides a quick and easy way to experiment with machine learning with native code on the Mac. It is written in Objective-C and should be usable with Swift as well (haven't tested).
+This framework provides a quick and easy way to experiment with machine learning with native code on the Mac. It is written in Objective-C and it is usable by Swift (unit tests included for both languages).
 
 The framework supports:
 
@@ -19,7 +19,7 @@ The framework supports:
 - load/save of the network status;
 - single/double precision (needs recompilation, default is single precision).
 
-Internal code makes heavy use of vDSP and vecLib functions. It is as fast as it can get on a CPU, but not as fast as it could get with OpenCL on a GPU. An OpenCL version may come in the future.
+Internal code makes heavy use of vDSP and vecLib functions. Compared to the well-known Java library [Neuroph](http://neuroph.sourceforge.net), it is around 20 times faster. It is as fast as it can get on a CPU, but not as fast as it could get with OpenCL on a GPU. An OpenCL version may come in the future.
 
 
 ### Use on iOS
