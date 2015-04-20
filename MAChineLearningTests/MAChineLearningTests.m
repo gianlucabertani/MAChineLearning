@@ -38,7 +38,7 @@
 #define NAND_TEST_TRAIN_CYCLES                           (3)
 #define NAND_TEST_LEARNING_RATE                          (0.1)
 
-#define BACKPROPAGATION_TEST_TRAIN_CYCLES             (2000)
+#define BACKPROPAGATION_TEST_TRAIN_CYCLES             (3000)
 #define BACKPROPAGATION_TEST_LEARNING_RATE               (0.5)
 #define BACKPROPAGATION_TEST_VERIFICATION_CYCLES        (50)
 
@@ -224,7 +224,7 @@
 			} else {
 				
 				// Check accuracy in the last cycles
-				XCTAssertEqualWithAccuracy(delta, 0.00, 0.03);
+				XCTAssertEqualWithAccuracy(delta, 0.00, 0.05);
 			}
 		}
 		
@@ -232,17 +232,17 @@
 		NSLog(@"testBackpropagation: average training/verification time: %.2f µs per cycle", (elapsed * 1000000.0) / ((double) BACKPROPAGATION_TEST_TRAIN_CYCLES + BACKPROPAGATION_TEST_VERIFICATION_CYCLES));
 		
 		// Check final weights
-		XCTAssertEqualWithAccuracy(neuron11.bias, -0.73, 0.03);
-		XCTAssertEqualWithAccuracy(neuron11.weights[0], 1.16, 0.03);
-		XCTAssertEqualWithAccuracy(neuron11.weights[1], 0.26, 0.03);
+		XCTAssertEqualWithAccuracy(neuron11.bias, -0.35, 0.05);
+		XCTAssertEqualWithAccuracy(neuron11.weights[0], 1.15, 0.05);
+		XCTAssertEqualWithAccuracy(neuron11.weights[1], 0.26, 0.05);
 		
-		XCTAssertEqualWithAccuracy(neuron12.bias, -0.73, 0.03);
-		XCTAssertEqualWithAccuracy(neuron12.weights[0], 1.16, 0.03);
-		XCTAssertEqualWithAccuracy(neuron12.weights[1], 0.26, 0.03);
+		XCTAssertEqualWithAccuracy(neuron12.bias, -0.35, 0.05);
+		XCTAssertEqualWithAccuracy(neuron12.weights[0], 1.15, 0.05);
+		XCTAssertEqualWithAccuracy(neuron12.weights[1], 0.26, 0.05);
 		
-		XCTAssertEqualWithAccuracy(neuron2.bias, -0.72, 0.03);
-		XCTAssertEqualWithAccuracy(neuron2.weights[0], 1.15, 0.06);
-		XCTAssertEqualWithAccuracy(neuron2.weights[1], 1.15, 0.06);
+		XCTAssertEqualWithAccuracy(neuron2.bias, -1.05, 0.05);
+		XCTAssertEqualWithAccuracy(neuron2.weights[0], 1.20, 0.05);
+		XCTAssertEqualWithAccuracy(neuron2.weights[1], 1.20, 0.05);
 		
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
