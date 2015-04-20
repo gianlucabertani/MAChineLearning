@@ -222,6 +222,9 @@
 		_nextLayerWeightsBuffer= NULL;
 	}
 	
+	free(_minusTwo);
+	_minusTwo= NULL;
+	
 	free(_minusOne);
 	_minusOne= NULL;
 	
@@ -353,7 +356,7 @@
 		// Prepare the vector of weights
 		int j= 0;
 		for (Neuron *nextNeuron in nextLayer.neurons) {
-			_nextLayerWeightsBuffer[j]= nextNeuron.weights[i];
+			_nextLayerWeightsBuffer[j]= nextNeuron.weights[i] + nextNeuron.weightsDelta[i];
 			j++;
 		}
 		
