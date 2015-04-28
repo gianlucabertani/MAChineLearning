@@ -1,9 +1,9 @@
 //
-//  NeuralNetworkException.m
+//  FeatureNormalizationType.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Created by Gianluca Bertani on 23/04/15.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -31,31 +31,15 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "NeuralNetworkException.h"
-
-#define NEURAL_NET_EXCEPTION_NAME          (@"NeuralNetworkException")
-
-
-@implementation NeuralNetworkException
+#ifndef MAChineLearning_FeatureNormalizationType_h
+#define MAChineLearning_FeatureNormalizationType_h
 
 
-#pragma mark -
-#pragma mark Initialization
-
-+ (NeuralNetworkException *) neuralNetworkExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
-	NeuralNetworkException *exception= [[NeuralNetworkException alloc] initWithReason:reason userInfo:userInfo];
-	
-	return exception;
-}
-
-- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
-	if ((self = [super initWithName:NEURAL_NET_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
-		
-		// Nothing to do
-	}
-	
-	return self;
-}
+typedef enum {
+	FeatureNormalizationTypeNone= 0,
+	FeatureNormalizationTypeBoolean,
+	FeatureNormalizationTypeL2
+} FeatureNormalizationType;
 
 
-@end
+#endif

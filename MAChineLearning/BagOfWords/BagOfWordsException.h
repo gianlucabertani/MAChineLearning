@@ -1,9 +1,9 @@
 //
-//  Layer.h
+//  BagOfWordsException.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Created by Gianluca Bertani on 23/04/15.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -34,28 +34,15 @@
 #import <Foundation/Foundation.h>
 
 
-@interface Layer : NSObject {
-	
-@protected
-	int _index;
-	int _size;
-}
+@interface BagOfWordsException : NSException
 
 
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithIndex:(int)index size:(int)size;
++ (BagOfWordsException *) bagOfWordsExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
 
-
-#pragma mark -
-#pragma mark Properties
-
-@property (nonatomic, readonly) int index;
-@property (nonatomic, readonly) int size;
-
-@property (nonatomic, weak) Layer *previousLayer;
-@property (nonatomic, weak) Layer *nextLayer;
+- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
 
 
 @end

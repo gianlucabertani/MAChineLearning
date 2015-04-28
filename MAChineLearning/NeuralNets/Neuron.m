@@ -3,7 +3,7 @@
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -35,9 +35,9 @@
 #import "NeuronLayer.h"
 #import "NeuralNetworkException.h"
 
-#import <Accelerate/Accelerate.h>
+#import "Constants.h"
 
-#define NEURAL_NET_MEMORY_ALIGNMENT          (128)
+#import <Accelerate/Accelerate.h>
 
 
 #pragma mark -
@@ -47,13 +47,13 @@
 	NeuronLayer __weak *_layer;
 	
 	int _index;
-	nnREAL *_outputBuffer;
+	REAL *_outputBuffer;
 	
 	int _inputSize;
-	nnREAL *_inputBuffer;
+	REAL *_inputBuffer;
 
-	nnREAL *_weights;
-	nnREAL *_weightsDelta;
+	REAL *_weights;
+	REAL *_weightsDelta;
 }
 
 @end
@@ -68,7 +68,7 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithLayer:(NeuronLayer *)layer index:(int)index outputBuffer:(nnREAL *)outputBuffer inputSize:(int)inputSize inputBuffer:(nnREAL *)inputBuffer {
+- (id) initWithLayer:(NeuronLayer *)layer index:(int)index outputBuffer:(REAL *)outputBuffer inputSize:(int)inputSize inputBuffer:(REAL *)inputBuffer {
 	if ((self = [super init])) {
 		
 		// Initialization
@@ -82,16 +82,16 @@
 		
 		// Allocate buffers
 		int err= posix_memalign((void **) &_weights,
-								NEURAL_NET_MEMORY_ALIGNMENT,
-								sizeof(nnREAL) * _inputSize);
+								BUFFER_MEMORY_ALIGNMENT,
+								sizeof(REAL) * _inputSize);
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"weights",
 																			  @"error": [NSNumber numberWithInt:err]}];
 
 		err= posix_memalign((void **) &_weightsDelta,
-							NEURAL_NET_MEMORY_ALIGNMENT,
-							sizeof(nnREAL) * _inputSize);
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(REAL) * _inputSize);
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"weightsDelta",
@@ -117,7 +117,7 @@
 
 
 #pragma mark -
-#pragma mark Operation
+#pragma mark Operations
 
 - (void) partialFeedForward {
 	
@@ -125,11 +125,11 @@
 	nnVDSP_DOTPR(_inputBuffer, 1, _weights, 1, &_outputBuffer[_index], _inputSize);
 }
 
-- (void) partialBackPropagateWithLearningRate:(nnREAL)learningRate delta:(nnREAL)delta {
+- (void) partialBackPropagateWithLearningRate:(REAL)learningRate delta:(REAL)delta {
 	
 	// We receive the delta from the caller (instead of using self.delta) to avoid
 	// a method call, which wastes lots of time
-	nnREAL deltaRate= learningRate * delta;
+	REAL deltaRate= learningRate * delta;
 
 	// Compute weights delta using vector multiply & add,
 	// the rest of the back propagation is done in the layer
@@ -159,11 +159,11 @@
 
 @dynamic bias;
 
-- (nnREAL) bias {
+- (REAL) bias {
 	return _layer.biasBuffer[_index];
 }
 
-- (void) setBias:(nnREAL)bias {
+- (void) setBias:(REAL)bias {
 	_layer.biasBuffer[_index]= bias;
 }
 
@@ -172,21 +172,21 @@
 
 @dynamic error;
 
-- (nnREAL) error {
+- (REAL) error {
 	return _layer.errorBuffer[_index];
 }
 
-- (void) setError:(nnREAL)error {
+- (void) setError:(REAL)error {
 	_layer.errorBuffer[_index]= error;
 }
 
 @dynamic delta;
 
-- (nnREAL) delta {
+- (REAL) delta {
 	return _layer.deltaBuffer[_index];
 }
 
-- (void) setDelta:(nnREAL)delta {
+- (void) setDelta:(REAL)delta {
 	_layer.deltaBuffer[_index]= delta;
 }
 

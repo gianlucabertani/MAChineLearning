@@ -1,9 +1,9 @@
 //
-//  InputLayer.m
+//  WordExtractorOption.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Created by Gianluca Bertani on 23/04/15.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -31,65 +31,31 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "InputLayer.h"
-#import "NeuralNetworkException.h"
-
-#import <Accelerate/Accelerate.h>
-
-#define NEURAL_NET_MEMORY_ALIGNMENT          (128)
+#ifndef MAChineLearning_WordExtractorOption_h
+#define MAChineLearning_WordExtractorOption_h
 
 
-#pragma mark -
-#pragma mark InputLayer extension
+typedef enum {
+	WordExtractorOptionOmitStopWords= 1,
 
-@interface InputLayer () {
-	nnREAL *_inputBuffer;
-}
+	WordExtractorOptionKeepEmoticons= 1 << 1,
 
+	WordExtractorOptionOmitVerbs= 1 << 4,
+	WordExtractorOptionOmitAdjectives= 1 << 5,
 
-@end
+	WordExtractorOptionKeepVerbAdjectiveCombos= 1 << 6,
+	WordExtractorOptionKeepAdjectiveNounCombos= 1 << 7,
+	WordExtractorOptionKeepNounVerbCombos= 1 << 8,
 
+	WordExtractorOptionOmitNames= 1 << 12,
 
-#pragma mark -
-#pragma mark InputLayer implementation
-
-@implementation InputLayer
-
-
-#pragma mark -
-#pragma mark Initialization
-
-- (id) initWithIndex:(int)index size:(int)size {
-	if ((self = [super initWithIndex:index size:size])) {
-		
-		// Allocate buffers
-		int err= posix_memalign((void **) &_inputBuffer,
-								NEURAL_NET_MEMORY_ALIGNMENT,
-								sizeof(nnREAL) * size);
-		if (err)
-			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"inputBuffer",
-																			  @"error": [NSNumber numberWithInt:err]}];
-		
-		// Clear and fill buffers as needed
-		nnVDSP_VCLR(_inputBuffer, 1, size);
-	}
+	WordExtractorOptionKeep2WordNames= 1 << 13,
+	WordExtractorOptionKeep3WordNames= 1 << 14,
 	
-	return self;
-}
-
-- (void) dealloc {
+	WordExtractorOptionKeepAllBigrams= 1 << 18,
+	WordExtractorOptionKeepAllTrigrams= 1 << 19,
 	
-	// Deallocate the input buffer
-	free(_inputBuffer);
-	_inputBuffer= NULL;
-}
+} WordExtractorOption;
 
 
-#pragma mark -
-#pragma mark Properties
-
-@synthesize inputBuffer= _inputBuffer;
-
-
-@end
+#endif

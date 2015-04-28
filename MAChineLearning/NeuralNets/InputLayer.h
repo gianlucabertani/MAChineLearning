@@ -3,12 +3,13 @@
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
-#import "NeuralNetworkReal.h"
+#import "Real.h"
+
 #import "Layer.h"
 
 
@@ -24,7 +25,7 @@
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) nnREAL *inputBuffer;
+@property (nonatomic, readonly) REAL *inputBuffer;
 
 
 @end

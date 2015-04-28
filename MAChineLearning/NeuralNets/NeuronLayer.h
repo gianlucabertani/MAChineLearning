@@ -1,9 +1,9 @@
 //
-//  NeuralNetworkException.h
+//  NeuronLayer.h
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -33,16 +33,49 @@
 
 #import <Foundation/Foundation.h>
 
+#import "Real.h"
 
-@interface NeuralNetworkException : NSException
+#import "Layer.h"
+#import "ActivationFunctionType.h"
+
+
+@interface NeuronLayer : Layer
 
 
 #pragma mark -
 #pragma mark Initialization
 
-+ (NeuralNetworkException *) neuralNetworkExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
+- (id) initWithIndex:(int)index size:(int)size activationFunctionType:(ActivationFunctionType)funcType;
 
-- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
+
+#pragma mark -
+#pragma mark Operations
+
+- (void) setUp;
+
+- (void) feedForward;
+
+- (void) fetchErrorFromNextLayer;
+
+- (void) backPropagateWithLearningRate:(REAL)learningRate;
+
+- (void) updateWeights;
+
+
+#pragma mark -
+#pragma mark Properties
+
+@property (nonatomic, readonly) ActivationFunctionType funcType;
+
+@property (nonatomic, readonly) REAL *biasBuffer;
+@property (nonatomic, readonly) REAL *biasDeltaBuffer;
+
+@property (nonatomic, readonly) REAL *errorBuffer;
+@property (nonatomic, readonly) REAL *deltaBuffer;
+
+@property (nonatomic, readonly) REAL *outputBuffer;
+
+@property (nonatomic, readonly) NSArray *neurons;
 
 
 @end

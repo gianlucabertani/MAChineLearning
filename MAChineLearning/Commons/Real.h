@@ -1,9 +1,9 @@
 //
-//  NeuralNetwork.h
+//  Real.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Created by Gianluca Bertani on 23/04/15.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -31,54 +31,55 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <Foundation/Foundation.h>
-
-#import "NeuralNetworkReal.h"
-#import "NeuralNetworkStatus.h"
-#import "ActivationFunctionType.h"
+#ifndef MAChineLearning_Real_h
+#define MAChineLearning_Real_h
 
 
-@interface NeuralNetwork : NSObject
+/* Uncomment to use double precision.
+ * Beware: it is much slower.
+ 
+typedef double        REAL;
+
+#define nnVDSP_VCLR   vDSP_vclrD
+#define nnVDSP_VTHRSC vDSP_vthrscD
+#define nnVDSP_VTHRES vDSP_vthresD
+#define nnVDSP_VSMUL  vDSP_vsmulD
+#define nnVDSP_VSDIV  vDSP_vsdivD
+#define nnVDSP_SVDIV  vDSP_svdivD
+#define nnVDSP_VSADD  vDSP_vsaddD
+#define nnVDSP_DOTPR  vDSP_dotprD
+#define nnVDSP_VSQ    vDSP_vsqD
+#define nnVDSP_VMUL   vDSP_vmulD
+#define nnVDSP_VADD   vDSP_vaddD
+#define nnVDSP_VSUB   vDSP_vsubD
+#define nnVDSP_VDIV   vDSP_vdivD
+#define nnVDSP_VSMA   vDSP_vsmaD
+#define nnVDSP_SVESQ  vDSP_svesqD
+
+#define nnVVEXP       vvexp
+ 
+ */
 
 
-#pragma mark -
-#pragma mark Initialization
+typedef float         REAL;
 
-+ (NeuralNetwork *) createNetworkFromConfigurationDictionary:(NSDictionary *)config;
-+ (NeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes outputFunctionType:(ActivationFunctionType)funcType;
+#define nnVDSP_VCLR   vDSP_vclr
+#define nnVDSP_VTHRSC vDSP_vthrsc
+#define nnVDSP_VTHRES vDSP_vthres
+#define nnVDSP_VSMUL  vDSP_vsmul
+#define nnVDSP_VSDIV  vDSP_vsdiv
+#define nnVDSP_SVDIV  vDSP_svdiv
+#define nnVDSP_VSADD  vDSP_vsadd
+#define nnVDSP_DOTPR  vDSP_dotpr
+#define nnVDSP_VSQ    vDSP_vsq
+#define nnVDSP_VMUL   vDSP_vmul
+#define nnVDSP_VADD   vDSP_vadd
+#define nnVDSP_VSUB   vDSP_vsub
+#define nnVDSP_VDIV   vDSP_vdiv
+#define nnVDSP_VSMA   vDSP_vsma
+#define nnVDSP_SVESQ  vDSP_svesq
 
-- (id) initWithLayerSizes:(NSArray *)sizes outputFunctionType:(ActivationFunctionType)funcType;
-
-
-#pragma mark -
-#pragma mark Operations
-
-- (void) feedForward;
-- (void) backPropagateWithLearningRate:(nnREAL)learningRate;
-- (void) updateWeights;
-
-- (void) terminate;
-
-
-#pragma mark -
-#pragma mark Configuration
-
-- (NSDictionary *) saveConfigurationToDictionary;
+#define nnVVEXP       vvexpf
 
 
-#pragma mark -
-#pragma mark Properties
-
-@property (nonatomic, readonly) NSArray *layers;
-
-@property (nonatomic, readonly) int inputSize;
-@property (nonatomic, readonly) nnREAL *inputBuffer;
-
-@property (nonatomic, readonly) int outputSize;
-@property (nonatomic, readonly) nnREAL *outputBuffer;
-@property (nonatomic, readonly) nnREAL *expectedOutputBuffer;
-
-@property (nonatomic, readonly) NeuralNetworkStatus status;
-
-
-@end
+#endif

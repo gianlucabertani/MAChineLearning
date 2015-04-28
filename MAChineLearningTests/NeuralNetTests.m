@@ -1,9 +1,9 @@
 //
-//  MAChineLearningTests.m
+//  NeuralNetTests.m
 //  MAChineLearningTests
 //
 //  Created by Gianluca Bertani on 12/04/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -49,26 +49,26 @@
 
 
 #pragma mark -
-#pragma mark MAChineLearningTests declaration
+#pragma mark NeuralNetTests declaration
 
-@interface MAChineLearningTests : XCTestCase
+@interface NeuralNetTests : XCTestCase
 @end
 
 
 #pragma mark -
-#pragma mark MAChineLearningTests implementation
+#pragma mark NeuralNetTests implementation
 
-@implementation MAChineLearningTests
+@implementation NeuralNetTests
 
 
 #pragma mark -
 #pragma mark Setup and tear down
 
-- (void)setUp {
+- (void) setUp {
     [super setUp];
 }
 
-- (void)tearDown {
+- (void) tearDown {
     [super tearDown];
 }
 
@@ -192,7 +192,7 @@
 		NSDate *begin= [NSDate date];
 		
 		for (int i= 1; i <= BACKPROPAGATION_TEST_TRAIN_CYCLES + BACKPROPAGATION_TEST_VERIFICATION_CYCLES; i++) {
-			double sum= [MAChineLearningTests randomDoubleWithMin:0.10 max:0.90];
+			double sum= [NeuralNetTests randomDoubleWithMin:0.10 max:0.90];
 			
 			net.inputBuffer[0]= 3.0 * sum / 2.0;
 			net.inputBuffer[1]= sum / 3.0;
@@ -264,10 +264,10 @@
 		
 		// Train the network with random numbers
 		for (int i= 1; i <= LOAD_SAVE_TEST_TRAIN_CYCLES; i++) {
-			net.inputBuffer[0]= [MAChineLearningTests randomDoubleWithMin:0.0 max:5.0];
-			net.inputBuffer[1]= [MAChineLearningTests randomDoubleWithMin:-2.5 max:2.5];
-			net.inputBuffer[2]= [MAChineLearningTests randomDoubleWithMin:-5.0 max:0.0];
-			net.expectedOutputBuffer[0]= [MAChineLearningTests randomDoubleWithMin:0.5 max:1.0];
+			net.inputBuffer[0]= [NeuralNetTests randomDoubleWithMin:0.0 max:5.0];
+			net.inputBuffer[1]= [NeuralNetTests randomDoubleWithMin:-2.5 max:2.5];
+			net.inputBuffer[2]= [NeuralNetTests randomDoubleWithMin:-5.0 max:0.0];
+			net.expectedOutputBuffer[0]= [NeuralNetTests randomDoubleWithMin:0.5 max:1.0];
 			
 			[net feedForward];
 			[net backPropagateWithLearningRate:LOAD_SAVE_TEST_LEARNING_RATE];
@@ -292,9 +292,9 @@
 		NSLog(@"testLoadSave: average training time: %.2f µs per cycle", (elapsed * 1000000.0) / ((double) LOAD_SAVE_TEST_TRAIN_CYCLES));
 		
 		// Run a simple compute and save inputs and output
-		double input0= [MAChineLearningTests randomDoubleWithMin:0.0 max:5.0];
-		double input1= [MAChineLearningTests randomDoubleWithMin:-2.5 max:2.5];
-		double input2= [MAChineLearningTests randomDoubleWithMin:-5.0 max:0.0];
+		double input0= [NeuralNetTests randomDoubleWithMin:0.0 max:5.0];
+		double input1= [NeuralNetTests randomDoubleWithMin:-2.5 max:2.5];
+		double input2= [NeuralNetTests randomDoubleWithMin:-5.0 max:0.0];
 		
 		net.inputBuffer[0]= input0;
 		net.inputBuffer[1]= input1;

@@ -1,9 +1,9 @@
 //
-//  NeuralNetworkStatus.h
+//  Constants.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 27/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Created by Gianluca Bertani on 23/04/15.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -31,16 +31,11 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_NeuralNetworkStatus_h
-#define MAChineLearning_NeuralNetworkStatus_h
+#ifndef MAChineLearning_Constants_h
+#define MAChineLearning_Constants_h
 
 
-typedef enum {
-	NeuralNetworkStatusIdle= 0,
-	NeuralNetworkStatusFeededForward,
-	NeuralNetworkStatusBackPropagated,
-	NeuralNetworkStatusWeightsUpdated
-} NeuralNetworkStatus;
+#define BUFFER_MEMORY_ALIGNMENT          (128)
 
 
 #endif

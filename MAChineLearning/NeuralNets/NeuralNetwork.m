@@ -3,7 +3,7 @@
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -37,9 +37,10 @@
 #import "Neuron.h"
 #import "NeuralNetworkException.h"
 
+#import "Constants.h"
+
 #import <Accelerate/Accelerate.h>
 
-#define NEURAL_NET_MEMORY_ALIGNMENT          (128)
 
 #define CONFIG_PARAM_LAYER_SIZES             (@"layerSizes")
 #define CONFIG_PARAM_OUTPUT_FUNCTION_TYPE    (@"outputFunctionType")
@@ -56,12 +57,12 @@
 	ActivationFunctionType _funcType;
 	
 	int _inputSize;
-	nnREAL *_inputBuffer;
+	REAL *_inputBuffer;
 	
 	int _outputSize;
-	nnREAL *_outputBuffer;
-	nnREAL *_expectedOutputBuffer;
-	nnREAL *_errorBuffer;
+	REAL *_outputBuffer;
+	REAL *_expectedOutputBuffer;
+	REAL *_errorBuffer;
 	
 	NeuralNetworkStatus _status;
 }
@@ -215,8 +216,8 @@
 		}
 		
 		int err= posix_memalign((void **) &_expectedOutputBuffer,
-								NEURAL_NET_MEMORY_ALIGNMENT,
-								sizeof(nnREAL) * _outputSize);
+								BUFFER_MEMORY_ALIGNMENT,
+								sizeof(REAL) * _outputSize);
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"expectedOutputBuffer",
@@ -250,7 +251,7 @@
 	}
 }
 
-- (void) backPropagateWithLearningRate:(nnREAL)learningRate {
+- (void) backPropagateWithLearningRate:(REAL)learningRate {
 	
 	// Check call sequence
 	switch (_status) {

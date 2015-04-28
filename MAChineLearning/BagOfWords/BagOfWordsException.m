@@ -1,9 +1,9 @@
 //
-//  NeuralNetworkReal.h
+//  BagOfWordsException.m
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 03/04/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Created by Gianluca Bertani on 23/04/15.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -31,58 +31,31 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_NeuralNetworkReal_h
-#define MAChineLearning_NeuralNetworkReal_h
+#import "BagOfWordsException.h"
+
+#define BAG_OF_WORDS_EXCEPTION_NAME          (@"BagOfWordsException")
 
 
-/* Uncomment to use double precision
- 
-typedef double        nnREAL;
-
-#define nnVDSP_VCLR   vDSP_vclrD
-#define nnVDSP_VTHRSC vDSP_vthrscD
-#define nnVDSP_VTHRES vDSP_vthresD
-#define nnVDSP_VSMUL  vDSP_vsmulD
-#define nnVDSP_VSDIV  vDSP_vsdivD
-#define nnVDSP_SVDIV  vDSP_svdivD
-#define nnVDSP_VSADD  vDSP_vsaddD
-#define nnVDSP_DOTPR  vDSP_dotprD
-#define nnVDSP_VSQ    vDSP_vsqD
-#define nnVDSP_VMUL   vDSP_vmulD
-#define nnVDSP_VADD   vDSP_vaddD
-#define nnVDSP_VSUB   vDSP_vsubD
-#define nnVDSP_VDIV   vDSP_vdivD
-#define nnVDSP_VSMA   vDSP_vsmaD
-#define nnVDSP_SVESQ  vDSP_svesqD
-
-#define nnVVEXP       vvexp
-#define nnVVREC       vvrec
-#define nnVVTANH      vvtanh
-
- */
+@implementation BagOfWordsException
 
 
-typedef float         nnREAL;
+#pragma mark -
+#pragma mark Initialization
 
-#define nnVDSP_VCLR   vDSP_vclr
-#define nnVDSP_VTHRSC vDSP_vthrsc
-#define nnVDSP_VTHRES vDSP_vthres
-#define nnVDSP_VSMUL  vDSP_vsmul
-#define nnVDSP_VSDIV  vDSP_vsdiv
-#define nnVDSP_SVDIV  vDSP_svdiv
-#define nnVDSP_VSADD  vDSP_vsadd
-#define nnVDSP_DOTPR  vDSP_dotpr
-#define nnVDSP_VSQ    vDSP_vsq
-#define nnVDSP_VMUL   vDSP_vmul
-#define nnVDSP_VADD   vDSP_vadd
-#define nnVDSP_VSUB   vDSP_vsub
-#define nnVDSP_VDIV   vDSP_vdiv
-#define nnVDSP_VSMA   vDSP_vsma
-#define nnVDSP_SVESQ  vDSP_svesq
++ (BagOfWordsException *) bagOfWordsExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+	BagOfWordsException *exception= [[BagOfWordsException alloc] initWithReason:reason userInfo:userInfo];
+	
+	return exception;
+}
 
-#define nnVVEXP       vvexpf
-#define nnVVREC       vvrecf
-#define nnVVTANH      vvtanhf
+- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+	if ((self = [super initWithName:BAG_OF_WORDS_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
+		
+		// Nothing to do
+	}
+	
+	return self;
+}
 
 
-#endif
+@end

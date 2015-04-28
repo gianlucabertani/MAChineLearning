@@ -1,9 +1,9 @@
 //
-//  NeuronLayer.h
+//  Neuron.h
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -33,48 +33,48 @@
 
 #import <Foundation/Foundation.h>
 
-#import "NeuralNetworkReal.h"
-#import "Layer.h"
+#import "Real.h"
+
 #import "ActivationFunctionType.h"
 
 
-@interface NeuronLayer : Layer
+@class NeuronLayer;
+
+@interface Neuron : NSObject
 
 
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithIndex:(int)index size:(int)size activationFunctionType:(ActivationFunctionType)funcType;
+- (id) initWithLayer:(NeuronLayer *)layer index:(int)index outputBuffer:(REAL *)outputBuffer inputSize:(int)inputSize inputBuffer:(REAL *)inputBuffer;
 
 
 #pragma mark -
 #pragma mark Operations
 
-- (void) setUp;
-
-- (void) feedForward;
-
-- (void) fetchErrorFromNextLayer;
-
-- (void) backPropagateWithLearningRate:(nnREAL)learningRate;
-
-- (void) updateWeights;
+- (void) partialFeedForward;
+- (void) partialBackPropagateWithLearningRate:(REAL)learningRate delta:(REAL)delta;
+- (void) partialUpdateWeights;
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) ActivationFunctionType funcType;
+@property (nonatomic, readonly) NeuronLayer *layer;
 
-@property (nonatomic, readonly) nnREAL *biasBuffer;
-@property (nonatomic, readonly) nnREAL *biasDeltaBuffer;
+@property (nonatomic, readonly) int index;
+@property (nonatomic, readonly) REAL *outputBuffer;
 
-@property (nonatomic, readonly) nnREAL *errorBuffer;
-@property (nonatomic, readonly) nnREAL *deltaBuffer;
+@property (nonatomic, readonly) int inputSize;
+@property (nonatomic, readonly) REAL *inputBuffer;
 
-@property (nonatomic, readonly) nnREAL *outputBuffer;
+@property (nonatomic, readonly) REAL bias;
+@property (nonatomic, readonly) REAL *weights;
+@property (nonatomic, readonly) REAL *weightsDelta;
 
-@property (nonatomic, readonly) NSArray *neurons;
+@property (nonatomic, readonly) REAL error;
+@property (nonatomic, readonly) REAL delta;
+
 
 
 @end

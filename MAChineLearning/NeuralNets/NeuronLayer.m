@@ -3,7 +3,7 @@
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -36,9 +36,9 @@
 #import "Neuron.h"
 #import "NeuralNetworkException.h"
 
-#import <Accelerate/Accelerate.h>
+#import "Constants.h"
 
-#define NEURAL_NET_MEMORY_ALIGNMENT          (128)
+#import <Accelerate/Accelerate.h>
 
 
 #pragma mark -
@@ -47,24 +47,24 @@
 @interface NeuronLayer () {
 	ActivationFunctionType _funcType;
 
-	nnREAL *_outputBuffer;
+	REAL *_outputBuffer;
 	
-	nnREAL *_biasBuffer;
-	nnREAL *_biasDeltaBuffer;
+	REAL *_biasBuffer;
+	REAL *_biasDeltaBuffer;
 
-	nnREAL *_deltaBuffer;
-	nnREAL *_errorBuffer;
+	REAL *_deltaBuffer;
+	REAL *_errorBuffer;
 	
-	nnREAL *_tempBuffer;
-	nnREAL *_nextLayerWeightsBuffer;
+	REAL *_tempBuffer;
+	REAL *_nextLayerWeightsBuffer;
 
 	NSMutableArray *_neurons;
 	
-	nnREAL *_minusTwo;
-	nnREAL *_minusOne;
-	nnREAL *_zero;
-	nnREAL *_half;
-	nnREAL *_one;
+	REAL *_minusTwo;
+	REAL *_minusOne;
+	REAL *_zero;
+	REAL *_half;
+	REAL *_one;
 }
 
 
@@ -88,48 +88,48 @@
 
 		// Allocate buffers
 		int err= posix_memalign((void **) &_outputBuffer,
-								NEURAL_NET_MEMORY_ALIGNMENT,
-								sizeof(nnREAL) * size);
+								BUFFER_MEMORY_ALIGNMENT,
+								sizeof(REAL) * size);
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"outputBuffer",
 																			  @"error": [NSNumber numberWithInt:err]}];
 		
 		err= posix_memalign((void **) &_biasBuffer,
-							NEURAL_NET_MEMORY_ALIGNMENT,
-							sizeof(nnREAL) * size);
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(REAL) * size);
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"biasBuffer",
 																			  @"error": [NSNumber numberWithInt:err]}];
 
 		err= posix_memalign((void **) &_biasDeltaBuffer,
-							NEURAL_NET_MEMORY_ALIGNMENT,
-							sizeof(nnREAL) * size);
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(REAL) * size);
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"biasDeltaBuffer",
 																			  @"error": [NSNumber numberWithInt:err]}];
 
 		err= posix_memalign((void **) &_deltaBuffer,
-							NEURAL_NET_MEMORY_ALIGNMENT,
-							sizeof(nnREAL) * size);
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(REAL) * size);
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"deltaBuffer",
 																			  @"error": [NSNumber numberWithInt:err]}];
 		
 		err= posix_memalign((void **) &_errorBuffer,
-							NEURAL_NET_MEMORY_ALIGNMENT,
-							sizeof(nnREAL) * size);
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(REAL) * size);
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"errorBuffer",
 																			  @"error": [NSNumber numberWithInt:err]}];
 		
 		err= posix_memalign((void **) &_tempBuffer,
-							NEURAL_NET_MEMORY_ALIGNMENT,
-							sizeof(nnREAL) * size);
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(REAL) * size);
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"tempBuffer",
@@ -145,40 +145,40 @@
 		
 		// Allocate constants
 		err= posix_memalign((void **) &_minusTwo,
-							NEURAL_NET_MEMORY_ALIGNMENT,
-							sizeof(nnREAL));
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(REAL));
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating constant"
 																   userInfo:@{@"constant": @"minusTwo",
 																			  @"error": [NSNumber numberWithInt:err]}];
 
 		err= posix_memalign((void **) &_minusOne,
-							NEURAL_NET_MEMORY_ALIGNMENT,
-							sizeof(nnREAL));
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(REAL));
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating constant"
 																   userInfo:@{@"constant": @"minusOne",
 																			  @"error": [NSNumber numberWithInt:err]}];
 		
 		err= posix_memalign((void **) &_zero,
-							NEURAL_NET_MEMORY_ALIGNMENT,
-							sizeof(nnREAL));
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(REAL));
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating constant"
 																   userInfo:@{@"constant": @"zero",
 																			  @"error": [NSNumber numberWithInt:err]}];
 
 		err= posix_memalign((void **) &_half,
-							NEURAL_NET_MEMORY_ALIGNMENT,
-							sizeof(nnREAL));
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(REAL));
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating constant"
 																   userInfo:@{@"constant": @"half",
 																			  @"error": [NSNumber numberWithInt:err]}];
 
 		err= posix_memalign((void **) &_one,
-							NEURAL_NET_MEMORY_ALIGNMENT,
-							sizeof(nnREAL));
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(REAL));
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating constant"
 																   userInfo:@{@"constant": @"one",
@@ -250,7 +250,7 @@
 	_neurons= [[NSMutableArray alloc] initWithCapacity:self.size];
 	
 	for (int i= 0; i < self.size; i++) {
-		nnREAL *inputBuffer= NULL;
+		REAL *inputBuffer= NULL;
 
 		if ([self.previousLayer isKindOfClass:[InputLayer class]]) {
 			inputBuffer= [(InputLayer *) self.previousLayer inputBuffer];
@@ -277,8 +277,8 @@
 		NeuronLayer *nextLayer= (NeuronLayer *) self.nextLayer;
 		
 		int err= posix_memalign((void **) &_nextLayerWeightsBuffer,
-								NEURAL_NET_MEMORY_ALIGNMENT,
-								sizeof(nnREAL) * nextLayer.size);
+								BUFFER_MEMORY_ALIGNMENT,
+								sizeof(REAL) * nextLayer.size);
 		if (err)
 			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"nextLayerWeightsBuffer",
@@ -365,7 +365,7 @@
 	}
 }
 
-- (void) backPropagateWithLearningRate:(nnREAL)learningRate {
+- (void) backPropagateWithLearningRate:(REAL)learningRate {
 	if (!_neurons)
 		@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
 															   userInfo:nil];

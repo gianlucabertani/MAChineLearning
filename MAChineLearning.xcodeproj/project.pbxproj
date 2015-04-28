@@ -7,25 +7,40 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C1251DA1AE8D38E00FA493E /* ActivationFunctionType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1251CB1AE8D38E00FA493E /* ActivationFunctionType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C1251DB1AE8D38E00FA493E /* InputLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1251CC1AE8D38E00FA493E /* InputLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C1251DC1AE8D38E00FA493E /* InputLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251CD1AE8D38E00FA493E /* InputLayer.m */; };
+		8C1251DD1AE8D38E00FA493E /* Layer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1251CE1AE8D38E00FA493E /* Layer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C1251DE1AE8D38E00FA493E /* Layer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251CF1AE8D38E00FA493E /* Layer.m */; };
+		8C1251DF1AE8D38E00FA493E /* NeuralNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1251D01AE8D38E00FA493E /* NeuralNetwork.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C1251E01AE8D38E00FA493E /* NeuralNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251D11AE8D38E00FA493E /* NeuralNetwork.m */; };
+		8C1251E11AE8D38E00FA493E /* NeuralNetworkException.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1251D21AE8D38E00FA493E /* NeuralNetworkException.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C1251E21AE8D38E00FA493E /* NeuralNetworkException.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251D31AE8D38E00FA493E /* NeuralNetworkException.m */; };
+		8C1251E41AE8D38E00FA493E /* NeuralNetworkStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1251D51AE8D38E00FA493E /* NeuralNetworkStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C1251E51AE8D38E00FA493E /* Neuron.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1251D61AE8D38E00FA493E /* Neuron.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C1251E61AE8D38E00FA493E /* Neuron.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251D71AE8D38E00FA493E /* Neuron.m */; };
+		8C1251E71AE8D38E00FA493E /* NeuronLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1251D81AE8D38E00FA493E /* NeuronLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C1251E81AE8D38E00FA493E /* NeuronLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251D91AE8D38E00FA493E /* NeuronLayer.m */; };
+		8C1251EC1AE8D4BE00FA493E /* BagOfWords.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1251EA1AE8D4BE00FA493E /* BagOfWords.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C1251ED1AE8D4BE00FA493E /* BagOfWords.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251EB1AE8D4BE00FA493E /* BagOfWords.m */; };
 		8C4CEF1E1ADAC51200F1E139 /* MAChineLearning.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF1D1ADAC51200F1E139 /* MAChineLearning.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C4CEF241ADAC51200F1E139 /* MAChineLearning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */; };
-		8C4CEF2B1ADAC51200F1E139 /* MAChineLearningTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF2A1ADAC51200F1E139 /* MAChineLearningTests.m */; };
-		8C4CEF431ADAC54B00F1E139 /* ActivationFunctionType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF341ADAC54B00F1E139 /* ActivationFunctionType.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C4CEF441ADAC54B00F1E139 /* InputLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF351ADAC54B00F1E139 /* InputLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C4CEF451ADAC54B00F1E139 /* InputLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF361ADAC54B00F1E139 /* InputLayer.m */; };
-		8C4CEF471ADAC54B00F1E139 /* Layer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF371ADAC54B00F1E139 /* Layer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C4CEF481ADAC54B00F1E139 /* Layer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF381ADAC54B00F1E139 /* Layer.m */; };
-		8C4CEF4A1ADAC54B00F1E139 /* NeuralNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF391ADAC54B00F1E139 /* NeuralNetwork.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C4CEF4B1ADAC54B00F1E139 /* NeuralNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF3A1ADAC54B00F1E139 /* NeuralNetwork.m */; };
-		8C4CEF4D1ADAC54B00F1E139 /* NeuralNetworkException.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF3B1ADAC54B00F1E139 /* NeuralNetworkException.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C4CEF4E1ADAC54B00F1E139 /* NeuralNetworkException.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF3C1ADAC54B00F1E139 /* NeuralNetworkException.m */; };
-		8C4CEF501ADAC54B00F1E139 /* NeuralNetworkReal.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF3D1ADAC54B00F1E139 /* NeuralNetworkReal.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C4CEF511ADAC54B00F1E139 /* NeuralNetworkStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF3E1ADAC54B00F1E139 /* NeuralNetworkStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C4CEF521ADAC54B00F1E139 /* Neuron.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF3F1ADAC54B00F1E139 /* Neuron.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C4CEF531ADAC54B00F1E139 /* Neuron.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF401ADAC54B00F1E139 /* Neuron.m */; };
-		8C4CEF551ADAC54B00F1E139 /* NeuronLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF411ADAC54B00F1E139 /* NeuronLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C4CEF561ADAC54B00F1E139 /* NeuronLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF421ADAC54B00F1E139 /* NeuronLayer.m */; };
-		8C4E43A41AE56DD0005FD73D /* MAChineLearningSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4E43A31AE56DCF005FD73D /* MAChineLearningSwiftTests.swift */; };
+		8C4CEF2B1ADAC51200F1E139 /* NeuralNetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF2A1ADAC51200F1E139 /* NeuralNetTests.m */; };
+		8C4E43A41AE56DD0005FD73D /* NeuralNetSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4E43A31AE56DCF005FD73D /* NeuralNetSwiftTests.swift */; };
+		8C58A30E1AECD275006AB74D /* TextFragment.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C58A30C1AECD275006AB74D /* TextFragment.h */; };
+		8C58A30F1AECD275006AB74D /* TextFragment.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C58A30D1AECD275006AB74D /* TextFragment.m */; };
+		8C58A3171AECDAA3006AB74D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C58A3161AECDAA3006AB74D /* main.m */; };
+		8C58A31C1AECECC5006AB74D /* StopWords.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C58A31B1AECDF9D006AB74D /* StopWords.h */; };
+		8C58A31E1AED4DE8006AB74D /* BagOfWordsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */; };
+		8C94CBFF1AE91C0800A0A328 /* FeatureNormalizationType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C94CBFE1AE91C0800A0A328 /* FeatureNormalizationType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C94CC011AE91CEE00A0A328 /* WordExtractorType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C94CC001AE91CEE00A0A328 /* WordExtractorType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CC9E4DC1AE9843B002659EA /* WordExtractorOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4DB1AE9843B002659EA /* WordExtractorOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CC9E4DF1AE985F4002659EA /* NSString+WordUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4DD1AE985F4002659EA /* NSString+WordUtils.h */; };
+		8CC9E4E01AE985F4002659EA /* NSString+WordUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC9E4DE1AE985F4002659EA /* NSString+WordUtils.m */; };
+		8CC9E4E31AE988AE002659EA /* Real.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4E21AE988AE002659EA /* Real.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CC9E4E61AE98DAE002659EA /* BagOfWordsException.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4E41AE98DAE002659EA /* BagOfWordsException.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CC9E4E71AE98DAE002659EA /* BagOfWordsException.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC9E4E51AE98DAE002659EA /* BagOfWordsException.m */; };
+		8CC9E4EB1AE9981D002659EA /* Constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4EA1AE990AA002659EA /* Constants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,34 +53,62 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8C58A3121AECDAA3006AB74D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		8C1251CB1AE8D38E00FA493E /* ActivationFunctionType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivationFunctionType.h; sourceTree = "<group>"; };
+		8C1251CC1AE8D38E00FA493E /* InputLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputLayer.h; sourceTree = "<group>"; };
+		8C1251CD1AE8D38E00FA493E /* InputLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputLayer.m; sourceTree = "<group>"; };
+		8C1251CE1AE8D38E00FA493E /* Layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Layer.h; sourceTree = "<group>"; };
+		8C1251CF1AE8D38E00FA493E /* Layer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Layer.m; sourceTree = "<group>"; };
+		8C1251D01AE8D38E00FA493E /* NeuralNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuralNetwork.h; sourceTree = "<group>"; };
+		8C1251D11AE8D38E00FA493E /* NeuralNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeuralNetwork.m; sourceTree = "<group>"; };
+		8C1251D21AE8D38E00FA493E /* NeuralNetworkException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuralNetworkException.h; sourceTree = "<group>"; };
+		8C1251D31AE8D38E00FA493E /* NeuralNetworkException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeuralNetworkException.m; sourceTree = "<group>"; };
+		8C1251D51AE8D38E00FA493E /* NeuralNetworkStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuralNetworkStatus.h; sourceTree = "<group>"; };
+		8C1251D61AE8D38E00FA493E /* Neuron.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Neuron.h; sourceTree = "<group>"; };
+		8C1251D71AE8D38E00FA493E /* Neuron.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Neuron.m; sourceTree = "<group>"; };
+		8C1251D81AE8D38E00FA493E /* NeuronLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuronLayer.h; sourceTree = "<group>"; };
+		8C1251D91AE8D38E00FA493E /* NeuronLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeuronLayer.m; sourceTree = "<group>"; };
+		8C1251EA1AE8D4BE00FA493E /* BagOfWords.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BagOfWords.h; sourceTree = "<group>"; };
+		8C1251EB1AE8D4BE00FA493E /* BagOfWords.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BagOfWords.m; sourceTree = "<group>"; };
 		8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MAChineLearning.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C4CEF1C1ADAC51200F1E139 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C4CEF1D1ADAC51200F1E139 /* MAChineLearning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MAChineLearning.h; sourceTree = "<group>"; };
 		8C4CEF231ADAC51200F1E139 /* MAChineLearningTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MAChineLearningTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C4CEF291ADAC51200F1E139 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8C4CEF2A1ADAC51200F1E139 /* MAChineLearningTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MAChineLearningTests.m; sourceTree = "<group>"; };
-		8C4CEF341ADAC54B00F1E139 /* ActivationFunctionType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivationFunctionType.h; sourceTree = "<group>"; };
-		8C4CEF351ADAC54B00F1E139 /* InputLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputLayer.h; sourceTree = "<group>"; };
-		8C4CEF361ADAC54B00F1E139 /* InputLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputLayer.m; sourceTree = "<group>"; };
-		8C4CEF371ADAC54B00F1E139 /* Layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Layer.h; sourceTree = "<group>"; };
-		8C4CEF381ADAC54B00F1E139 /* Layer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Layer.m; sourceTree = "<group>"; };
-		8C4CEF391ADAC54B00F1E139 /* NeuralNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuralNetwork.h; sourceTree = "<group>"; };
-		8C4CEF3A1ADAC54B00F1E139 /* NeuralNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeuralNetwork.m; sourceTree = "<group>"; };
-		8C4CEF3B1ADAC54B00F1E139 /* NeuralNetworkException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuralNetworkException.h; sourceTree = "<group>"; };
-		8C4CEF3C1ADAC54B00F1E139 /* NeuralNetworkException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeuralNetworkException.m; sourceTree = "<group>"; };
-		8C4CEF3D1ADAC54B00F1E139 /* NeuralNetworkReal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuralNetworkReal.h; sourceTree = "<group>"; };
-		8C4CEF3E1ADAC54B00F1E139 /* NeuralNetworkStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuralNetworkStatus.h; sourceTree = "<group>"; };
-		8C4CEF3F1ADAC54B00F1E139 /* Neuron.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Neuron.h; sourceTree = "<group>"; };
-		8C4CEF401ADAC54B00F1E139 /* Neuron.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Neuron.m; sourceTree = "<group>"; };
-		8C4CEF411ADAC54B00F1E139 /* NeuronLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeuronLayer.h; sourceTree = "<group>"; };
-		8C4CEF421ADAC54B00F1E139 /* NeuronLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeuronLayer.m; sourceTree = "<group>"; };
+		8C4CEF2A1ADAC51200F1E139 /* NeuralNetTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NeuralNetTests.m; sourceTree = "<group>"; };
 		8C4CEF581ADACE4500F1E139 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8C4CEF591ADACE4500F1E139 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8C4CEF5E1ADAED9300F1E139 /* 3-Input Perceptron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "3-Input Perceptron.png"; sourceTree = "<group>"; };
 		8C4CEF5F1ADAED9300F1E139 /* Network States.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network States.png"; sourceTree = "<group>"; };
 		8C4E43A21AE56DCF005FD73D /* MAChineLearningTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MAChineLearningTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		8C4E43A31AE56DCF005FD73D /* MAChineLearningSwiftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAChineLearningSwiftTests.swift; sourceTree = "<group>"; };
+		8C4E43A31AE56DCF005FD73D /* NeuralNetSwiftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeuralNetSwiftTests.swift; sourceTree = "<group>"; };
+		8C58A30C1AECD275006AB74D /* TextFragment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFragment.h; sourceTree = "<group>"; };
+		8C58A30D1AECD275006AB74D /* TextFragment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextFragment.m; sourceTree = "<group>"; };
+		8C58A3141AECDAA3006AB74D /* StopWordsGen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = StopWordsGen; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C58A3161AECDAA3006AB74D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8C58A31B1AECDF9D006AB74D /* StopWords.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StopWords.h; sourceTree = "<group>"; };
+		8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BagOfWordsTests.m; sourceTree = "<group>"; };
+		8C94CBFE1AE91C0800A0A328 /* FeatureNormalizationType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureNormalizationType.h; sourceTree = "<group>"; };
+		8C94CC001AE91CEE00A0A328 /* WordExtractorType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordExtractorType.h; sourceTree = "<group>"; };
+		8CC9E4DB1AE9843B002659EA /* WordExtractorOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordExtractorOption.h; sourceTree = "<group>"; };
+		8CC9E4DD1AE985F4002659EA /* NSString+WordUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+WordUtils.h"; sourceTree = "<group>"; };
+		8CC9E4DE1AE985F4002659EA /* NSString+WordUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+WordUtils.m"; sourceTree = "<group>"; };
+		8CC9E4E21AE988AE002659EA /* Real.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Real.h; sourceTree = "<group>"; };
+		8CC9E4E41AE98DAE002659EA /* BagOfWordsException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BagOfWordsException.h; sourceTree = "<group>"; };
+		8CC9E4E51AE98DAE002659EA /* BagOfWordsException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BagOfWordsException.m; sourceTree = "<group>"; };
+		8CC9E4EA1AE990AA002659EA /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,9 +127,56 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8C58A3111AECDAA3006AB74D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8C1251CA1AE8D2FF00FA493E /* NeuralNets */ = {
+			isa = PBXGroup;
+			children = (
+				8C1251D01AE8D38E00FA493E /* NeuralNetwork.h */,
+				8C1251D11AE8D38E00FA493E /* NeuralNetwork.m */,
+				8C1251D51AE8D38E00FA493E /* NeuralNetworkStatus.h */,
+				8C1251CB1AE8D38E00FA493E /* ActivationFunctionType.h */,
+				8C1251CE1AE8D38E00FA493E /* Layer.h */,
+				8C1251CF1AE8D38E00FA493E /* Layer.m */,
+				8C1251CC1AE8D38E00FA493E /* InputLayer.h */,
+				8C1251CD1AE8D38E00FA493E /* InputLayer.m */,
+				8C1251D81AE8D38E00FA493E /* NeuronLayer.h */,
+				8C1251D91AE8D38E00FA493E /* NeuronLayer.m */,
+				8C1251D61AE8D38E00FA493E /* Neuron.h */,
+				8C1251D71AE8D38E00FA493E /* Neuron.m */,
+				8C1251D21AE8D38E00FA493E /* NeuralNetworkException.h */,
+				8C1251D31AE8D38E00FA493E /* NeuralNetworkException.m */,
+			);
+			path = NeuralNets;
+			sourceTree = "<group>";
+		};
+		8C1251E91AE8D48B00FA493E /* BagOfWords */ = {
+			isa = PBXGroup;
+			children = (
+				8C1251EA1AE8D4BE00FA493E /* BagOfWords.h */,
+				8C1251EB1AE8D4BE00FA493E /* BagOfWords.m */,
+				8C94CC001AE91CEE00A0A328 /* WordExtractorType.h */,
+				8CC9E4DB1AE9843B002659EA /* WordExtractorOption.h */,
+				8C94CBFE1AE91C0800A0A328 /* FeatureNormalizationType.h */,
+				8C58A30C1AECD275006AB74D /* TextFragment.h */,
+				8C58A30D1AECD275006AB74D /* TextFragment.m */,
+				8C58A31B1AECDF9D006AB74D /* StopWords.h */,
+				8CC9E4DD1AE985F4002659EA /* NSString+WordUtils.h */,
+				8CC9E4DE1AE985F4002659EA /* NSString+WordUtils.m */,
+				8CC9E4E41AE98DAE002659EA /* BagOfWordsException.h */,
+				8CC9E4E51AE98DAE002659EA /* BagOfWordsException.m */,
+			);
+			path = BagOfWords;
+			sourceTree = "<group>";
+		};
 		8C4CEF0E1ADAC51200F1E139 = {
 			isa = PBXGroup;
 			children = (
@@ -95,6 +185,7 @@
 				8C4CEF591ADACE4500F1E139 /* README.md */,
 				8C4CEF5E1ADAED9300F1E139 /* 3-Input Perceptron.png */,
 				8C4CEF5F1ADAED9300F1E139 /* Network States.png */,
+				8C58A3151AECDAA3006AB74D /* StopWordsGen */,
 				8C4CEF271ADAC51200F1E139 /* MAChineLearningTests */,
 				8C4CEF191ADAC51200F1E139 /* Products */,
 			);
@@ -105,6 +196,7 @@
 			children = (
 				8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */,
 				8C4CEF231ADAC51200F1E139 /* MAChineLearningTests.xctest */,
+				8C58A3141AECDAA3006AB74D /* StopWordsGen */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -113,21 +205,9 @@
 			isa = PBXGroup;
 			children = (
 				8C4CEF1D1ADAC51200F1E139 /* MAChineLearning.h */,
-				8C4CEF391ADAC54B00F1E139 /* NeuralNetwork.h */,
-				8C4CEF3A1ADAC54B00F1E139 /* NeuralNetwork.m */,
-				8C4CEF3D1ADAC54B00F1E139 /* NeuralNetworkReal.h */,
-				8C4CEF3E1ADAC54B00F1E139 /* NeuralNetworkStatus.h */,
-				8C4CEF371ADAC54B00F1E139 /* Layer.h */,
-				8C4CEF381ADAC54B00F1E139 /* Layer.m */,
-				8C4CEF351ADAC54B00F1E139 /* InputLayer.h */,
-				8C4CEF361ADAC54B00F1E139 /* InputLayer.m */,
-				8C4CEF411ADAC54B00F1E139 /* NeuronLayer.h */,
-				8C4CEF421ADAC54B00F1E139 /* NeuronLayer.m */,
-				8C4CEF3F1ADAC54B00F1E139 /* Neuron.h */,
-				8C4CEF401ADAC54B00F1E139 /* Neuron.m */,
-				8C4CEF341ADAC54B00F1E139 /* ActivationFunctionType.h */,
-				8C4CEF3B1ADAC54B00F1E139 /* NeuralNetworkException.h */,
-				8C4CEF3C1ADAC54B00F1E139 /* NeuralNetworkException.m */,
+				8CC9E4E11AE9887D002659EA /* Commons */,
+				8C1251CA1AE8D2FF00FA493E /* NeuralNets */,
+				8C1251E91AE8D48B00FA493E /* BagOfWords */,
 				8C4CEF1B1ADAC51200F1E139 /* Supporting Files */,
 			);
 			path = MAChineLearning;
@@ -144,9 +224,10 @@
 		8C4CEF271ADAC51200F1E139 /* MAChineLearningTests */ = {
 			isa = PBXGroup;
 			children = (
-				8C4CEF2A1ADAC51200F1E139 /* MAChineLearningTests.m */,
+				8C4CEF2A1ADAC51200F1E139 /* NeuralNetTests.m */,
+				8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */,
 				8C4E43A21AE56DCF005FD73D /* MAChineLearningTests-Bridging-Header.h */,
-				8C4E43A31AE56DCF005FD73D /* MAChineLearningSwiftTests.swift */,
+				8C4E43A31AE56DCF005FD73D /* NeuralNetSwiftTests.swift */,
 				8C4CEF281ADAC51200F1E139 /* Supporting Files */,
 			);
 			path = MAChineLearningTests;
@@ -160,6 +241,23 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		8C58A3151AECDAA3006AB74D /* StopWordsGen */ = {
+			isa = PBXGroup;
+			children = (
+				8C58A3161AECDAA3006AB74D /* main.m */,
+			);
+			path = StopWordsGen;
+			sourceTree = "<group>";
+		};
+		8CC9E4E11AE9887D002659EA /* Commons */ = {
+			isa = PBXGroup;
+			children = (
+				8CC9E4E21AE988AE002659EA /* Real.h */,
+				8CC9E4EA1AE990AA002659EA /* Constants.h */,
+			);
+			path = Commons;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -167,16 +265,25 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C4CEF511ADAC54B00F1E139 /* NeuralNetworkStatus.h in Headers */,
-				8C4CEF4D1ADAC54B00F1E139 /* NeuralNetworkException.h in Headers */,
-				8C4CEF4A1ADAC54B00F1E139 /* NeuralNetwork.h in Headers */,
-				8C4CEF501ADAC54B00F1E139 /* NeuralNetworkReal.h in Headers */,
-				8C4CEF441ADAC54B00F1E139 /* InputLayer.h in Headers */,
-				8C4CEF431ADAC54B00F1E139 /* ActivationFunctionType.h in Headers */,
-				8C4CEF471ADAC54B00F1E139 /* Layer.h in Headers */,
 				8C4CEF1E1ADAC51200F1E139 /* MAChineLearning.h in Headers */,
-				8C4CEF521ADAC54B00F1E139 /* Neuron.h in Headers */,
-				8C4CEF551ADAC54B00F1E139 /* NeuronLayer.h in Headers */,
+				8CC9E4E31AE988AE002659EA /* Real.h in Headers */,
+				8C58A30E1AECD275006AB74D /* TextFragment.h in Headers */,
+				8CC9E4EB1AE9981D002659EA /* Constants.h in Headers */,
+				8C1251DF1AE8D38E00FA493E /* NeuralNetwork.h in Headers */,
+				8C1251E41AE8D38E00FA493E /* NeuralNetworkStatus.h in Headers */,
+				8C1251DA1AE8D38E00FA493E /* ActivationFunctionType.h in Headers */,
+				8C1251DD1AE8D38E00FA493E /* Layer.h in Headers */,
+				8C1251DB1AE8D38E00FA493E /* InputLayer.h in Headers */,
+				8C1251E71AE8D38E00FA493E /* NeuronLayer.h in Headers */,
+				8C1251E51AE8D38E00FA493E /* Neuron.h in Headers */,
+				8C1251E11AE8D38E00FA493E /* NeuralNetworkException.h in Headers */,
+				8C1251EC1AE8D4BE00FA493E /* BagOfWords.h in Headers */,
+				8C94CC011AE91CEE00A0A328 /* WordExtractorType.h in Headers */,
+				8CC9E4DC1AE9843B002659EA /* WordExtractorOption.h in Headers */,
+				8C94CBFF1AE91C0800A0A328 /* FeatureNormalizationType.h in Headers */,
+				8CC9E4E61AE98DAE002659EA /* BagOfWordsException.h in Headers */,
+				8C58A31C1AECECC5006AB74D /* StopWords.h in Headers */,
+				8CC9E4DF1AE985F4002659EA /* NSString+WordUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,6 +326,23 @@
 			productReference = 8C4CEF231ADAC51200F1E139 /* MAChineLearningTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		8C58A3131AECDAA3006AB74D /* StopWordsGen */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C58A3181AECDAA3006AB74D /* Build configuration list for PBXNativeTarget "StopWordsGen" */;
+			buildPhases = (
+				8C58A3101AECDAA3006AB74D /* Sources */,
+				8C58A3111AECDAA3006AB74D /* Frameworks */,
+				8C58A3121AECDAA3006AB74D /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StopWordsGen;
+			productName = StopWordsGen;
+			productReference = 8C58A3141AECDAA3006AB74D /* StopWordsGen */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -226,13 +350,16 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0630;
-				ORGANIZATIONNAME = "Flying Dolphin Studio";
+				ORGANIZATIONNAME = "Gianluca Bertani";
 				TargetAttributes = {
 					8C4CEF171ADAC51200F1E139 = {
 						CreatedOnToolsVersion = 6.3;
 					};
 					8C4CEF221ADAC51200F1E139 = {
 						CreatedOnToolsVersion = 6.3;
+					};
+					8C58A3131AECDAA3006AB74D = {
+						CreatedOnToolsVersion = 6.3.1;
 					};
 				};
 			};
@@ -250,6 +377,7 @@
 			targets = (
 				8C4CEF171ADAC51200F1E139 /* MAChineLearning */,
 				8C4CEF221ADAC51200F1E139 /* MAChineLearningTests */,
+				8C58A3131AECDAA3006AB74D /* StopWordsGen */,
 			);
 		};
 /* End PBXProject section */
@@ -276,12 +404,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C4CEF451ADAC54B00F1E139 /* InputLayer.m in Sources */,
-				8C4CEF481ADAC54B00F1E139 /* Layer.m in Sources */,
-				8C4CEF531ADAC54B00F1E139 /* Neuron.m in Sources */,
-				8C4CEF4B1ADAC54B00F1E139 /* NeuralNetwork.m in Sources */,
-				8C4CEF561ADAC54B00F1E139 /* NeuronLayer.m in Sources */,
-				8C4CEF4E1ADAC54B00F1E139 /* NeuralNetworkException.m in Sources */,
+				8C1251DC1AE8D38E00FA493E /* InputLayer.m in Sources */,
+				8CC9E4E71AE98DAE002659EA /* BagOfWordsException.m in Sources */,
+				8C1251DE1AE8D38E00FA493E /* Layer.m in Sources */,
+				8C1251ED1AE8D4BE00FA493E /* BagOfWords.m in Sources */,
+				8C1251E61AE8D38E00FA493E /* Neuron.m in Sources */,
+				8C1251E01AE8D38E00FA493E /* NeuralNetwork.m in Sources */,
+				8C1251E81AE8D38E00FA493E /* NeuronLayer.m in Sources */,
+				8C1251E21AE8D38E00FA493E /* NeuralNetworkException.m in Sources */,
+				8C58A30F1AECD275006AB74D /* TextFragment.m in Sources */,
+				8CC9E4E01AE985F4002659EA /* NSString+WordUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,8 +421,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C4CEF2B1ADAC51200F1E139 /* MAChineLearningTests.m in Sources */,
-				8C4E43A41AE56DD0005FD73D /* MAChineLearningSwiftTests.swift in Sources */,
+				8C4CEF2B1ADAC51200F1E139 /* NeuralNetTests.m in Sources */,
+				8C58A31E1AED4DE8006AB74D /* BagOfWordsTests.m in Sources */,
+				8C4E43A41AE56DD0005FD73D /* NeuralNetSwiftTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C58A3101AECDAA3006AB74D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C58A3171AECDAA3006AB74D /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,7 +482,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -380,7 +521,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -459,6 +600,26 @@
 			};
 			name = Release;
 		};
+		8C58A3191AECDAA3006AB74D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		8C58A31A1AECDAA3006AB74D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -488,6 +649,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		8C58A3181AECDAA3006AB74D /* Build configuration list for PBXNativeTarget "StopWordsGen" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C58A3191AECDAA3006AB74D /* Debug */,
+				8C58A31A1AECDAA3006AB74D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

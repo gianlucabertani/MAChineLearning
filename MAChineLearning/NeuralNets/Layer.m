@@ -1,9 +1,9 @@
 //
-//  ActivationFunctionType.h
+//  Layer.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -31,16 +31,50 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_ActivationFunctionType_h
-#define MAChineLearning_ActivationFunctionType_h
+#import "Layer.h"
 
 
-typedef enum {
-	ActivationFunctionTypeLinear= 0,
-	ActivationFunctionTypeStep,
-	ActivationFunctionTypeLogistic,
-	ActivationFunctionTypeHyperbolic
-} ActivationFunctionType;
+#pragma mark -
+#pragma mark Layer extension
+
+@interface Layer () {	
+	Layer __weak *_previousLayer;
+	Layer __weak *_nextLayer;
+}
 
 
-#endif
+@end
+
+
+#pragma mark -
+#pragma mark Layer implementation
+
+@implementation Layer
+
+
+#pragma mark -
+#pragma mark Initialization
+
+- (id) initWithIndex:(int)index size:(int)size {
+	if ((self = [super init])) {
+		
+		// Initialization
+		_index= index;
+		_size= size;
+	}
+	
+	return self;
+}
+
+
+#pragma mark -
+#pragma mark Properties
+
+@synthesize index= _index;
+@synthesize size= _size;
+
+@synthesize previousLayer= _previousLayer;
+@synthesize nextLayer= _nextLayer;
+
+
+@end

@@ -1,9 +1,9 @@
 //
-//  Layer.m
+//  NeuralNetworkException.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Flying Dolphin Studio. All rights reserved.
+//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -31,50 +31,31 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "Layer.h"
+#import "NeuralNetworkException.h"
+
+#define NEURAL_NET_EXCEPTION_NAME          (@"NeuralNetworkException")
 
 
-#pragma mark -
-#pragma mark Layer extension
-
-@interface Layer () {	
-	Layer __weak *_previousLayer;
-	Layer __weak *_nextLayer;
-}
-
-
-@end
-
-
-#pragma mark -
-#pragma mark Layer implementation
-
-@implementation Layer
+@implementation NeuralNetworkException
 
 
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithIndex:(int)index size:(int)size {
-	if ((self = [super init])) {
++ (NeuralNetworkException *) neuralNetworkExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+	NeuralNetworkException *exception= [[NeuralNetworkException alloc] initWithReason:reason userInfo:userInfo];
+	
+	return exception;
+}
+
+- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+	if ((self = [super initWithName:NEURAL_NET_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
 		
-		// Initialization
-		_index= index;
-		_size= size;
+		// Nothing to do
 	}
 	
 	return self;
 }
-
-
-#pragma mark -
-#pragma mark Properties
-
-@synthesize index= _index;
-@synthesize size= _size;
-
-@synthesize previousLayer= _previousLayer;
-@synthesize nextLayer= _nextLayer;
 
 
 @end
