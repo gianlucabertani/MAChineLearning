@@ -109,6 +109,9 @@
 		8CC9E4E41AE98DAE002659EA /* BagOfWordsException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BagOfWordsException.h; sourceTree = "<group>"; };
 		8CC9E4E51AE98DAE002659EA /* BagOfWordsException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BagOfWordsException.m; sourceTree = "<group>"; };
 		8CC9E4EA1AE990AA002659EA /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		8CF961F91AF66C240071A995 /* NeuralNets.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = NeuralNets.md; sourceTree = "<group>"; };
+		8CF961FA1AF66FEE0071A995 /* BagOfWords.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BagOfWords.md; sourceTree = "<group>"; };
+		8CF961FC1AF690420071A995 /* Bag Of Words Norm Example.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Bag Of Words Norm Example.png"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,8 +186,11 @@
 				8C4CEF1A1ADAC51200F1E139 /* MAChineLearning */,
 				8C4CEF581ADACE4500F1E139 /* LICENSE */,
 				8C4CEF591ADACE4500F1E139 /* README.md */,
+				8CF961F91AF66C240071A995 /* NeuralNets.md */,
+				8CF961FA1AF66FEE0071A995 /* BagOfWords.md */,
 				8C4CEF5E1ADAED9300F1E139 /* 3-Input Perceptron.png */,
 				8C4CEF5F1ADAED9300F1E139 /* Network States.png */,
+				8CF961FC1AF690420071A995 /* Bag Of Words Norm Example.png */,
 				8C58A3151AECDAA3006AB74D /* StopWordsGen */,
 				8C4CEF271ADAC51200F1E139 /* MAChineLearningTests */,
 				8C4CEF191ADAC51200F1E139 /* Products */,
@@ -657,6 +663,7 @@
 				8C58A31A1AECDAA3006AB74D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
