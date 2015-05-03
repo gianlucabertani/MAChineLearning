@@ -43,6 +43,7 @@
 
 #define LEFT_TO_RIGHT_EMOTICON             (@"\\s[:=;B]-?[)(|\\/\\\\\\]\\[DOoPp]")
 #define RIGHT_TO_LEFT_EMOTICON             (@"\\s[)(|\\/\\\\\\]\\[DOo]-?[:=;]")
+#define EMOJI                              (@"[😀😁😂😃😄😅😆😇😊😉👿😈☺️😋😌😍😑😐😏😎😒😓😔😕😙😘😗😖😚😛😜😝😡😠😟😞😢😣😤😥😩😨😧😦😪😫😬😭😱😰😯😮😲😳😴😵😶😷]")
 
 #define GUESS_THRESHOLD_PERC              (10)
 
@@ -93,74 +94,60 @@ static NSDictionary *__stopWords= nil;
 #pragma mark -
 #pragma mark Initialization
 
-+ (BagOfWords *) bagOfWordsForClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType {
-	BagOfWords *bagOfWords= [[BagOfWords alloc] initWithText:text
-													  textID:textID
-												  dictionary:dictionary
-											  dictionarySize:size
-													language:languageCode
-											   wordExtractor:WordExtractorTypeLinguisticTagger
-											extractorOptions:WordExtractorOptionOmitStopWords | WordExtractorOptionOmitVerbs | WordExtractorOptionOmitAdjectives | WordExtractorOptionKeepAdjectiveNounCombos | WordExtractorOptionKeep2WordNames | WordExtractorOptionKeep3WordNames
-										featureNormalization:normalizationType
-												outputBuffer:nil];
-	
-	return bagOfWords;
++ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType {
+	return [BagOfWords bagOfWordsForTopicClassificationWithText:text
+														 textID:textID
+													 dictionary:dictionary
+												 dictionarySize:size
+													   language:languageCode
+										   featureNormalization:normalizationType
+												   outputBuffer:nil];
 }
 
-+ (BagOfWords *) bagOfWordsForClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
-	BagOfWords *bagOfWords= [[BagOfWords alloc] initWithText:text
-													  textID:textID
-												  dictionary:dictionary
-											  dictionarySize:size
-													language:languageCode
-											   wordExtractor:WordExtractorTypeLinguisticTagger
-											extractorOptions:WordExtractorOptionOmitStopWords | WordExtractorOptionOmitVerbs | WordExtractorOptionOmitAdjectives | WordExtractorOptionKeepAdjectiveNounCombos | WordExtractorOptionKeep2WordNames | WordExtractorOptionKeep3WordNames
-										featureNormalization:normalizationType
-												outputBuffer:outputBuffer];
-	
-	return bagOfWords;
++ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
+	return [BagOfWords bagOfWordsWithText:text
+								   textID:textID
+							   dictionary:dictionary
+						   dictionarySize:size
+								 language:languageCode
+							wordExtractor:WordExtractorTypeLinguisticTagger
+						 extractorOptions:WordExtractorOptionOmitStopWords | WordExtractorOptionOmitVerbs | WordExtractorOptionOmitAdjectives | WordExtractorOptionOmitAdverbs | WordExtractorOptionOmitNouns | WordExtractorOptionOmitOthers | WordExtractorOptionKeepAdjectiveNounCombos | WordExtractorOptionKeepAdverbNounCombos | WordExtractorOptionKeepNounNounCombos | WordExtractorOptionKeep2WordNames | WordExtractorOptionKeep3WordNames
+					 featureNormalization:normalizationType
+							 outputBuffer:outputBuffer];
 }
 
 + (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType {
-	BagOfWords *bagOfWords= [[BagOfWords alloc] initWithText:text
-													  textID:textID
-												  dictionary:dictionary
-											  dictionarySize:size
-													language:languageCode
-											   wordExtractor:WordExtractorTypeSimpleTokenizer
-											extractorOptions:WordExtractorOptionKeepEmoticons | WordExtractorOptionKeepAllBigrams
-										featureNormalization:normalizationType
-												outputBuffer:nil];
-	
-	return bagOfWords;
+	return [BagOfWords bagOfWordsForSentimentAnalysisWithText:text
+													   textID:textID
+												   dictionary:dictionary
+											   dictionarySize:size
+													 language:languageCode
+										 featureNormalization:normalizationType
+												 outputBuffer:nil];
 }
 
 + (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
-	BagOfWords *bagOfWords= [[BagOfWords alloc] initWithText:text
-													  textID:textID
-												  dictionary:dictionary
-											  dictionarySize:size
-													language:languageCode
-											   wordExtractor:WordExtractorTypeSimpleTokenizer
-											extractorOptions:WordExtractorOptionKeepEmoticons | WordExtractorOptionKeepAllBigrams | WordExtractorOptionKeepAllTrigrams
-										featureNormalization:normalizationType
-												outputBuffer:outputBuffer];
-	
-	return bagOfWords;
+	return [BagOfWords bagOfWordsWithText:text
+								   textID:textID
+							   dictionary:dictionary
+						   dictionarySize:size
+								 language:languageCode
+							wordExtractor:WordExtractorTypeSimpleTokenizer
+						 extractorOptions:WordExtractorOptionOmitStopWords | WordExtractorOptionKeepEmoticons | WordExtractorOptionKeepAllBigrams
+					 featureNormalization:normalizationType
+							 outputBuffer:outputBuffer];
 }
 
 + (BagOfWords *) bagOfWordsWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType {
-	BagOfWords *bagOfWords= [[BagOfWords alloc] initWithText:text
-													  textID:textID
-												  dictionary:dictionary
-											  dictionarySize:size
-													language:languageCode
-											   wordExtractor:extractorType
-											extractorOptions:extractorOptions
-										featureNormalization:normalizationType
-												outputBuffer:nil];
-	
-	return bagOfWords;
+	return [BagOfWords bagOfWordsWithText:text
+								   textID:textID
+							   dictionary:dictionary
+						   dictionarySize:size
+								 language:languageCode
+							wordExtractor:extractorType
+						 extractorOptions:extractorOptions
+					 featureNormalization:normalizationType
+							 outputBuffer:nil];
 }
 
 + (BagOfWords *) bagOfWordsWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
@@ -194,15 +181,22 @@ static NSDictionary *__stopWords= nil;
 			@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"Missing language code (language is needed to skip stopwords)"
 															 userInfo:nil];
 		
-		if (((extractorType & WordExtractorOptionOmitVerbs) |
+		if (((extractorOptions & WordExtractorOptionOmitVerbs) |
 			 (extractorOptions & WordExtractorOptionOmitAdjectives) |
+			 (extractorOptions & WordExtractorOptionOmitAdverbs) |
+			 (extractorOptions & WordExtractorOptionOmitNouns) |
+			 (extractorOptions & WordExtractorOptionOmitNames) |
+			 (extractorOptions & WordExtractorOptionOmitNumbers) |
+			 (extractorOptions & WordExtractorOptionOmitOthers) |
 			 (extractorOptions & WordExtractorOptionKeepAdjectiveNounCombos) |
+			 (extractorOptions & WordExtractorOptionKeepAdverbNounCombos) |
+			 (extractorOptions & WordExtractorOptionKeepNounNounCombos) |
 			 (extractorOptions & WordExtractorOptionKeepNounVerbCombos) |
 			 (extractorOptions & WordExtractorOptionKeepVerbAdjectiveCombos) |
 			 (extractorOptions & WordExtractorOptionKeep2WordNames) |
 			 (extractorOptions & WordExtractorOptionKeep3WordNames)) &&
 			(extractorType != WordExtractorTypeLinguisticTagger))
-			@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"Options on names, verbs adjectives and nouns require the linguistic tagger"
+			@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"Options on verbs, adjectives, adverbs, nouns and names require the linguistic tagger"
 															 userInfo:nil];
 		
 		// Initialization
@@ -268,7 +262,7 @@ static NSDictionary *__stopWords= nil;
 						break;
 
 					case FeatureNormalizationTypeBoolean:
-						_outputBuffer[[pos intValue]] = 1.0;
+						_outputBuffer[[pos intValue]]= 1.0;
 						break;
 				}
 			}
@@ -404,6 +398,7 @@ static NSDictionary *__stopWords= nil;
 	// Prepare containers and stopwords list
 	NSMutableArray *fragments= [NSMutableArray arrayWithCapacity:text.length / 5];
 	NSMutableArray *combinedFragments= [NSMutableArray arrayWithCapacity:text.length / 10];
+	NSMutableArray *fragmentsToBeOmitted= [NSMutableArray arrayWithCapacity:text.length / 10];
 	NSSet *stopWords= [__stopWords objectForKey:_languageCode];
 	
 	// Scan text with the linguistic tagger
@@ -415,37 +410,21 @@ static NSDictionary *__stopWords= nil;
 						  scheme:NSLinguisticTagSchemeLexicalClass
 						 options:NSLinguisticTaggerOmitPunctuation | NSLinguisticTaggerOmitWhitespace | NSLinguisticTaggerOmitOther
 					  usingBlock:^(NSString *tag, NSRange tokenRange, NSRange sentenceRange, BOOL *stop) {
-						  tokenIndex++;
-						  
 						  NSString *word= [text substringWithRange:tokenRange];
 						  
 						  // Clean up residual punctuation
 						  word= [word stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
-						  if (word.length == 0)
+						  if (word.length < 2)
 							  return;
+						  
+						  tokenIndex++;
 						  
 						  // Skip stopwords if requested
 						  if ((_extractorOptions & WordExtractorOptionOmitStopWords) &&
 							  [stopWords containsObject:[word lowercaseString]])
 							  return;
-						  
-						  // Skip verbs if requested
-						  if ((_extractorOptions & WordExtractorOptionOmitVerbs) &&
-							  (tag == NSLinguisticTagVerb))
-							  return;
-						  
-						  // Skip adjectives if requested
-						  if ((_extractorOptions & WordExtractorOptionOmitAdjectives) &&
-							  (tag == NSLinguisticTagAdjective))
-							  return;
-						  
-						  // Skip proper names if requested
-						  if ((_extractorOptions & WordExtractorOptionOmitNames) &&
-							  (tag == NSLinguisticTagNoun) &&
-							  ([word isCapitalizedString] || [word isNameInitial]))
-							  return;
-						  
-						  // Add the fragment
+
+						  // Create the fragment
 						  TextFragment *fragment= [[TextFragment alloc] initWithFrament:word
 																				  range:tokenRange
 																		  sentenceRange:sentenceRange
@@ -454,13 +433,74 @@ static NSDictionary *__stopWords= nil;
 						  
 						  [fragments addObject:fragment];
 						  
-						  // Check for 2-words combinations
-						  if (fragments.count > 1) {
+						  // Skip verbs if requested
+						  if ((_extractorOptions & WordExtractorOptionOmitVerbs) &&
+							  (tag == NSLinguisticTagVerb)) {
+
+							  // Store for later removal
+							  [fragmentsToBeOmitted addObject:fragment];
+						  }
 						  
-							  if (_extractorOptions & WordExtractorOptionKeepAllBigrams) {
-								  TextFragment *previousFragment= [fragments objectAtIndex:fragments.count -2];
-								  
-								  if ([fragment isContiguous:previousFragment]) {
+						  // Skip adjectives if requested
+						  if ((_extractorOptions & WordExtractorOptionOmitAdjectives) &&
+							  (tag == NSLinguisticTagAdjective)) {
+							  
+							  // Store for later removal
+							  [fragmentsToBeOmitted addObject:fragment];
+						  }
+						  
+						  // Skip adverbs if requested
+						  if ((_extractorOptions & WordExtractorOptionOmitAdverbs) &&
+							  (tag == NSLinguisticTagAdverb)) {
+							  
+							  // Store for later removal
+							  [fragmentsToBeOmitted addObject:fragment];
+						  }
+						  
+						  // Skip nouns if requested
+						  if ((_extractorOptions & WordExtractorOptionOmitNouns) &&
+							  (tag == NSLinguisticTagNoun) &&
+							  (!([word isCapitalizedString] || [word isNameInitial] || [word isAcronym]))) {
+							  
+							  // Store for later removal
+							  [fragmentsToBeOmitted addObject:fragment];
+						  }
+
+						  // Skip proper names if requested
+						  if ((_extractorOptions & WordExtractorOptionOmitNames) &&
+							  (tag == NSLinguisticTagNoun) &&
+							  ([word isCapitalizedString] || [word isNameInitial] || [word isAcronym])) {
+							  
+							  // Store for later removal
+							  [fragmentsToBeOmitted addObject:fragment];
+						  }
+						  
+						  // Skip numbers if requested
+						  if ((_extractorOptions & WordExtractorOptionOmitNumbers) &&
+							  (tag == NSLinguisticTagNumber)) {
+							  
+							  // Store for later removal
+							  [fragmentsToBeOmitted addObject:fragment];
+						  }
+						  
+						  // Skip others if requested
+						  if ((_extractorOptions & WordExtractorOptionOmitOthers) &&
+							  (tag != NSLinguisticTagVerb) &&
+							  (tag != NSLinguisticTagAdjective) &&
+							  (tag != NSLinguisticTagAdverb) &&
+							  (tag != NSLinguisticTagNumber) &&
+							  (tag != NSLinguisticTagNoun)) {
+							  
+							  // Store for later removal
+							  [fragmentsToBeOmitted addObject:fragment];
+						  }
+						  
+						  // Check for 2-words combinations for kept fragments
+						  if (fragments.count > 1) {
+							  TextFragment *previousFragment= [fragments objectAtIndex:fragments.count -2];
+							  
+							  if ([fragment isContiguous:previousFragment]) {
+								  if (_extractorOptions & WordExtractorOptionKeepAllBigrams) {
 									  
 									  // Form a bigram with the previous fragment
 									  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
@@ -476,16 +516,12 @@ static NSDictionary *__stopWords= nil;
 											  [combinedFragments addObject:combinedFragment2];
 										  }
 									  }
-								  }
-							  
-							  } else if ((_extractorOptions & WordExtractorOptionKeep2WordNames) &&
-										 (tag == NSLinguisticTagNoun) &&
-										 ([word isCapitalizedString] || [word isNameInitial])) {
-								  TextFragment *previousFragment= [fragments objectAtIndex:fragments.count -2];
-								  
-								  if ([fragment isContiguous:previousFragment] &&
-									  (previousFragment.linguisticTag == NSLinguisticTagNoun) &&
-									  ([previousFragment.fragment isCapitalizedString] || [previousFragment.fragment isNameInitial])) {
+									  
+								  } else if ((_extractorOptions & WordExtractorOptionKeep2WordNames) &&
+											 (tag == NSLinguisticTagNoun) &&
+											 ([word isCapitalizedString] || [word isNameInitial]) &&
+											 (previousFragment.linguisticTag == NSLinguisticTagNoun) &&
+											 ([previousFragment.fragment isCapitalizedString] || [previousFragment.fragment isNameInitial])) {
 									  
 									  // Form a 2-words name with the previous fragment
 									  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
@@ -503,42 +539,52 @@ static NSDictionary *__stopWords= nil;
 											  [combinedFragments addObject:combinedFragment2];
 										  }
 									  }
-								  }
-							  
-							  } else if ((_extractorOptions & WordExtractorOptionKeepNounVerbCombos) &&
-										 (tag == NSLinguisticTagVerb)) {
-								  TextFragment *previousFragment= [fragments objectAtIndex:fragments.count -2];
-								  
-								  if ([fragment isContiguous:previousFragment] &&
-									  (previousFragment.linguisticTag == NSLinguisticTagNoun)) {
 									  
-									  // Form a noun-verb combo with the previous fragment
-									  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
-									  [combinedFragments addObject:combinedFragment];
-								  }
-								  
-							  } else if ((_extractorOptions & WordExtractorOptionKeepVerbAdjectiveCombos) &&
-										 (tag == NSLinguisticTagAdjective)) {
-								  TextFragment *previousFragment= [fragments objectAtIndex:fragments.count -2];
-								  
-								  if ([fragment isContiguous:previousFragment] &&
-									  (previousFragment.linguisticTag == NSLinguisticTagVerb)) {
+								  } else {
+									  if ((_extractorOptions & WordExtractorOptionKeepNounVerbCombos) &&
+										  (tag == NSLinguisticTagVerb) &&
+										  (previousFragment.linguisticTag == NSLinguisticTagNoun)) {
+										  
+										  // Form a noun-verb combo with the previous fragment
+										  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+										  [combinedFragments addObject:combinedFragment];
+									  }
 									  
-									  // Form a verb-adjective combo with the previous fragment
-									  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
-									  [combinedFragments addObject:combinedFragment];
-								  }
-							  
-							  } else if ((_extractorOptions & WordExtractorOptionKeepAdjectiveNounCombos) &&
-										 (tag == NSLinguisticTagNoun)) {
-								  TextFragment *previousFragment= [fragments objectAtIndex:fragments.count -2];
-								  
-								  if ([fragment isContiguous:previousFragment] &&
-									  (previousFragment.linguisticTag == NSLinguisticTagAdjective)) {
+									  if ((_extractorOptions & WordExtractorOptionKeepVerbAdjectiveCombos) &&
+										  (tag == NSLinguisticTagAdjective) &&
+										  (previousFragment.linguisticTag == NSLinguisticTagVerb)) {
+										  
+										  // Form a verb-adjective combo with the previous fragment
+										  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+										  [combinedFragments addObject:combinedFragment];
+									  }
 									  
-									  // Form a adjective-noun combo with the previous fragment
-									  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
-									  [combinedFragments addObject:combinedFragment];
+									  if ((_extractorOptions & WordExtractorOptionKeepAdjectiveNounCombos) &&
+										  (tag == NSLinguisticTagNoun) &&
+										  (previousFragment.linguisticTag == NSLinguisticTagAdjective)) {
+										  
+										  // Form an adjective-noun combo with the previous fragment
+										  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+										  [combinedFragments addObject:combinedFragment];
+									  }
+									  
+									  if ((_extractorOptions & WordExtractorOptionKeepAdverbNounCombos) &&
+										  (tag == NSLinguisticTagNoun) &&
+										  (previousFragment.linguisticTag == NSLinguisticTagAdverb)) {
+										  
+										  // Form an adverb-noun combo with the previous fragment
+										  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+										  [combinedFragments addObject:combinedFragment];
+									  }
+									  
+									  if ((_extractorOptions & WordExtractorOptionKeepNounNounCombos) &&
+										  (tag == NSLinguisticTagNoun) &&
+										  (previousFragment.linguisticTag == NSLinguisticTagNoun)) {
+										  
+										  // Form a noun-noun combo with the previous fragment
+										  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+										  [combinedFragments addObject:combinedFragment];
+									  }
 								  }
 							  }
 						  }
@@ -546,6 +592,12 @@ static NSDictionary *__stopWords= nil;
 	
 	[fragments addObjectsFromArray:combinedFragments];
 	combinedFragments= nil;
+	
+	// Remove fragments to be omitted
+	for (TextFragment *fragment in fragmentsToBeOmitted)
+		[fragments removeObject:fragment];
+
+	fragmentsToBeOmitted= nil;
 	
 	// Sort fragments according to token index
 	[fragments sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
@@ -590,8 +642,6 @@ static NSDictionary *__stopWords= nil;
 		if (sep.location == NSNotFound)
 			sep.location= text.length;
 		
-		tokenIndex++;
-		
 		// Extract token
 		NSRange tokenRange= NSMakeRange(range.location, sep.location - range.location);
 		NSString *word= [text substringWithRange:tokenRange];
@@ -602,8 +652,10 @@ static NSDictionary *__stopWords= nil;
 		
 		// Clean up punctuation
 		word= [word stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
-		if (word.length == 0)
+		if (word.length < 2)
 			continue;
+		
+		tokenIndex++;
 		
 		// Skip stopwords if requested
 		if ((_extractorOptions & WordExtractorOptionOmitStopWords) &&
@@ -679,6 +731,12 @@ static NSDictionary *__stopWords= nil;
 	[matches addObjectsFromArray:[regex matchesInString:text options:0 range:NSMakeRange(0, [text length])]];
 	
 	regex= [NSRegularExpression regularExpressionWithPattern:RIGHT_TO_LEFT_EMOTICON
+													 options:0
+													   error:nil];
+	
+	[matches addObjectsFromArray:[regex matchesInString:text options:0 range:NSMakeRange(0, [text length])]];
+	
+	regex= [NSRegularExpression regularExpressionWithPattern:EMOJI
 													 options:0
 													   error:nil];
 	

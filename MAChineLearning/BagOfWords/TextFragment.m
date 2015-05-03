@@ -32,6 +32,7 @@
 //
 
 #import "TextFragment.h"
+#import "BagOfWordsException.h"
 
 
 #pragma -
@@ -111,6 +112,17 @@
 #pragma -
 #pragma NSObject overrides
 
+- (BOOL) isEqual:(id)object {
+	if (![object isKindOfClass:[TextFragment class]])
+		@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"Trying to compare a TextFragment with something else"
+														 userInfo:@{@"self": self,
+																	@"object": object}];
+	
+	TextFragment *fragment= (TextFragment *) object;
+	return ([_fragment isEqualToString:fragment.fragment] &&
+			(_range.location == fragment.range.location));
+}
+
 - (NSString *) description {
 	return [NSString stringWithFormat:@"<%.2f '%@' %lu:%lu>", _tokenIndex, _fragment, _range.location, _range.length];
 }
@@ -124,6 +136,12 @@
 @synthesize sentenceRange= _sentenceRange;
 @synthesize tokenIndex= _tokenIndex;
 @synthesize linguisticTag= _linguisticTag;
+
+@dynamic hash;
+
+- (NSUInteger) hash {
+	return (_fragment.hash + _range.location);
+}
 
 
 @end

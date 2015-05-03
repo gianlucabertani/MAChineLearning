@@ -46,8 +46,8 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (BagOfWords *) bagOfWordsForClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType;
-+ (BagOfWords *) bagOfWordsForClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
++ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType;
++ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
 
 + (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType;
 + (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;

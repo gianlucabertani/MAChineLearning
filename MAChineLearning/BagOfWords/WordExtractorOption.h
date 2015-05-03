@@ -38,22 +38,27 @@
 typedef enum {
 	WordExtractorOptionOmitStopWords= 1,
 
-	WordExtractorOptionKeepEmoticons= 1 << 1,
+	WordExtractorOptionOmitVerbs= 1 << 1,
+	WordExtractorOptionOmitAdjectives= 1 << 2,
+	WordExtractorOptionOmitAdverbs= 1 << 3,
+	WordExtractorOptionOmitNouns= 1 << 4,
+	WordExtractorOptionOmitNames= 1 << 5,
+	WordExtractorOptionOmitNumbers= 1 << 6,
+	WordExtractorOptionOmitOthers= 1 << 7,
 
-	WordExtractorOptionOmitVerbs= 1 << 4,
-	WordExtractorOptionOmitAdjectives= 1 << 5,
+	WordExtractorOptionKeepVerbAdjectiveCombos= 1 << 10,
+	WordExtractorOptionKeepAdjectiveNounCombos= 1 << 11,
+	WordExtractorOptionKeepAdverbNounCombos= 1 << 12,
+	WordExtractorOptionKeepNounNounCombos= 1 << 13,
+	WordExtractorOptionKeepNounVerbCombos= 1 << 14,
 
-	WordExtractorOptionKeepVerbAdjectiveCombos= 1 << 6,
-	WordExtractorOptionKeepAdjectiveNounCombos= 1 << 7,
-	WordExtractorOptionKeepNounVerbCombos= 1 << 8,
-
-	WordExtractorOptionOmitNames= 1 << 12,
-
-	WordExtractorOptionKeep2WordNames= 1 << 13,
-	WordExtractorOptionKeep3WordNames= 1 << 14,
+	WordExtractorOptionKeep2WordNames= 1 << 16,
+	WordExtractorOptionKeep3WordNames= 1 << 17,
 	
-	WordExtractorOptionKeepAllBigrams= 1 << 18,
-	WordExtractorOptionKeepAllTrigrams= 1 << 19,
+	WordExtractorOptionKeepAllBigrams= 1 << 20,
+	WordExtractorOptionKeepAllTrigrams= 1 << 21,
+	
+	WordExtractorOptionKeepEmoticons= 1 << 24,
 	
 } WordExtractorOption;
 

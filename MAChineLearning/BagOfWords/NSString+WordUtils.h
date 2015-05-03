@@ -44,6 +44,7 @@
 #pragma mark Capitalization checks
 
 - (BOOL) isCapitalizedString;
+- (BOOL) isAcronym;
 - (BOOL) isNameInitial;
 
 
