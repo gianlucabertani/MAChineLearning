@@ -196,7 +196,7 @@ Its bag of words vector could be the following (keeping stop words and adding so
 
 ![Bag Of Words Norm Example](Bag%20Of%20Words%20Norm%20Example.png)
 
-Normalization options is specified using enum `FeatureNormalizationType`.
+Normalization options are specified using enum `FeatureNormalizationType`.
 
 
 ## Examples
