@@ -33,20 +33,23 @@
 
 #import <Foundation/Foundation.h>
 
+#define MISSING_ARGUMENT                   (9)
+#define OK                                 (0)
+
 
 /**
  * This utility reads *.txt files from a path, specified as the only argument,
  * and producers a .h header file as output. The header file provides the
  * definition for an NSDictionary containing all the stopwords found in the txt
- * files.
+ * files. It is used to generated the stop words header file StopWords.h.
  *
- * Files are reading using the syntax followed by the Snowball project
+ * Files must be written using the syntax of stop words files of the Snowball project
  * at tartatus.org. See: http://svn.tartarus.org/snowball/trunk/website/algorithms/
  */
 int main(int argc, const char * argv[]) {
 	@autoreleasepool {
 		if (argc != 2)
-			return 9;
+			return MISSING_ARGUMENT;
 		
 		NSMutableDictionary *stopWords= [NSMutableDictionary dictionary];
 		
@@ -132,5 +135,5 @@ int main(int argc, const char * argv[]) {
 					   attributes:nil];
 	}
 
-	return 0;
+	return OK;
 }
