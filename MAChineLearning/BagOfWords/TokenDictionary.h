@@ -1,8 +1,8 @@
 //
-//  FeatureNormalizationType.h
+//  TokenDictionary.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 23/04/15.
+//  Created by Gianluca Bertani on 10/05/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,16 +31,64 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_FeatureNormalizationType_h
-#define MAChineLearning_FeatureNormalizationType_h
+#import <Foundation/Foundation.h>
+
+#import "Real.h"
 
 
 typedef enum {
-	FeatureNormalizationTypeNone= 0,
-	FeatureNormalizationTypeBoolean,
-	FeatureNormalizationTypeL2,
-	FeatureNormalizationTypeL2TFiDF
-} FeatureNormalizationType;
+	TokenFilterOutcomeDiscardToken= 0,
+	TokenFilterOutcomeKeepToken= 1
+} TokenFilterOutcome;
+
+@class TokenInfo;
+
+typedef TokenFilterOutcome (^TokenFilter)(NSString *token, TokenInfo *tokenInfo);
 
 
-#endif
+@interface TokenDictionary : NSObject
+
+
+#pragma mark -
+#pragma mark Initialization
+
++ (TokenDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize;
+
+- (id) initWithMaxSize:(NSUInteger)maxSize;
+
+
+#pragma mark -
+#pragma mark Dictionary access and building
+
+- (TokenInfo *) infoForToken:(NSString *)token;
+- (TokenInfo *) addOccurrenceForToken:(NSString *)token textID:(NSString *)textID;
+
+
+#pragma mark -
+#pragma mark Dictionary filtering
+
+- (void) discardTokensWithOccurrenciesLessThan:(NSUInteger)minOccurrencies;
+- (void) discardTokensWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies;
+
+- (void) applyFilter:(TokenFilter)filter;
+
+- (void) compact;
+
+
+#pragma mark -
+#pragma mark Inverse document frequency
+
+- (void) computeIDFWeights;
+
+
+#pragma mark -
+#pragma mark Properties
+
+@property (nonatomic, readonly) NSUInteger size;
+@property (nonatomic, readonly) NSUInteger maxSize;
+
+@property (nonatomic, readonly) NSUInteger totalDocuments;
+@property (nonatomic, readonly) REAL *idfWeights;
+
+
+@end

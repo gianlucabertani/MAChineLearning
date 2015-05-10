@@ -151,14 +151,13 @@
 
 - (void) testBagOfWordsForSentimentAnalysisWithSimpleTokenizer {
 	@try {
-		NSMutableDictionary *dictionary= [NSMutableDictionary dictionary];
+		TokenDictionary *dictionary= [TokenDictionary dictionaryWithMaxSize:300];
 		
 		// Bag of words for sentiment analysis uses the (quick) simple tokenizer,
 		// removing stop words but keeping emoticon and all bigrams
 		BagOfWords *bag= [BagOfWords bagOfWordsForSentimentAnalysisWithText:MOVIE_REVIEW
 																	 textID:@"review1"
 																 dictionary:dictionary
-															 dictionarySize:300
 																   language:@"en"
 													   featureNormalization:FeatureNormalizationTypeNone];
 		
@@ -196,12 +195,12 @@
 		XCTAssertFalse([bag.tokens containsObject:@"very"]);
 		XCTAssertFalse([bag.tokens containsObject:@"most"]);
 		
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"marginal"] intValue]], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@":)"] intValue]], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"mediocre"] intValue]], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"big"] intValue]], 2.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"boring"] intValue]], 2.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"right"] intValue]], 2.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"marginal"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@":)"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"mediocre"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"big"].position], 2.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"boring"].position], 2.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"right"].position], 2.0);
 
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
@@ -210,18 +209,19 @@
 
 - (void) testBagOfWordsForSentimentAnalysisWithLinguisticTagger {
 	@try {
-		NSMutableDictionary *dictionary= [NSMutableDictionary dictionary];
+		TokenDictionary *dictionary= [TokenDictionary dictionaryWithMaxSize:300];
 		
 		// Bag of words for sentiment analysis using the (slow) linguistic tagger,
 		// with same configuration of default sentiment analysis
 		BagOfWords *bag= [BagOfWords bagOfWordsWithText:MOVIE_REVIEW
 												 textID:@"review1"
 											 dictionary:dictionary
-										 dictionarySize:300
+										buildDictionary:YES
 											   language:@"en"
 										  wordExtractor:WordExtractorTypeLinguisticTagger
 									   extractorOptions:WordExtractorOptionOmitStopWords | WordExtractorOptionKeepAllBigrams | WordExtractorOptionKeepEmoticons
-								   featureNormalization:FeatureNormalizationTypeNone];
+								   featureNormalization:FeatureNormalizationTypeNone
+						    			   outputBuffer:nil];
 		
 		XCTAssertTrue([[bag.tokens firstObject] isEqualToString:@"think"]);
 		XCTAssertTrue([bag.tokens containsObject:@"something marginal"]);
@@ -257,12 +257,12 @@
 		XCTAssertFalse([bag.tokens containsObject:@"very"]);
 		XCTAssertFalse([bag.tokens containsObject:@"most"]);
 		
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"marginal"] intValue]], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@":)"] intValue]], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"mediocre"] intValue]], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"big"] intValue]], 2.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"boring"] intValue]], 2.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"right"] intValue]], 2.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"marginal"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@":)"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"mediocre"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"big"].position], 2.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"boring"].position], 2.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"right"].position], 2.0);
 		
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
@@ -271,14 +271,13 @@
 
 - (void) testBagOfWordsForTopicClassification {
 	@try {
-		NSMutableDictionary *dictionary= [NSMutableDictionary dictionary];
+		TokenDictionary *dictionary= [TokenDictionary dictionaryWithMaxSize:100];
 		
 		// Bag of words for topic classification uses the (slow) linguistic tagger, removing
 		// stop words, verbs and adjectives, but keeping composite nouns and names
 		BagOfWords *bag= [BagOfWords bagOfWordsForTopicClassificationWithText:ARTICLE_EXTRACT
 																	   textID:@"article1"
 																   dictionary:dictionary
-															   dictionarySize:100
 																	 language:@"en"
 														 featureNormalization:FeatureNormalizationTypeNone];
 		
@@ -310,12 +309,12 @@
 		XCTAssertFalse([bag.tokens containsObject:@"very"]);
 		XCTAssertFalse([bag.tokens containsObject:@"most"]);
 		
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"alan turing"] intValue]], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"georgetown"] intValue]], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"machine translation"] intValue]], 4.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"eliza"] intValue]], 3.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"human thought"] intValue]], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[[dictionary objectForKey:@"joseph weizenbaum"] intValue]], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"alan turing"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"georgetown"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"machine translation"].position], 4.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"eliza"].position], 3.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"human thought"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"joseph weizenbaum"].position], 1.0);
 		
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);

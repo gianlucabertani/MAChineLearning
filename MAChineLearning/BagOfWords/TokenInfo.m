@@ -1,8 +1,8 @@
 //
-//  FeatureNormalizationType.h
+//  TokenInfo.m
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 23/04/15.
+//  Created by Gianluca Bertani on 10/05/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,16 +31,89 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_FeatureNormalizationType_h
-#define MAChineLearning_FeatureNormalizationType_h
+#import "TokenInfo.h"
 
 
-typedef enum {
-	FeatureNormalizationTypeNone= 0,
-	FeatureNormalizationTypeBoolean,
-	FeatureNormalizationTypeL2,
-	FeatureNormalizationTypeL2TFiDF
-} FeatureNormalizationType;
+#pragma -
+#pragma TokenInfo extension
+
+@interface TokenInfo () {
+	NSUInteger _position;
+	NSUInteger _totalOccurrencies;
+	NSUInteger _documentOccurrencies;
+	
+	NSMutableSet *_documents;
+}
 
 
-#endif
+#pragma -
+#pragma Internal properties
+
+@property (nonatomic, readonly) NSSet *documents;
+
+
+@end
+
+
+#pragma -
+#pragma TokenInfo extension
+
+@implementation TokenInfo
+
+
+#pragma -
+#pragma Initialization
+
+- (id) initWithTokenInfo:(TokenInfo *)tokenInfo newPosition:(NSUInteger)newPosition {
+	if ((self = [super init])) {
+		
+		// Initialization
+		_position= newPosition;
+		_totalOccurrencies= tokenInfo.totalOccurrencies;
+		_documentOccurrencies= tokenInfo.documentOccurrencies;
+		
+		_documents= [[NSMutableSet alloc] initWithSet:tokenInfo.documents];
+	}
+	
+	return self;
+}
+
+- (id) initWithPosition:(NSUInteger)position {
+	if ((self = [super init])) {
+		
+		// Initialization
+		_position= position;
+		_totalOccurrencies= 0;
+		_documentOccurrencies= 0;
+		
+		_documents= [[NSMutableSet alloc] init];
+	}
+	
+	return self;
+}
+
+
+#pragma -
+#pragma Occurrencies counting
+
+- (void) addOccurrenceForTextID:(NSString *)textID {
+	_totalOccurrencies++;
+	
+	if (textID && (![_documents containsObject:textID])) {
+		[_documents addObject:textID];
+		_documentOccurrencies++;
+	}
+}
+
+
+#pragma -
+#pragma Properties
+
+@synthesize position= _position;
+@synthesize totalOccurrencies= _totalOccurrencies;
+@synthesize documentOccurrencies= _documentOccurrencies;
+
+@synthesize documents= _documents;
+
+
+@end

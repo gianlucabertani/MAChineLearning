@@ -1,8 +1,8 @@
 //
-//  FeatureNormalizationType.h
+//  TokenInfo.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 23/04/15.
+//  Created by Gianluca Bertani on 10/05/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,16 +31,31 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_FeatureNormalizationType_h
-#define MAChineLearning_FeatureNormalizationType_h
+#import <Foundation/Foundation.h>
 
 
-typedef enum {
-	FeatureNormalizationTypeNone= 0,
-	FeatureNormalizationTypeBoolean,
-	FeatureNormalizationTypeL2,
-	FeatureNormalizationTypeL2TFiDF
-} FeatureNormalizationType;
+@interface TokenInfo : NSObject
 
 
-#endif
+#pragma -
+#pragma Initialization
+
+- (id) initWithTokenInfo:(TokenInfo *)tokenInfo newPosition:(NSUInteger)newPosition;
+- (id) initWithPosition:(NSUInteger)position;
+
+
+#pragma -
+#pragma Occurrencies counting
+
+- (void) addOccurrenceForTextID:(NSString *)textID;
+
+
+#pragma -
+#pragma Properties
+
+@property (nonatomic, readonly) NSUInteger position;
+@property (nonatomic, readonly) NSUInteger totalOccurrencies;
+@property (nonatomic, readonly) NSUInteger documentOccurrencies;
+
+
+@end

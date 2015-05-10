@@ -40,26 +40,31 @@
 #import "FeatureNormalizationType.h"
 
 
+@class TokenDictionary;
+
 @interface BagOfWords : NSObject
 
 
 #pragma mark -
 #pragma mark Initialization
 
-+ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType;
-+ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
++ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType;
 
-+ (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType;
-+ (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
++ (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType;
 
-+ (BagOfWords *) bagOfWordsWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType;
-+ (BagOfWords *) bagOfWordsWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
++ (BagOfWords *) bagOfWordsWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
 
-- (id) initWithText:(NSString *)text textID:(NSString *)textID dictionary:(NSMutableDictionary *)dictionary dictionarySize:(NSUInteger)size language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
+- (id) initWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
 
 
 #pragma mark -
-#pragma mark Languages ISO 6391 code guessing
+#pragma mark Dictionary building
+
++ (void) buildDictionaryWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions;
+
+
+#pragma mark -
+#pragma mark Languages guessing
 
 + (NSString *) guessLanguageCodeWithLinguisticTagger:(NSString *)text;
 + (NSString *) guessLanguageCodeWithStopWords:(NSString *)text;
@@ -69,15 +74,13 @@
 #pragma mark Properties
 
 @property (nonatomic, readonly) NSString *textID;
-
-@property (nonatomic, readonly) NSMutableDictionary *dictionary;
-@property (nonatomic, readonly) NSUInteger dictionarySize;
 @property (nonatomic, readonly) NSString *languageCode;
 
 @property (nonatomic, readonly) WordExtractorType extractorType;
 @property (nonatomic, readonly) WordExtractorOption extractorOptions;
 @property (nonatomic, readonly) FeatureNormalizationType featureNormalization;
 
+@property (nonatomic, readonly) NSUInteger dictionarySize;
 @property (nonatomic, readonly) NSArray *tokens;
 @property (nonatomic, readonly) REAL *outputBuffer;
 
