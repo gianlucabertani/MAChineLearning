@@ -34,6 +34,7 @@
 		8C58A31E1AED4DE8006AB74D /* BagOfWordsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */; };
 		8C94CBFF1AE91C0800A0A328 /* FeatureNormalizationType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C94CBFE1AE91C0800A0A328 /* FeatureNormalizationType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C94CC011AE91CEE00A0A328 /* WordExtractorType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C94CC001AE91CEE00A0A328 /* WordExtractorType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CA8CE8C1AF75074006D5351 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CA8CE8B1AF75074006D5351 /* main.m */; };
 		8CC9E4DC1AE9843B002659EA /* WordExtractorOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4DB1AE9843B002659EA /* WordExtractorOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC9E4DF1AE985F4002659EA /* NSString+WordUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4DD1AE985F4002659EA /* NSString+WordUtils.h */; };
 		8CC9E4E01AE985F4002659EA /* NSString+WordUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC9E4DE1AE985F4002659EA /* NSString+WordUtils.m */; };
@@ -41,6 +42,15 @@
 		8CC9E4E61AE98DAE002659EA /* BagOfWordsException.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4E41AE98DAE002659EA /* BagOfWordsException.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC9E4E71AE98DAE002659EA /* BagOfWordsException.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC9E4E51AE98DAE002659EA /* BagOfWordsException.m */; };
 		8CC9E4EB1AE9981D002659EA /* Constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4EA1AE990AA002659EA /* Constants.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CE464601AF8A376002A11DD /* MAChineLearning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */; };
+		8CF8D52E1AFF3CD8008FA0AC /* LineReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D52C1AFF3CD8008FA0AC /* LineReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CF8D52F1AFF3CD8008FA0AC /* LineReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D52D1AFF3CD8008FA0AC /* LineReader.m */; };
+		8CF8D5321AFF3E76008FA0AC /* LineWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D5301AFF3E76008FA0AC /* LineWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CF8D5331AFF3E76008FA0AC /* LineWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D5311AFF3E76008FA0AC /* LineWriter.m */; };
+		8CF8D54E1AFF6CE0008FA0AC /* TokenInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D54C1AFF6CE0008FA0AC /* TokenInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CF8D54F1AFF6CE0008FA0AC /* TokenInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D54D1AFF6CE0008FA0AC /* TokenInfo.m */; };
+		8CF8D5521AFF732F008FA0AC /* TokenDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D5501AFF732F008FA0AC /* TokenDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CF8D5531AFF732F008FA0AC /* TokenDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D5511AFF732F008FA0AC /* TokenDictionary.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +65,15 @@
 
 /* Begin PBXCopyFilesBuildPhase section */
 		8C58A3121AECDAA3006AB74D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		8CA8CE871AF75074006D5351 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -102,6 +121,8 @@
 		8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BagOfWordsTests.m; sourceTree = "<group>"; };
 		8C94CBFE1AE91C0800A0A328 /* FeatureNormalizationType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureNormalizationType.h; sourceTree = "<group>"; };
 		8C94CC001AE91CEE00A0A328 /* WordExtractorType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordExtractorType.h; sourceTree = "<group>"; };
+		8CA8CE891AF75074006D5351 /* Word2vec */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Word2vec; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CA8CE8B1AF75074006D5351 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8CC9E4DB1AE9843B002659EA /* WordExtractorOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordExtractorOption.h; sourceTree = "<group>"; };
 		8CC9E4DD1AE985F4002659EA /* NSString+WordUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+WordUtils.h"; sourceTree = "<group>"; };
 		8CC9E4DE1AE985F4002659EA /* NSString+WordUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+WordUtils.m"; sourceTree = "<group>"; };
@@ -109,6 +130,14 @@
 		8CC9E4E41AE98DAE002659EA /* BagOfWordsException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BagOfWordsException.h; sourceTree = "<group>"; };
 		8CC9E4E51AE98DAE002659EA /* BagOfWordsException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BagOfWordsException.m; sourceTree = "<group>"; };
 		8CC9E4EA1AE990AA002659EA /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		8CF8D52C1AFF3CD8008FA0AC /* LineReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LineReader.h; sourceTree = "<group>"; };
+		8CF8D52D1AFF3CD8008FA0AC /* LineReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LineReader.m; sourceTree = "<group>"; };
+		8CF8D5301AFF3E76008FA0AC /* LineWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LineWriter.h; sourceTree = "<group>"; };
+		8CF8D5311AFF3E76008FA0AC /* LineWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LineWriter.m; sourceTree = "<group>"; };
+		8CF8D54C1AFF6CE0008FA0AC /* TokenInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenInfo.h; sourceTree = "<group>"; };
+		8CF8D54D1AFF6CE0008FA0AC /* TokenInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenInfo.m; sourceTree = "<group>"; };
+		8CF8D5501AFF732F008FA0AC /* TokenDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenDictionary.h; sourceTree = "<group>"; };
+		8CF8D5511AFF732F008FA0AC /* TokenDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenDictionary.m; sourceTree = "<group>"; };
 		8CF961F91AF66C240071A995 /* NeuralNets.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = NeuralNets.md; sourceTree = "<group>"; };
 		8CF961FA1AF66FEE0071A995 /* BagOfWords.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BagOfWords.md; sourceTree = "<group>"; };
 		8CF961FC1AF690420071A995 /* Bag Of Words Norm Example.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Bag Of Words Norm Example.png"; sourceTree = SOURCE_ROOT; };
@@ -134,6 +163,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CA8CE861AF75074006D5351 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CE464601AF8A376002A11DD /* MAChineLearning.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,6 +206,10 @@
 				8C94CC001AE91CEE00A0A328 /* WordExtractorType.h */,
 				8CC9E4DB1AE9843B002659EA /* WordExtractorOption.h */,
 				8C94CBFE1AE91C0800A0A328 /* FeatureNormalizationType.h */,
+				8CF8D5501AFF732F008FA0AC /* TokenDictionary.h */,
+				8CF8D5511AFF732F008FA0AC /* TokenDictionary.m */,
+				8CF8D54C1AFF6CE0008FA0AC /* TokenInfo.h */,
+				8CF8D54D1AFF6CE0008FA0AC /* TokenInfo.m */,
 				8C58A30C1AECD275006AB74D /* TextFragment.h */,
 				8C58A30D1AECD275006AB74D /* TextFragment.m */,
 				8C58A31B1AECDF9D006AB74D /* StopWords.h */,
@@ -184,6 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				8C4CEF1A1ADAC51200F1E139 /* MAChineLearning */,
+				8CA8CE8A1AF75074006D5351 /* Word2vec */,
 				8C4CEF581ADACE4500F1E139 /* LICENSE */,
 				8C4CEF591ADACE4500F1E139 /* README.md */,
 				8CF961F91AF66C240071A995 /* NeuralNets.md */,
@@ -191,8 +233,8 @@
 				8C4CEF5E1ADAED9300F1E139 /* 3-Input Perceptron.png */,
 				8C4CEF5F1ADAED9300F1E139 /* Network States.png */,
 				8CF961FC1AF690420071A995 /* Bag Of Words Norm Example.png */,
-				8C58A3151AECDAA3006AB74D /* StopWordsGen */,
 				8C4CEF271ADAC51200F1E139 /* MAChineLearningTests */,
+				8C58A3151AECDAA3006AB74D /* StopWordsGen */,
 				8C4CEF191ADAC51200F1E139 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -203,6 +245,7 @@
 				8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */,
 				8C4CEF231ADAC51200F1E139 /* MAChineLearningTests.xctest */,
 				8C58A3141AECDAA3006AB74D /* StopWordsGen */,
+				8CA8CE891AF75074006D5351 /* Word2vec */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -214,6 +257,7 @@
 				8CC9E4E11AE9887D002659EA /* Commons */,
 				8C1251CA1AE8D2FF00FA493E /* NeuralNets */,
 				8C1251E91AE8D48B00FA493E /* BagOfWords */,
+				8CF8D52B1AFF3C9B008FA0AC /* Utils */,
 				8C4CEF1B1ADAC51200F1E139 /* Supporting Files */,
 			);
 			path = MAChineLearning;
@@ -255,6 +299,14 @@
 			path = StopWordsGen;
 			sourceTree = "<group>";
 		};
+		8CA8CE8A1AF75074006D5351 /* Word2vec */ = {
+			isa = PBXGroup;
+			children = (
+				8CA8CE8B1AF75074006D5351 /* main.m */,
+			);
+			path = Word2vec;
+			sourceTree = "<group>";
+		};
 		8CC9E4E11AE9887D002659EA /* Commons */ = {
 			isa = PBXGroup;
 			children = (
@@ -262,6 +314,17 @@
 				8CC9E4EA1AE990AA002659EA /* Constants.h */,
 			);
 			path = Commons;
+			sourceTree = "<group>";
+		};
+		8CF8D52B1AFF3C9B008FA0AC /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				8CF8D52C1AFF3CD8008FA0AC /* LineReader.h */,
+				8CF8D52D1AFF3CD8008FA0AC /* LineReader.m */,
+				8CF8D5301AFF3E76008FA0AC /* LineWriter.h */,
+				8CF8D5311AFF3E76008FA0AC /* LineWriter.m */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -281,11 +344,15 @@
 				8C1251DD1AE8D38E00FA493E /* Layer.h in Headers */,
 				8C1251DB1AE8D38E00FA493E /* InputLayer.h in Headers */,
 				8C1251E71AE8D38E00FA493E /* NeuronLayer.h in Headers */,
+				8CF8D5521AFF732F008FA0AC /* TokenDictionary.h in Headers */,
 				8C1251E51AE8D38E00FA493E /* Neuron.h in Headers */,
+				8CF8D54E1AFF6CE0008FA0AC /* TokenInfo.h in Headers */,
 				8C1251E11AE8D38E00FA493E /* NeuralNetworkException.h in Headers */,
 				8C1251EC1AE8D4BE00FA493E /* BagOfWords.h in Headers */,
 				8C94CC011AE91CEE00A0A328 /* WordExtractorType.h in Headers */,
+				8CF8D5321AFF3E76008FA0AC /* LineWriter.h in Headers */,
 				8CC9E4DC1AE9843B002659EA /* WordExtractorOption.h in Headers */,
+				8CF8D52E1AFF3CD8008FA0AC /* LineReader.h in Headers */,
 				8C94CBFF1AE91C0800A0A328 /* FeatureNormalizationType.h in Headers */,
 				8CC9E4E61AE98DAE002659EA /* BagOfWordsException.h in Headers */,
 				8C58A31C1AECECC5006AB74D /* StopWords.h in Headers */,
@@ -349,6 +416,23 @@
 			productReference = 8C58A3141AECDAA3006AB74D /* StopWordsGen */;
 			productType = "com.apple.product-type.tool";
 		};
+		8CA8CE881AF75074006D5351 /* Word2vec */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8CA8CE8D1AF75074006D5351 /* Build configuration list for PBXNativeTarget "Word2vec" */;
+			buildPhases = (
+				8CA8CE851AF75074006D5351 /* Sources */,
+				8CA8CE861AF75074006D5351 /* Frameworks */,
+				8CA8CE871AF75074006D5351 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Word2vec;
+			productName = Word2vec;
+			productReference = 8CA8CE891AF75074006D5351 /* Word2vec */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -367,6 +451,9 @@
 					8C58A3131AECDAA3006AB74D = {
 						CreatedOnToolsVersion = 6.3.1;
 					};
+					8CA8CE881AF75074006D5351 = {
+						CreatedOnToolsVersion = 6.3.1;
+					};
 				};
 			};
 			buildConfigurationList = 8C4CEF121ADAC51200F1E139 /* Build configuration list for PBXProject "MAChineLearning" */;
@@ -382,6 +469,7 @@
 			projectRoot = "";
 			targets = (
 				8C4CEF171ADAC51200F1E139 /* MAChineLearning */,
+				8CA8CE881AF75074006D5351 /* Word2vec */,
 				8C4CEF221ADAC51200F1E139 /* MAChineLearningTests */,
 				8C58A3131AECDAA3006AB74D /* StopWordsGen */,
 			);
@@ -414,11 +502,15 @@
 				8CC9E4E71AE98DAE002659EA /* BagOfWordsException.m in Sources */,
 				8C1251DE1AE8D38E00FA493E /* Layer.m in Sources */,
 				8C1251ED1AE8D4BE00FA493E /* BagOfWords.m in Sources */,
+				8CF8D5331AFF3E76008FA0AC /* LineWriter.m in Sources */,
 				8C1251E61AE8D38E00FA493E /* Neuron.m in Sources */,
 				8C1251E01AE8D38E00FA493E /* NeuralNetwork.m in Sources */,
+				8CF8D5531AFF732F008FA0AC /* TokenDictionary.m in Sources */,
 				8C1251E81AE8D38E00FA493E /* NeuronLayer.m in Sources */,
 				8C1251E21AE8D38E00FA493E /* NeuralNetworkException.m in Sources */,
 				8C58A30F1AECD275006AB74D /* TextFragment.m in Sources */,
+				8CF8D52F1AFF3CD8008FA0AC /* LineReader.m in Sources */,
+				8CF8D54F1AFF6CE0008FA0AC /* TokenInfo.m in Sources */,
 				8CC9E4E01AE985F4002659EA /* NSString+WordUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -438,6 +530,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C58A3171AECDAA3006AB74D /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CA8CE851AF75074006D5351 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CA8CE8C1AF75074006D5351 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -626,6 +726,26 @@
 			};
 			name = Release;
 		};
+		8CA8CE8E1AF75074006D5351 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		8CA8CE8F1AF75074006D5351 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -661,6 +781,15 @@
 			buildConfigurations = (
 				8C58A3191AECDAA3006AB74D /* Debug */,
 				8C58A31A1AECDAA3006AB74D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8CA8CE8D1AF75074006D5351 /* Build configuration list for PBXNativeTarget "Word2vec" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8CA8CE8E1AF75074006D5351 /* Debug */,
+				8CA8CE8F1AF75074006D5351 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
