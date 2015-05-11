@@ -48,19 +48,48 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType;
++ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text
+												   textID:(NSString *)textID
+											   dictionary:(TokenDictionary *)dictionary
+												 language:(NSString *)languageCode
+									 featureNormalization:(FeatureNormalizationType)normalizationType;
 
-+ (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType;
++ (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text
+												 textID:(NSString *)textID
+											 dictionary:(TokenDictionary *)dictionary
+											   language:(NSString *)languageCode
+								   featureNormalization:(FeatureNormalizationType)normalizationType;
 
-+ (BagOfWords *) bagOfWordsWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
++ (BagOfWords *) bagOfWordsWithText:(NSString *)text
+							 textID:(NSString *)textID
+						 dictionary:(TokenDictionary *)dictionary
+					buildDictionary:(BOOL)buildDictionary
+						   language:(NSString *)languageCode
+					  wordExtractor:(WordExtractorType)extractorType
+				   extractorOptions:(WordExtractorOption)extractorOptions
+			   featureNormalization:(FeatureNormalizationType)normalizationType
+					   outputBuffer:(REAL *)outputBuffer;
+
++ (BagOfWords *) bagOfWordsWithTokens:(NSArray *)tokens
+							   textID:(NSString *)textID
+						   dictionary:(TokenDictionary *)dictionary
+					  buildDictionary:(BOOL)buildDictionary
+			   featureNormalization:(FeatureNormalizationType)normalizationType
+					   outputBuffer:(REAL *)outputBuffer;
 
 - (id) initWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
+- (id) initWithTokens:(NSArray *)tokens textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
 
 
 #pragma mark -
 #pragma mark Dictionary building
 
-+ (void) buildDictionaryWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions;
++ (void) buildDictionaryWithText:(NSString *)text
+						  textID:(NSString *)textID
+					  dictionary:(TokenDictionary *)dictionary
+						language:(NSString *)languageCode
+				   wordExtractor:(WordExtractorType)extractorType
+				extractorOptions:(WordExtractorOption)extractorOptions;
 
 
 #pragma mark -
@@ -71,17 +100,19 @@
 
 
 #pragma mark -
+#pragma mark Token extractors
+
++ (NSArray *) extractTokensWithLinguisticTagger:(NSString *)text language:(NSString *)languageCode extractorOptions:(WordExtractorOption)extractorOptions;
++ (NSArray *) extractTokensWithSimpleTokenizer:(NSString *)text language:(NSString *)languageCode extractorOptions:(WordExtractorOption)extractorOptions;
+
+
+#pragma mark -
 #pragma mark Properties
 
 @property (nonatomic, readonly) NSString *textID;
-@property (nonatomic, readonly) NSString *languageCode;
-
-@property (nonatomic, readonly) WordExtractorType extractorType;
-@property (nonatomic, readonly) WordExtractorOption extractorOptions;
-@property (nonatomic, readonly) FeatureNormalizationType featureNormalization;
-
-@property (nonatomic, readonly) NSUInteger dictionarySize;
 @property (nonatomic, readonly) NSArray *tokens;
+
+@property (nonatomic, readonly) NSUInteger outputSize;
 @property (nonatomic, readonly) REAL *outputBuffer;
 
 

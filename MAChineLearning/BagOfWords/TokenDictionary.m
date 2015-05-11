@@ -47,6 +47,7 @@
 	NSMutableDictionary *_dictionary;
 	NSUInteger _maxSize;
 	
+	NSUInteger _totalTokens;
 	NSUInteger _totalDocuments;
 	REAL *_idfWeights;
 	
@@ -77,6 +78,7 @@
 		_dictionary= [[NSMutableDictionary alloc] initWithCapacity:maxSize];
 		_maxSize= maxSize;
 		
+		_totalTokens= 0;
 		_totalDocuments= 0;
 		_idfWeights= NULL;
 		
@@ -118,6 +120,8 @@
 		[_documents addObject:textID];
 		_totalDocuments++;
 	}
+	
+	_totalTokens++;
 	
 	return tokenInfo;
 }
@@ -184,14 +188,14 @@
 	
 	int err= posix_memalign((void **) &_idfWeights,
 							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(REAL) * _maxSize);
+							sizeof(REAL) * _dictionary.count);
 	if (err)
 		@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"Error while allocating buffer"
 														 userInfo:@{@"buffer": @"idfWeights",
 																	@"error": [NSNumber numberWithInt:err]}];
 	
 	// Clear the IDF buffer
-	nnVDSP_VCLR(_idfWeights, 1, _maxSize);
+	nnVDSP_VCLR(_idfWeights, 1, _dictionary.count);
 	
 	// Compute inverse document frequency
 	for (TokenInfo *tokenInfo in _dictionary) {
@@ -212,6 +216,7 @@
 
 @synthesize maxSize= _maxSize;
 
+@synthesize totalTokens= _totalTokens;
 @synthesize totalDocuments= _totalDocuments;
 @synthesize idfWeights= _idfWeights;
 

@@ -87,6 +87,7 @@ typedef TokenFilterOutcome (^TokenFilter)(NSString *token, TokenInfo *tokenInfo)
 @property (nonatomic, readonly) NSUInteger size;
 @property (nonatomic, readonly) NSUInteger maxSize;
 
+@property (nonatomic, readonly) NSUInteger totalTokens;
 @property (nonatomic, readonly) NSUInteger totalDocuments;
 @property (nonatomic, readonly) REAL *idfWeights;
 
