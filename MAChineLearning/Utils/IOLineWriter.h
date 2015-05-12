@@ -1,5 +1,5 @@
 //
-//  LineWriter.h
+//  IOLineWriter.h
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 10/05/15.
@@ -34,7 +34,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface LineWriter : NSObject
+@interface IOLineWriter : NSObject
 
 
 #pragma mark -

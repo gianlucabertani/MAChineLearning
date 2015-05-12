@@ -1,5 +1,5 @@
 //
-//  LineWriter.m
+//  IOLineWriter.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 10/05/15.
@@ -31,7 +31,7 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "LineWriter.h"
+#import "IOLineWriter.h"
 
 #define BUFFER_SIZE           (262144)
 
@@ -39,7 +39,7 @@
 #pragma mark -
 #pragma mark LineWriter extension
 
-@interface LineWriter () {
+@interface IOLineWriter () {
 	NSFileHandle *_file;
 	NSMutableString *_buffer;
 	NSCondition *_lock;
@@ -51,7 +51,7 @@
 #pragma mark -
 #pragma mark LineWriter implementation
 
-@implementation LineWriter
+@implementation IOLineWriter
 
 
 #pragma mark -

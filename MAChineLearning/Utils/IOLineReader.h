@@ -1,5 +1,5 @@
 //
-//  LineReader.h
+//  IOLineReader.h
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 07/05/15.
@@ -34,7 +34,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface LineReader : NSObject
+@interface IOLineReader : NSObject
 
 
 #pragma mark -

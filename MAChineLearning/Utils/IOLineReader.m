@@ -1,5 +1,5 @@
 //
-//  LineReader.m
+//  IOLineReader.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 07/05/15.
@@ -31,7 +31,7 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "LineReader.h"
+#import "IOLineReader.h"
 
 #define BUFFER_SIZE                  (1048576)
 #define CHUNK_SIZE                   (BUFFER_SIZE / 8)
@@ -41,7 +41,7 @@
 #pragma mark -
 #pragma mark LineReader extension
 
-@interface LineReader () {
+@interface IOLineReader () {
 	NSFileHandle *_file;
 	unsigned long long _fileSize;
 
@@ -59,7 +59,7 @@
 #pragma mark -
 #pragma mark LineReader implementation
 
-@implementation LineReader
+@implementation IOLineReader
 
 
 #pragma mark -
