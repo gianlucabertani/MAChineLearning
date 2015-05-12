@@ -1,5 +1,5 @@
 //
-//  BagOfWords.h
+//  MLBagOfWords.h
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 23/04/15.
@@ -33,52 +33,52 @@
 
 #import <Foundation/Foundation.h>
 
-#import "Real.h"
+#import "MLReal.h"
 
-#import "WordExtractorType.h"
-#import "WordExtractorOption.h"
-#import "FeatureNormalizationType.h"
+#import "MLWordExtractorType.h"
+#import "MLWordExtractorOption.h"
+#import "MLFeatureNormalizationType.h"
 
 
-@class WordDictionary;
+@class MLWordDictionary;
 
-@interface BagOfWords : NSObject
+@interface MLBagOfWords : NSObject
 
 
 #pragma mark -
 #pragma mark Initialization
 
-+ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text
++ (MLBagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text
 												   textID:(NSString *)textID
-											   dictionary:(WordDictionary *)dictionary
+											   dictionary:(MLWordDictionary *)dictionary
 												 language:(NSString *)languageCode
 									 featureNormalization:(FeatureNormalizationType)normalizationType;
 
-+ (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text
++ (MLBagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text
 												 textID:(NSString *)textID
-											 dictionary:(WordDictionary *)dictionary
+											 dictionary:(MLWordDictionary *)dictionary
 											   language:(NSString *)languageCode
 								   featureNormalization:(FeatureNormalizationType)normalizationType;
 
-+ (BagOfWords *) bagOfWordsWithText:(NSString *)text
++ (MLBagOfWords *) bagOfWordsWithText:(NSString *)text
 							 textID:(NSString *)textID
-						 dictionary:(WordDictionary *)dictionary
+						 dictionary:(MLWordDictionary *)dictionary
 					buildDictionary:(BOOL)buildDictionary
 						   language:(NSString *)languageCode
 					  wordExtractor:(WordExtractorType)extractorType
 				   extractorOptions:(WordExtractorOption)extractorOptions
 			   featureNormalization:(FeatureNormalizationType)normalizationType
-					   outputBuffer:(REAL *)outputBuffer;
+					   outputBuffer:(MLReal *)outputBuffer;
 
-+ (BagOfWords *) bagOfWordsWithWords:(NSArray *)words
++ (MLBagOfWords *) bagOfWordsWithWords:(NSArray *)words
 							  textID:(NSString *)textID
-						  dictionary:(WordDictionary *)dictionary
+						  dictionary:(MLWordDictionary *)dictionary
 					 buildDictionary:(BOOL)buildDictionary
 				featureNormalization:(FeatureNormalizationType)normalizationType
-						outputBuffer:(REAL *)outputBuffer;
+						outputBuffer:(MLReal *)outputBuffer;
 
-- (id) initWithText:(NSString *)text textID:(NSString *)textID dictionary:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
-- (id) initWithWords:(NSArray *)words textID:(NSString *)textID dictionary:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer;
+- (id) initWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer;
+- (id) initWithWords:(NSArray *)words textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer;
 
 
 #pragma mark -
@@ -86,7 +86,7 @@
 
 + (void) buildDictionaryWithText:(NSString *)text
 						  textID:(NSString *)textID
-					  dictionary:(WordDictionary *)dictionary
+					  dictionary:(MLWordDictionary *)dictionary
 						language:(NSString *)languageCode
 				   wordExtractor:(WordExtractorType)extractorType
 				extractorOptions:(WordExtractorOption)extractorOptions;
@@ -113,7 +113,7 @@
 @property (nonatomic, readonly) NSArray *words;
 
 @property (nonatomic, readonly) NSUInteger outputSize;
-@property (nonatomic, readonly) REAL *outputBuffer;
+@property (nonatomic, readonly) MLReal *outputBuffer;
 
 
 @end

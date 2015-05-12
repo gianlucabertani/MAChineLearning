@@ -107,19 +107,19 @@
 
 - (void) testGuessLanguageWithLinguisticTagger {
 	@try {
-		NSString *lang1= [BagOfWords guessLanguageCodeWithLinguisticTagger:WOODY_ALLEN];
+		NSString *lang1= [MLBagOfWords guessLanguageCodeWithLinguisticTagger:WOODY_ALLEN];
 		XCTAssertEqualObjects(lang1, @"en");
 		
-		NSString *lang2= [BagOfWords guessLanguageCodeWithLinguisticTagger:DANTE_ALIGHIERI];
+		NSString *lang2= [MLBagOfWords guessLanguageCodeWithLinguisticTagger:DANTE_ALIGHIERI];
 		XCTAssertEqualObjects(lang2, @"it");
 		
-		NSString *lang3= [BagOfWords guessLanguageCodeWithLinguisticTagger:MIGUEL_DE_CERVANTES];
+		NSString *lang3= [MLBagOfWords guessLanguageCodeWithLinguisticTagger:MIGUEL_DE_CERVANTES];
 		XCTAssertEqualObjects(lang3, @"es");
 		
-		NSString *lang4= [BagOfWords guessLanguageCodeWithLinguisticTagger:CHARLES_BAUDELAIRE];
+		NSString *lang4= [MLBagOfWords guessLanguageCodeWithLinguisticTagger:CHARLES_BAUDELAIRE];
 		XCTAssertEqualObjects(lang4, @"fr");
 		
-		NSString *lang5= [BagOfWords guessLanguageCodeWithLinguisticTagger:ALBERT_EINSTEIN];
+		NSString *lang5= [MLBagOfWords guessLanguageCodeWithLinguisticTagger:ALBERT_EINSTEIN];
 		XCTAssertEqualObjects(lang5, @"de");
 
 	} @catch (NSException *e) {
@@ -129,19 +129,19 @@
 
 - (void) testGuessLanguageWithStopWords {
 	@try {
-		NSString *lang1= [BagOfWords guessLanguageCodeWithStopWords:WOODY_ALLEN];
+		NSString *lang1= [MLBagOfWords guessLanguageCodeWithStopWords:WOODY_ALLEN];
 		XCTAssertEqualObjects(lang1, @"en");
 		
-		NSString *lang2= [BagOfWords guessLanguageCodeWithStopWords:DANTE_ALIGHIERI];
+		NSString *lang2= [MLBagOfWords guessLanguageCodeWithStopWords:DANTE_ALIGHIERI];
 		XCTAssertEqualObjects(lang2, @"it");
 		
-		NSString *lang3= [BagOfWords guessLanguageCodeWithStopWords:MIGUEL_DE_CERVANTES];
+		NSString *lang3= [MLBagOfWords guessLanguageCodeWithStopWords:MIGUEL_DE_CERVANTES];
 		XCTAssertEqualObjects(lang3, @"es");
 		
-		NSString *lang4= [BagOfWords guessLanguageCodeWithStopWords:CHARLES_BAUDELAIRE];
+		NSString *lang4= [MLBagOfWords guessLanguageCodeWithStopWords:CHARLES_BAUDELAIRE];
 		XCTAssertEqualObjects(lang4, @"fr");
 		
-		NSString *lang5= [BagOfWords guessLanguageCodeWithStopWords:ALBERT_EINSTEIN];
+		NSString *lang5= [MLBagOfWords guessLanguageCodeWithStopWords:ALBERT_EINSTEIN];
 		XCTAssertEqualObjects(lang5, @"de");
 		
 	} @catch (NSException *e) {
@@ -151,11 +151,11 @@
 
 - (void) testBagOfWordsForSentimentAnalysisWithSimpleTokenizer {
 	@try {
-		WordDictionary *dictionary= [WordDictionary dictionaryWithMaxSize:300];
+		MLWordDictionary *dictionary= [MLWordDictionary dictionaryWithMaxSize:300];
 		
 		// Bag of words for sentiment analysis uses the (quick) simple tokenizer,
 		// removing stop words but keeping emoticon and all bigrams
-		BagOfWords *bag= [BagOfWords bagOfWordsForSentimentAnalysisWithText:MOVIE_REVIEW
+		MLBagOfWords *bag= [MLBagOfWords bagOfWordsForSentimentAnalysisWithText:MOVIE_REVIEW
 																	 textID:@"review1"
 																 dictionary:dictionary
 																   language:@"en"
@@ -209,11 +209,11 @@
 
 - (void) testBagOfWordsForSentimentAnalysisWithLinguisticTagger {
 	@try {
-		WordDictionary *dictionary= [WordDictionary dictionaryWithMaxSize:300];
+		MLWordDictionary *dictionary= [MLWordDictionary dictionaryWithMaxSize:300];
 		
 		// Bag of words for sentiment analysis using the (slow) linguistic tagger,
 		// with same configuration of default sentiment analysis
-		BagOfWords *bag= [BagOfWords bagOfWordsWithText:MOVIE_REVIEW
+		MLBagOfWords *bag= [MLBagOfWords bagOfWordsWithText:MOVIE_REVIEW
 												 textID:@"review1"
 											 dictionary:dictionary
 										buildDictionary:YES
@@ -271,11 +271,11 @@
 
 - (void) testBagOfWordsForTopicClassification {
 	@try {
-		WordDictionary *dictionary= [WordDictionary dictionaryWithMaxSize:100];
+		MLWordDictionary *dictionary= [MLWordDictionary dictionaryWithMaxSize:100];
 		
 		// Bag of words for topic classification uses the (slow) linguistic tagger, removing
 		// stop words, verbs and adjectives, but keeping composite nouns and names
-		BagOfWords *bag= [BagOfWords bagOfWordsForTopicClassificationWithText:ARTICLE_EXTRACT
+		MLBagOfWords *bag= [MLBagOfWords bagOfWordsForTopicClassificationWithText:ARTICLE_EXTRACT
 																	   textID:@"article1"
 																   dictionary:dictionary
 																	 language:@"en"

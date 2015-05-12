@@ -1,8 +1,8 @@
 //
-//  WordDictionary.h
+//  MLNeuralNetworkException.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 10/05/15.
+//  Created by Gianluca Bertani on 01/03/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -33,63 +33,16 @@
 
 #import <Foundation/Foundation.h>
 
-#import "Real.h"
 
-
-typedef enum {
-	WordFilterOutcomeDiscardWord= 0,
-	WordFilterOutcomeKeepWord= 1
-} WordFilterOutcome;
-
-@class WordInfo;
-
-typedef WordFilterOutcome (^WordFilter)(NSString *word, WordInfo *wordInfo);
-
-
-@interface WordDictionary : NSObject
+@interface MLNeuralNetworkException : NSException
 
 
 #pragma mark -
 #pragma mark Initialization
 
-+ (WordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize;
++ (MLNeuralNetworkException *) neuralNetworkExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
 
-- (id) initWithMaxSize:(NSUInteger)maxSize;
-
-
-#pragma mark -
-#pragma mark Dictionary access and building
-
-- (WordInfo *) infoForWord:(NSString *)word;
-- (WordInfo *) addOccurrenceForWord:(NSString *)word textID:(NSString *)textID;
-
-
-#pragma mark -
-#pragma mark Dictionary filtering
-
-- (void) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies;
-- (void) discardWordsWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies;
-
-- (void) applyFilter:(WordFilter)filter;
-
-- (void) compact;
-
-
-#pragma mark -
-#pragma mark Inverse document frequency
-
-- (void) computeIDFWeights;
-
-
-#pragma mark -
-#pragma mark Properties
-
-@property (nonatomic, readonly) NSUInteger size;
-@property (nonatomic, readonly) NSUInteger maxSize;
-
-@property (nonatomic, readonly) NSUInteger totalWords;
-@property (nonatomic, readonly) NSUInteger totalDocuments;
-@property (nonatomic, readonly) REAL *idfWeights;
+- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
 
 
 @end

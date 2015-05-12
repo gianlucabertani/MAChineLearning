@@ -1,8 +1,8 @@
 //
-//  Constants.h
+//  MLNeuralNetwork.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 23/04/15.
+//  Created by Gianluca Bertani on 01/03/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,11 +31,55 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_Constants_h
-#define MAChineLearning_Constants_h
+#import <Foundation/Foundation.h>
+
+#import "MLReal.h"
+
+#import "MLNeuralNetworkStatus.h"
+#import "MLActivationFunctionType.h"
 
 
-#define BUFFER_MEMORY_ALIGNMENT          (128)
+@interface MLNeuralNetwork : NSObject
 
 
-#endif
+#pragma mark -
+#pragma mark Initialization
+
++ (MLNeuralNetwork *) createNetworkFromConfigurationDictionary:(NSDictionary *)config;
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType;
+
+- (id) initWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType;
+
+
+#pragma mark -
+#pragma mark Operations
+
+- (void) feedForward;
+- (void) backPropagateWithLearningRate:(MLReal)learningRate;
+- (void) updateWeights;
+
+- (void) terminate;
+
+
+#pragma mark -
+#pragma mark Configuration
+
+- (NSDictionary *) saveConfigurationToDictionary;
+
+
+#pragma mark -
+#pragma mark Properties
+
+@property (nonatomic, readonly) NSArray *layers;
+
+@property (nonatomic, readonly) int inputSize;
+@property (nonatomic, readonly) MLReal *inputBuffer;
+
+@property (nonatomic, readonly) int outputSize;
+@property (nonatomic, readonly) MLReal *outputBuffer;
+@property (nonatomic, readonly) MLReal *expectedOutputBuffer;
+
+@property (nonatomic, readonly) MLNeuralNetworkStatus status;
+
+
+@end

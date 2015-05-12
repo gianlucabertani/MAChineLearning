@@ -1,8 +1,8 @@
 //
-//  NeuralNetworkException.h
+//  MLBagOfWordsException.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
+//  Created by Gianluca Bertani on 23/04/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -34,13 +34,13 @@
 #import <Foundation/Foundation.h>
 
 
-@interface NeuralNetworkException : NSException
+@interface MLBagOfWordsException : NSException
 
 
 #pragma mark -
 #pragma mark Initialization
 
-+ (NeuralNetworkException *) neuralNetworkExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
++ (MLBagOfWordsException *) bagOfWordsExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
 
 - (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
 

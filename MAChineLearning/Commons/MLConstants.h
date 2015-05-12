@@ -1,8 +1,8 @@
 //
-//  NeuronLayer.h
+//  MLConstants.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
+//  Created by Gianluca Bertani on 23/04/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,51 +31,11 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <Foundation/Foundation.h>
-
-#import "Real.h"
-
-#import "Layer.h"
-#import "ActivationFunctionType.h"
+#ifndef MAChineLearning_MLConstants_h
+#define MAChineLearning_MLConstants_h
 
 
-@interface NeuronLayer : Layer
+#define BUFFER_MEMORY_ALIGNMENT          (128)
 
 
-#pragma mark -
-#pragma mark Initialization
-
-- (id) initWithIndex:(int)index size:(int)size activationFunctionType:(ActivationFunctionType)funcType;
-
-
-#pragma mark -
-#pragma mark Operations
-
-- (void) setUp;
-
-- (void) feedForward;
-
-- (void) fetchErrorFromNextLayer;
-
-- (void) backPropagateWithLearningRate:(REAL)learningRate;
-
-- (void) updateWeights;
-
-
-#pragma mark -
-#pragma mark Properties
-
-@property (nonatomic, readonly) ActivationFunctionType funcType;
-
-@property (nonatomic, readonly) REAL *biasBuffer;
-@property (nonatomic, readonly) REAL *biasDeltaBuffer;
-
-@property (nonatomic, readonly) REAL *errorBuffer;
-@property (nonatomic, readonly) REAL *deltaBuffer;
-
-@property (nonatomic, readonly) REAL *outputBuffer;
-
-@property (nonatomic, readonly) NSArray *neurons;
-
-
-@end
+#endif

@@ -1,8 +1,8 @@
 //
-//  TextFragment.h
+//  MLLayer.m
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 26/04/15.
+//  Created by Gianluca Bertani on 01/03/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,35 +31,50 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <Foundation/Foundation.h>
+#import "MLLayer.h"
 
 
-@interface TextFragment : NSObject
+#pragma mark -
+#pragma mark Layer extension
+
+@interface MLLayer () {	
+	MLLayer __weak *_previousLayer;
+	MLLayer __weak *_nextLayer;
+}
 
 
-#pragma -
-#pragma Initialization
-
-- (id) initWithFrament:(NSString *)fragment range:(NSRange)range sentenceRange:(NSRange)sentenceRange tokenIndex:(float)index;
-- (id) initWithFrament:(NSString *)fragment range:(NSRange)range sentenceRange:(NSRange)sentenceRange tokenIndex:(float)index linguisticTag:(NSString *)linguisticTag;
+@end
 
 
-#pragma -
-#pragma Continuity check and combination
+#pragma mark -
+#pragma mark Layer implementation
 
-- (BOOL) isContiguous:(TextFragment *)previousFragment;
-
-- (TextFragment *) combineWithFragment:(TextFragment *)previousFragment;
+@implementation MLLayer
 
 
-#pragma -
-#pragma Properties
+#pragma mark -
+#pragma mark Initialization
 
-@property (nonatomic, readonly) NSString *fragment;
-@property (nonatomic, readonly) NSRange range;
-@property (nonatomic, readonly) NSRange sentenceRange;
-@property (nonatomic, readonly) float tokenIndex;
-@property (nonatomic, readonly) NSString *linguisticTag;
+- (id) initWithIndex:(int)index size:(int)size {
+	if ((self = [super init])) {
+		
+		// Initialization
+		_index= index;
+		_size= size;
+	}
+	
+	return self;
+}
+
+
+#pragma mark -
+#pragma mark Properties
+
+@synthesize index= _index;
+@synthesize size= _size;
+
+@synthesize previousLayer= _previousLayer;
+@synthesize nextLayer= _nextLayer;
 
 
 @end

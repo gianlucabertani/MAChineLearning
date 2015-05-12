@@ -1,8 +1,8 @@
 //
-//  InputLayer.m
+//  MLTextFragment.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
+//  Created by Gianluca Bertani on 26/04/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,65 +31,35 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "InputLayer.h"
-#import "NeuralNetworkException.h"
-
-#import "Constants.h"
-
-#import <Accelerate/Accelerate.h>
+#import <Foundation/Foundation.h>
 
 
-#pragma mark -
-#pragma mark InputLayer extension
-
-@interface InputLayer () {
-	REAL *_inputBuffer;
-}
+@interface MLTextFragment : NSObject
 
 
-@end
+#pragma -
+#pragma Initialization
+
+- (id) initWithFrament:(NSString *)fragment range:(NSRange)range sentenceRange:(NSRange)sentenceRange tokenIndex:(float)index;
+- (id) initWithFrament:(NSString *)fragment range:(NSRange)range sentenceRange:(NSRange)sentenceRange tokenIndex:(float)index linguisticTag:(NSString *)linguisticTag;
 
 
-#pragma mark -
-#pragma mark InputLayer implementation
+#pragma -
+#pragma Continuity check and combination
 
-@implementation InputLayer
+- (BOOL) isContiguous:(MLTextFragment *)previousFragment;
 
-
-#pragma mark -
-#pragma mark Initialization
-
-- (id) initWithIndex:(int)index size:(int)size {
-	if ((self = [super initWithIndex:index size:size])) {
-		
-		// Allocate buffers
-		int err= posix_memalign((void **) &_inputBuffer,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(REAL) * size);
-		if (err)
-			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"inputBuffer",
-																			  @"error": [NSNumber numberWithInt:err]}];
-		
-		// Clear and fill buffers as needed
-		nnVDSP_VCLR(_inputBuffer, 1, size);
-	}
-	
-	return self;
-}
-
-- (void) dealloc {
-	
-	// Deallocate the input buffer
-	free(_inputBuffer);
-	_inputBuffer= NULL;
-}
+- (MLTextFragment *) combineWithFragment:(MLTextFragment *)previousFragment;
 
 
-#pragma mark -
-#pragma mark Properties
+#pragma -
+#pragma Properties
 
-@synthesize inputBuffer= _inputBuffer;
+@property (nonatomic, readonly) NSString *fragment;
+@property (nonatomic, readonly) NSRange range;
+@property (nonatomic, readonly) NSRange sentenceRange;
+@property (nonatomic, readonly) float tokenIndex;
+@property (nonatomic, readonly) NSString *linguisticTag;
 
 
 @end

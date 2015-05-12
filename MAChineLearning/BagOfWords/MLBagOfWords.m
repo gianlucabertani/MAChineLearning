@@ -1,5 +1,5 @@
 //
-//  BagOfWords.m
+//  MLBagOfWords.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 23/04/15.
@@ -31,15 +31,15 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "BagOfWords.h"
-#import "WordDictionary.h"
-#import "WordInfo.h"
-#import "TextFragment.h"
-#import "StopWords.h"
+#import "MLBagOfWords.h"
+#import "MLWordDictionary.h"
+#import "MLWordInfo.h"
+#import "MLTextFragment.h"
+#import "MLStopWords.h"
 #import "NSString+WordUtils.h"
-#import "BagOfWordsException.h"
+#import "MLBagOfWordsException.h"
 
-#import "Constants.h"
+#import "MLConstants.h"
 
 #import <Accelerate/Accelerate.h>
 
@@ -53,12 +53,12 @@
 #pragma mark -
 #pragma mark BagOfWords extension
 
-@interface BagOfWords () {
+@interface MLBagOfWords () {
 	NSString *_textID;
 	NSArray *_words;
 
 	NSUInteger _outputSize;
-	REAL *_outputBuffer;
+	MLReal *_outputBuffer;
 	BOOL _localBuffer;
 }
 
@@ -72,9 +72,9 @@
 #pragma mark -
 #pragma mark Internals
 
-- (void) prepareOutputBuffer:(REAL *)outputBuffer;
-- (void) fillOutputBuffer:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType;
-- (void) normalizeOutputBuffer:(WordDictionary *)dictionary featureNormalization:(FeatureNormalizationType)normalizationType;
+- (void) prepareOutputBuffer:(MLReal *)outputBuffer;
+- (void) fillOutputBuffer:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType;
+- (void) normalizeOutputBuffer:(MLWordDictionary *)dictionary featureNormalization:(FeatureNormalizationType)normalizationType;
 
 
 @end
@@ -89,14 +89,14 @@ static NSDictionary *__stopWords= nil;
 #pragma mark -
 #pragma mark BagOfWords implementation
 
-@implementation BagOfWords
+@implementation MLBagOfWords
 
 
 #pragma mark -
 #pragma mark Initialization
 
-+ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(WordDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType {
-	return [BagOfWords bagOfWordsWithText:text
++ (MLBagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType {
+	return [MLBagOfWords bagOfWordsWithText:text
 								   textID:textID
 							   dictionary:dictionary
 						  buildDictionary:YES
@@ -107,8 +107,8 @@ static NSDictionary *__stopWords= nil;
 							 outputBuffer:nil];
 }
 
-+ (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(WordDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType {
-	return [BagOfWords bagOfWordsWithText:text
++ (MLBagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType {
+	return [MLBagOfWords bagOfWordsWithText:text
 								   textID:textID
 							   dictionary:dictionary
 						  buildDictionary:YES
@@ -119,8 +119,8 @@ static NSDictionary *__stopWords= nil;
 							 outputBuffer:nil];
 }
 
-+ (BagOfWords *) bagOfWordsWithText:(NSString *)text textID:(NSString *)textID dictionary:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
-	BagOfWords *bagOfWords= [[BagOfWords alloc] initWithText:text
++ (MLBagOfWords *) bagOfWordsWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer {
+	MLBagOfWords *bagOfWords= [[MLBagOfWords alloc] initWithText:text
 													  textID:textID
 												  dictionary:dictionary
 											 buildDictionary:buildDictionary
@@ -133,8 +133,8 @@ static NSDictionary *__stopWords= nil;
 	return bagOfWords;
 }
 
-+ (BagOfWords *) bagOfWordsWithWords:(NSArray *)words textID:(NSString *)textID dictionary:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
-	BagOfWords *bagOfWords= [[BagOfWords alloc] initWithWords:words
++ (MLBagOfWords *) bagOfWordsWithWords:(NSArray *)words textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer {
+	MLBagOfWords *bagOfWords= [[MLBagOfWords alloc] initWithWords:words
 													   textID:textID
 												   dictionary:dictionary
 											  buildDictionary:buildDictionary
@@ -144,21 +144,21 @@ static NSDictionary *__stopWords= nil;
 	return bagOfWords;
 }
 
-- (id) initWithText:(NSString *)text textID:(NSString *)textID dictionary:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
+- (id) initWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer {
 	if ((self = [super init])) {
 		
 		// Fill stop words if not filled already
 		if (!__stopWords)
-			__stopWords= STOP_WORDS;
+			__stopWords= ML_STOP_WORDS;
 		
 		// Checks
 		if (!dictionary)
-			@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"Missing dictionary"
+			@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Missing dictionary"
 															 userInfo:nil];
 		
 		if ((extractorOptions & WordExtractorOptionOmitStopWords) &&
 			(!languageCode))
-			@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"Missing language code (language is needed to skip stopwords)"
+			@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Missing language code (language is needed to skip stopwords)"
 															 userInfo:nil];
 		
 		if (((extractorOptions & WordExtractorOptionOmitVerbs) |
@@ -175,13 +175,13 @@ static NSDictionary *__stopWords= nil;
 			 (extractorOptions & WordExtractorOptionKeep2WordNames) |
 			 (extractorOptions & WordExtractorOptionKeep3WordNames)) &&
 			(extractorType != WordExtractorTypeLinguisticTagger))
-			@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"Options on verbs, adjectives, adverbs, nouns and names require the linguistic tagger"
+			@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Options on verbs, adjectives, adverbs, nouns and names require the linguistic tagger"
 															 userInfo:nil];
 		
 		switch (normalizationType) {
 			case FeatureNormalizationTypeL2TFiDF:
 				if (buildDictionary)
-					@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"TF-iDF normalization requires a pre-built dictionary"
+					@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"TF-iDF normalization requires a pre-built dictionary"
 																	 userInfo:nil];
 				
 			default:
@@ -194,11 +194,11 @@ static NSDictionary *__stopWords= nil;
 		// Run the appropriate extractor
 		switch (extractorType) {
 			case WordExtractorTypeSimpleTokenizer:
-				_words= [BagOfWords extractWordsWithSimpleTokenizer:text language:languageCode extractorOptions:extractorOptions];
+				_words= [MLBagOfWords extractWordsWithSimpleTokenizer:text language:languageCode extractorOptions:extractorOptions];
 				break;
 				
 			case WordExtractorTypeLinguisticTagger:
-				_words= [BagOfWords extractWordsWithLinguisticTagger:text language:languageCode extractorOptions:extractorOptions];
+				_words= [MLBagOfWords extractWordsWithLinguisticTagger:text language:languageCode extractorOptions:extractorOptions];
 				break;
 		}
 		
@@ -217,18 +217,18 @@ static NSDictionary *__stopWords= nil;
 	return self;
 }
 
-- (id) initWithWords:(NSArray *)words textID:(NSString *)textID dictionary:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
+- (id) initWithWords:(NSArray *)words textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer {
 	if ((self = [super init])) {
 		
 		// Checks
 		if (!dictionary)
-			@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"Missing dictionary"
+			@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Missing dictionary"
 															 userInfo:nil];
 		
 		switch (normalizationType) {
 			case FeatureNormalizationTypeL2TFiDF:
 				if (buildDictionary)
-					@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"TF-iDF normalization requires a pre-built dictionary"
+					@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"TF-iDF normalization requires a pre-built dictionary"
 																	 userInfo:nil];
 				
 			default:
@@ -265,7 +265,7 @@ static NSDictionary *__stopWords= nil;
 #pragma mark -
 #pragma mark Internals
 
-- (void) prepareOutputBuffer:(REAL *)outputBuffer {
+- (void) prepareOutputBuffer:(MLReal *)outputBuffer {
 	if (outputBuffer) {
 		_outputBuffer= outputBuffer;
 		_localBuffer= NO;
@@ -273,9 +273,9 @@ static NSDictionary *__stopWords= nil;
 	} else {
 		int err= posix_memalign((void **) &_outputBuffer,
 								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(REAL) * _outputSize);
+								sizeof(MLReal) * _outputSize);
 		if (err)
-			@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"Error while allocating buffer"
+			@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Error while allocating buffer"
 															 userInfo:@{@"buffer": @"outputBuffer",
 																		@"error": [NSNumber numberWithInt:err]}];
 		
@@ -283,14 +283,14 @@ static NSDictionary *__stopWords= nil;
 	}
 	
 	// Clear the output buffer
-	nnVDSP_VCLR(_outputBuffer, 1, _outputSize);
+	ML_VDSP_VCLR(_outputBuffer, 1, _outputSize);
 }
 
-- (void) fillOutputBuffer:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType {
+- (void) fillOutputBuffer:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType {
 	
 	// Build dictionary and the output buffer
 	for (NSString *word in _words) {
-		WordInfo *wordInfo= nil;
+		MLWordInfo *wordInfo= nil;
 		
 		if (buildDictionary)
 			wordInfo= [dictionary addOccurrenceForWord:word textID:_textID];
@@ -313,7 +313,7 @@ static NSDictionary *__stopWords= nil;
 	}
 }
 
-- (void) normalizeOutputBuffer:(WordDictionary *)dictionary featureNormalization:(FeatureNormalizationType)normalizationType {
+- (void) normalizeOutputBuffer:(MLWordDictionary *)dictionary featureNormalization:(FeatureNormalizationType)normalizationType {
 	
 	// Apply vector-wide normalization
 	switch (normalizationType) {
@@ -322,21 +322,21 @@ static NSDictionary *__stopWords= nil;
 				[dictionary computeIDFWeights];
 			
 			// Multiply by IDF weights
-			nnVDSP_VMUL(_outputBuffer, 1, dictionary.idfWeights, 1, _outputBuffer, 1, _outputSize);
+			ML_VDSP_VMUL(_outputBuffer, 1, dictionary.idfWeights, 1, _outputBuffer, 1, _outputSize);
 			
 			// NOTE: No "break" intended here
 		}
 			
 		case FeatureNormalizationTypeL2: {
-			REAL normL2= 0.0;
+			MLReal normL2= 0.0;
 			
 			for (NSString *word in _words) {
-				WordInfo *wordInfo= [dictionary infoForWord:word];
+				MLWordInfo *wordInfo= [dictionary infoForWord:word];
 				normL2 += _outputBuffer[wordInfo.position] * _outputBuffer[wordInfo.position];
 			}
 			
 			normL2= sqrt(normL2);
-			nnVDSP_VSDIV(_outputBuffer, 1, &normL2, _outputBuffer, 1, _outputSize);
+			ML_VDSP_VSDIV(_outputBuffer, 1, &normL2, _outputBuffer, 1, _outputSize);
 			break;
 		}
 			
@@ -349,17 +349,17 @@ static NSDictionary *__stopWords= nil;
 #pragma mark -
 #pragma mark Dictionary building
 
-+ (void) buildDictionaryWithText:(NSString *)text textID:(NSString *)textID dictionary:(WordDictionary *)dictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions {
++ (void) buildDictionaryWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions {
 	NSArray *words= nil;
 	
 	// Run the appropriate word extractor
 	switch (extractorType) {
 		case WordExtractorTypeSimpleTokenizer:
-			words= [BagOfWords extractWordsWithSimpleTokenizer:text language:languageCode extractorOptions:extractorOptions];
+			words= [MLBagOfWords extractWordsWithSimpleTokenizer:text language:languageCode extractorOptions:extractorOptions];
 			break;
 			
 		case WordExtractorTypeLinguisticTagger:
-			words= [BagOfWords extractWordsWithLinguisticTagger:text language:languageCode extractorOptions:extractorOptions];
+			words= [MLBagOfWords extractWordsWithLinguisticTagger:text language:languageCode extractorOptions:extractorOptions];
 			break;
 	}
 	
@@ -389,7 +389,7 @@ static NSDictionary *__stopWords= nil;
 	
 		// Fill stop words if not filled already
 		if (!__stopWords)
-			__stopWords= STOP_WORDS;
+			__stopWords= ML_STOP_WORDS;
 		
 		// Prepare the score table
 		NSMutableDictionary *scores= [NSMutableDictionary dictionary];
@@ -492,7 +492,7 @@ static NSDictionary *__stopWords= nil;
 								  return;
 
 							  // Create the fragment
-							  TextFragment *fragment= [[TextFragment alloc] initWithFrament:word
+							  MLTextFragment *fragment= [[MLTextFragment alloc] initWithFrament:word
 																					  range:tokenRange
 																			  sentenceRange:sentenceRange
 																				 tokenIndex:tokenIndex
@@ -564,22 +564,22 @@ static NSDictionary *__stopWords= nil;
 							  
 							  // Check for 2-words combinations for kept fragments
 							  if (fragments.count > 1) {
-								  TextFragment *previousFragment= [fragments objectAtIndex:fragments.count -2];
+								  MLTextFragment *previousFragment= [fragments objectAtIndex:fragments.count -2];
 								  
 								  if ([fragment isContiguous:previousFragment]) {
 									  if (extractorOptions & WordExtractorOptionKeepAllBigrams) {
 										  
 										  // Form a bigram with the previous fragment
-										  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+										  MLTextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
 										  [combinedFragments addObject:combinedFragment];
 										  
 										  if ((extractorOptions & WordExtractorOptionKeepAllTrigrams) && (fragments.count > 2))	{
-											  TextFragment *previousPreviousFragment= [fragments objectAtIndex:fragments.count -3];
+											  MLTextFragment *previousPreviousFragment= [fragments objectAtIndex:fragments.count -3];
 											  
 											  if ([previousFragment isContiguous:previousPreviousFragment]) {
 												  
 												  // Form a trigram with the last two fragments
-												  TextFragment *combinedFragment2= [combinedFragment combineWithFragment:previousPreviousFragment];
+												  MLTextFragment *combinedFragment2= [combinedFragment combineWithFragment:previousPreviousFragment];
 												  [combinedFragments addObject:combinedFragment2];
 											  }
 										  }
@@ -591,18 +591,18 @@ static NSDictionary *__stopWords= nil;
 												 ([previousFragment.fragment isCapitalizedString] || [previousFragment.fragment isNameInitial])) {
 										  
 										  // Form a 2-words name with the previous fragment
-										  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+										  MLTextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
 										  [combinedFragments addObject:combinedFragment];
 										  
 										  if ((extractorOptions & WordExtractorOptionKeep3WordNames) && (fragments.count > 2)) {
-											  TextFragment *previousPreviousFragment= [fragments objectAtIndex:fragments.count -3];
+											  MLTextFragment *previousPreviousFragment= [fragments objectAtIndex:fragments.count -3];
 											  
 											  if ([previousFragment isContiguous:previousPreviousFragment] &&
 												  (previousPreviousFragment.linguisticTag == NSLinguisticTagNoun) &&
 												  ([previousPreviousFragment.fragment isCapitalizedString] || [previousPreviousFragment.fragment isNameInitial])) {
 												  
 												  // Form a 3-words name with the last two fragments
-												  TextFragment *combinedFragment2= [combinedFragment combineWithFragment:previousPreviousFragment];
+												  MLTextFragment *combinedFragment2= [combinedFragment combineWithFragment:previousPreviousFragment];
 												  [combinedFragments addObject:combinedFragment2];
 											  }
 										  }
@@ -613,7 +613,7 @@ static NSDictionary *__stopWords= nil;
 											  (previousFragment.linguisticTag == NSLinguisticTagNoun)) {
 											  
 											  // Form a noun-verb combo with the previous fragment
-											  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+											  MLTextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
 											  [combinedFragments addObject:combinedFragment];
 										  }
 										  
@@ -622,7 +622,7 @@ static NSDictionary *__stopWords= nil;
 											  (previousFragment.linguisticTag == NSLinguisticTagVerb)) {
 											  
 											  // Form a verb-adjective combo with the previous fragment
-											  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+											  MLTextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
 											  [combinedFragments addObject:combinedFragment];
 										  }
 										  
@@ -631,7 +631,7 @@ static NSDictionary *__stopWords= nil;
 											  (previousFragment.linguisticTag == NSLinguisticTagAdjective)) {
 											  
 											  // Form an adjective-noun combo with the previous fragment
-											  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+											  MLTextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
 											  [combinedFragments addObject:combinedFragment];
 										  }
 										  
@@ -640,7 +640,7 @@ static NSDictionary *__stopWords= nil;
 											  (previousFragment.linguisticTag == NSLinguisticTagAdverb)) {
 											  
 											  // Form an adverb-noun combo with the previous fragment
-											  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+											  MLTextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
 											  [combinedFragments addObject:combinedFragment];
 										  }
 										  
@@ -649,7 +649,7 @@ static NSDictionary *__stopWords= nil;
 											  (previousFragment.linguisticTag == NSLinguisticTagNoun)) {
 											  
 											  // Form a noun-noun combo with the previous fragment
-											  TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+											  MLTextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
 											  [combinedFragments addObject:combinedFragment];
 										  }
 									  }
@@ -661,15 +661,15 @@ static NSDictionary *__stopWords= nil;
 		combinedFragments= nil;
 		
 		// Remove fragments to be omitted
-		for (TextFragment *fragment in fragmentsToBeOmitted)
+		for (MLTextFragment *fragment in fragmentsToBeOmitted)
 			[fragments removeObject:fragment];
 
 		fragmentsToBeOmitted= nil;
 		
 		// Sort fragments according to token index
 		[fragments sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-			TextFragment *fragment1= (TextFragment *) obj1;
-			TextFragment *fragment2= (TextFragment *) obj2;
+			MLTextFragment *fragment1= (MLTextFragment *) obj1;
+			MLTextFragment *fragment2= (MLTextFragment *) obj2;
 			
 			return (fragment1.tokenIndex < fragment2.tokenIndex) ? NSOrderedAscending :
 					((fragment1.tokenIndex > fragment2.tokenIndex) ? NSOrderedDescending : NSOrderedSame);
@@ -681,7 +681,7 @@ static NSDictionary *__stopWords= nil;
 		// Return the tokens
 		NSMutableArray *words= [[NSMutableArray alloc] initWithCapacity:fragments.count];
 		
-		for (TextFragment *fragment in fragments)
+		for (MLTextFragment *fragment in fragments)
 			[words addObject:fragment.fragment];
 		
 		return words;
@@ -737,7 +737,7 @@ static NSDictionary *__stopWords= nil;
 				continue;
 			
 			// Add the fragment
-			TextFragment *fragment= [[TextFragment alloc] initWithFrament:word
+			MLTextFragment *fragment= [[MLTextFragment alloc] initWithFrament:word
 																	range:tokenRange
 															sentenceRange:NSMakeRange(0, text.length)
 															   tokenIndex:tokenIndex
@@ -747,21 +747,21 @@ static NSDictionary *__stopWords= nil;
 			
 			// Check for 2-words combinations
 			if ((extractorOptions & WordExtractorOptionKeepAllBigrams) && (fragments.count > 1)) {
-				TextFragment *previousFragment= [fragments objectAtIndex:fragments.count -2];
+				MLTextFragment *previousFragment= [fragments objectAtIndex:fragments.count -2];
 				
 				if ([fragment isContiguous:previousFragment]) {
 					
 					// Form a bigram with the previous fragment
-					TextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
+					MLTextFragment *combinedFragment= [fragment combineWithFragment:previousFragment];
 					[combinedFragments addObject:combinedFragment];
 					
 					if ((extractorOptions & WordExtractorOptionKeepAllTrigrams) && (fragments.count > 2))	{
-						TextFragment *previousPreviousFragment= [fragments objectAtIndex:fragments.count -3];
+						MLTextFragment *previousPreviousFragment= [fragments objectAtIndex:fragments.count -3];
 						
 						if ([previousFragment isContiguous:previousPreviousFragment]) {
 							
 							// Form a trigram with the last two fragments
-							TextFragment *combinedFragment2= [combinedFragment combineWithFragment:previousPreviousFragment];
+							MLTextFragment *combinedFragment2= [combinedFragment combineWithFragment:previousPreviousFragment];
 							[combinedFragments addObject:combinedFragment2];
 						}
 					}
@@ -775,20 +775,20 @@ static NSDictionary *__stopWords= nil;
 		
 		// Sort fragments according to token index
 		[fragments sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-			TextFragment *fragment1= (TextFragment *) obj1;
-			TextFragment *fragment2= (TextFragment *) obj2;
+			MLTextFragment *fragment1= (MLTextFragment *) obj1;
+			MLTextFragment *fragment2= (MLTextFragment *) obj2;
 			
 			return (fragment1.tokenIndex < fragment2.tokenIndex) ? NSOrderedAscending :
 			((fragment1.tokenIndex > fragment2.tokenIndex) ? NSOrderedDescending : NSOrderedSame);
 		}];
 		
 		if (extractorOptions & WordExtractorOptionKeepEmoticons)
-			[BagOfWords insertEmoticonFragments:text fragments:fragments];
+			[MLBagOfWords insertEmoticonFragments:text fragments:fragments];
 		
 		// Return the tokens
 		NSMutableArray *words= [[NSMutableArray alloc] initWithCapacity:fragments.count];
 		
-		for (TextFragment *fragment in fragments)
+		for (MLTextFragment *fragment in fragments)
 			[words addObject:fragment.fragment];
 		
 		return words;
@@ -828,7 +828,7 @@ static NSDictionary *__stopWords= nil;
 		NSUInteger span= pos / 2;
 		
 		while (span > 1) {
-			TextFragment *fragment= [fragments objectAtIndex:pos];
+			MLTextFragment *fragment= [fragments objectAtIndex:pos];
 			
 			if (match.range.location < fragment.range.location) {
 				pos -= span;
@@ -843,7 +843,7 @@ static NSDictionary *__stopWords= nil;
 		}
 		
 		NSRange emoticonRange= NSMakeRange(match.range.location +1, match.range.length -1);
-		TextFragment *emoticon= [[TextFragment alloc] initWithFrament:[text substringWithRange:emoticonRange]
+		MLTextFragment *emoticon= [[MLTextFragment alloc] initWithFrament:[text substringWithRange:emoticonRange]
 																range:emoticonRange
 														sentenceRange:NSMakeRange(0, [text length])
 														   tokenIndex:0.0

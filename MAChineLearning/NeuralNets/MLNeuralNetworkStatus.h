@@ -1,8 +1,8 @@
 //
-//  NeuralNetworkException.m
+//  MLNeuralNetworkStatus.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
+//  Created by Gianluca Bertani on 27/03/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,31 +31,16 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "NeuralNetworkException.h"
-
-#define NEURAL_NET_EXCEPTION_NAME          (@"NeuralNetworkException")
-
-
-@implementation NeuralNetworkException
+#ifndef MAChineLearning_MLNeuralNetworkStatus_h
+#define MAChineLearning_MLNeuralNetworkStatus_h
 
 
-#pragma mark -
-#pragma mark Initialization
-
-+ (NeuralNetworkException *) neuralNetworkExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
-	NeuralNetworkException *exception= [[NeuralNetworkException alloc] initWithReason:reason userInfo:userInfo];
-	
-	return exception;
-}
-
-- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
-	if ((self = [super initWithName:NEURAL_NET_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
-		
-		// Nothing to do
-	}
-	
-	return self;
-}
+typedef enum {
+	MLNeuralNetworkStatusIdle= 0,
+	MLNeuralNetworkStatusFeededForward,
+	MLNeuralNetworkStatusBackPropagated,
+	MLNeuralNetworkStatusWeightsUpdated
+} MLNeuralNetworkStatus;
 
 
-@end
+#endif

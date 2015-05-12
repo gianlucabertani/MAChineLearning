@@ -1,5 +1,5 @@
 //
-//  Neuron.m
+//  MLNeuron.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 01/03/15.
@@ -31,11 +31,11 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "Neuron.h"
-#import "NeuronLayer.h"
-#import "NeuralNetworkException.h"
+#import "MLNeuron.h"
+#import "MLNeuronLayer.h"
+#import "MLNeuralNetworkException.h"
 
-#import "Constants.h"
+#import "MLConstants.h"
 
 #import <Accelerate/Accelerate.h>
 
@@ -43,17 +43,17 @@
 #pragma mark -
 #pragma mark Neuron extension
 
-@interface Neuron () {
-	NeuronLayer __weak *_layer;
+@interface MLNeuron () {
+	MLNeuronLayer __weak *_layer;
 	
 	int _index;
-	REAL *_outputBuffer;
+	MLReal *_outputBuffer;
 	
 	int _inputSize;
-	REAL *_inputBuffer;
+	MLReal *_inputBuffer;
 
-	REAL *_weights;
-	REAL *_weightsDelta;
+	MLReal *_weights;
+	MLReal *_weightsDelta;
 }
 
 @end
@@ -62,13 +62,13 @@
 #pragma mark -
 #pragma mark Neuron implementation
 
-@implementation Neuron
+@implementation MLNeuron
 
 
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithLayer:(NeuronLayer *)layer index:(int)index outputBuffer:(REAL *)outputBuffer inputSize:(int)inputSize inputBuffer:(REAL *)inputBuffer {
+- (id) initWithLayer:(MLNeuronLayer *)layer index:(int)index outputBuffer:(MLReal *)outputBuffer inputSize:(int)inputSize inputBuffer:(MLReal *)inputBuffer {
 	if ((self = [super init])) {
 		
 		// Initialization
@@ -83,23 +83,23 @@
 		// Allocate buffers
 		int err= posix_memalign((void **) &_weights,
 								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(REAL) * _inputSize);
+								sizeof(MLReal) * _inputSize);
 		if (err)
-			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
+			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"weights",
 																			  @"error": [NSNumber numberWithInt:err]}];
 
 		err= posix_memalign((void **) &_weightsDelta,
 							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(REAL) * _inputSize);
+							sizeof(MLReal) * _inputSize);
 		if (err)
-			@throw [NeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
+			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"weightsDelta",
 																			  @"error": [NSNumber numberWithInt:err]}];
 		
 		// Clear and fill buffers as needed
-		nnVDSP_VCLR(_weights, 1, _inputSize);
-		nnVDSP_VCLR(_weightsDelta, 1, _inputSize);
+		ML_VDSP_VCLR(_weights, 1, _inputSize);
+		ML_VDSP_VCLR(_weightsDelta, 1, _inputSize);
 	}
 	
 	return self;
@@ -122,27 +122,27 @@
 - (void) partialFeedForward {
 	
 	// Compute the dot product, the rest of the computation is done in the layer
-	nnVDSP_DOTPR(_inputBuffer, 1, _weights, 1, &_outputBuffer[_index], _inputSize);
+	ML_VDSP_DOTPR(_inputBuffer, 1, _weights, 1, &_outputBuffer[_index], _inputSize);
 }
 
-- (void) partialBackPropagateWithLearningRate:(REAL)learningRate delta:(REAL)delta {
+- (void) partialBackPropagateWithLearningRate:(MLReal)learningRate delta:(MLReal)delta {
 	
 	// We receive the delta from the caller (instead of using self.delta) to avoid
 	// a method call, which wastes lots of time
-	REAL deltaRate= learningRate * delta;
+	MLReal deltaRate= learningRate * delta;
 
 	// Compute weights delta using vector multiply & add,
 	// the rest of the back propagation is done in the layer
-	nnVDSP_VSMA(_inputBuffer, 1, &deltaRate, _weightsDelta, 1, _weightsDelta, 1, _inputSize);
+	ML_VDSP_VSMA(_inputBuffer, 1, &deltaRate, _weightsDelta, 1, _weightsDelta, 1, _inputSize);
 }
 
 - (void) partialUpdateWeights {
 	
 	// Add the weights with the weights delta
-	nnVDSP_VADD(_weightsDelta, 1, _weights, 1, _weights, 1, _inputSize);
+	ML_VDSP_VADD(_weightsDelta, 1, _weights, 1, _weights, 1, _inputSize);
 	
 	// Clear the weights delta buffer
-	nnVDSP_VCLR(_weightsDelta, 1, _inputSize);
+	ML_VDSP_VCLR(_weightsDelta, 1, _inputSize);
 }
 
 
@@ -159,11 +159,11 @@
 
 @dynamic bias;
 
-- (REAL) bias {
+- (MLReal) bias {
 	return _layer.biasBuffer[_index];
 }
 
-- (void) setBias:(REAL)bias {
+- (void) setBias:(MLReal)bias {
 	_layer.biasBuffer[_index]= bias;
 }
 
@@ -172,21 +172,21 @@
 
 @dynamic error;
 
-- (REAL) error {
+- (MLReal) error {
 	return _layer.errorBuffer[_index];
 }
 
-- (void) setError:(REAL)error {
+- (void) setError:(MLReal)error {
 	_layer.errorBuffer[_index]= error;
 }
 
 @dynamic delta;
 
-- (REAL) delta {
+- (MLReal) delta {
 	return _layer.deltaBuffer[_index];
 }
 
-- (void) setDelta:(REAL)delta {
+- (void) setDelta:(MLReal)delta {
 	_layer.deltaBuffer[_index]= delta;
 }
 

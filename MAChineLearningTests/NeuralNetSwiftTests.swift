@@ -34,7 +34,7 @@ class NeuralNetSwiftTests: XCTestCase {
     }
 	
 	func testNAND_Swift() {
-		let net = NeuralNetwork.createNetworkWithLayerSizes([3, 1], outputFunctionType: ActivationFunctionTypeStep)
+		let net = MLNeuralNetwork.createNetworkWithLayerSizes([3, 1], outputFunctionType: MLActivationFunctionTypeStep)
 		
 		let begin = NSDate()
 		
@@ -131,14 +131,14 @@ class NeuralNetSwiftTests: XCTestCase {
 	}
 	
 	func testBackpropagation_Swift() {
-		let net = NeuralNetwork.createNetworkWithLayerSizes([2, 2, 1], outputFunctionType: ActivationFunctionTypeLinear)
+		let net = MLNeuralNetwork.createNetworkWithLayerSizes([2, 2, 1], outputFunctionType: MLActivationFunctionTypeLinear)
 		
-		let layer1 = net.layers[1] as! NeuronLayer
-		let neuron11 = layer1.neurons[0] as! Neuron
-		let neuron12 = layer1.neurons[1] as! Neuron
+		let layer1 = net.layers[1] as! MLNeuronLayer
+		let neuron11 = layer1.neurons[0] as! MLNeuron
+		let neuron12 = layer1.neurons[1] as! MLNeuron
 		
-		let layer2 = net.layers[2] as! NeuronLayer
-		let neuron2 = layer2.neurons[0] as! Neuron
+		let layer2 = net.layers[2] as! MLNeuronLayer
+		let neuron2 = layer2.neurons[0] as! MLNeuron
 		
 		let begin = NSDate()
 		
@@ -197,14 +197,14 @@ class NeuralNetSwiftTests: XCTestCase {
 	}
 	
 	func testLoadSave_Swift() {
-		let net = NeuralNetwork.createNetworkWithLayerSizes([3, 2, 1], outputFunctionType: ActivationFunctionTypeLogistic)
+		let net = MLNeuralNetwork.createNetworkWithLayerSizes([3, 2, 1], outputFunctionType: MLActivationFunctionTypeLogistic)
 		
-		let layer1 = net.layers[1] as! NeuronLayer
-		let neuron11 = layer1.neurons[0] as! Neuron
-		let neuron12 = layer1.neurons[1] as! Neuron
+		let layer1 = net.layers[1] as! MLNeuronLayer
+		let neuron11 = layer1.neurons[0] as! MLNeuron
+		let neuron12 = layer1.neurons[1] as! MLNeuron
 		
-		let layer2 = net.layers[2] as! NeuronLayer
-		let neuron2 = layer2.neurons[0] as! Neuron
+		let layer2 = net.layers[2] as! MLNeuronLayer
+		let neuron2 = layer2.neurons[0] as! MLNeuron
 		
 		let begin = NSDate()
 		
@@ -252,14 +252,14 @@ class NeuralNetSwiftTests: XCTestCase {
 		
 		// Save the config and recreate the network
 		let config = net.saveConfigurationToDictionary()
-		let net2 = NeuralNetwork.createNetworkFromConfigurationDictionary(config)
+		let net2 = MLNeuralNetwork.createNetworkFromConfigurationDictionary(config)
 		
-		let layer1_2 = net2.layers[1] as! NeuronLayer
-		let neuron11_2 = layer1_2.neurons[0] as! Neuron
-		let neuron12_2 = layer1_2.neurons[1] as! Neuron
+		let layer1_2 = net2.layers[1] as! MLNeuronLayer
+		let neuron11_2 = layer1_2.neurons[0] as! MLNeuron
+		let neuron12_2 = layer1_2.neurons[1] as! MLNeuron
 		
-		let layer2_2 = net2.layers[2] as! NeuronLayer
-		let neuron2_2 = layer2_2.neurons[0] as! Neuron
+		let layer2_2 = net2.layers[2] as! MLNeuronLayer
+		let neuron2_2 = layer2_2.neurons[0] as! MLNeuron
 		
 		/* Uncomment to dump network status after recreation
 		

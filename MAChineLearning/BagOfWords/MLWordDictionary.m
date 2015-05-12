@@ -1,5 +1,5 @@
 //
-//  WordDictionary.m
+//  MLWordDictionary.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 10/05/15.
@@ -31,11 +31,11 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "WordDictionary.h"
-#import "WordInfo.h"
-#import "BagOfWordsException.h"
+#import "MLWordDictionary.h"
+#import "MLWordInfo.h"
+#import "MLBagOfWordsException.h"
 
-#import "Constants.h"
+#import "MLConstants.h"
 
 #import <Accelerate/Accelerate.h>
 
@@ -43,13 +43,13 @@
 #pragma -
 #pragma WordDictionary extension
 
-@interface WordDictionary () {
+@interface MLWordDictionary () {
 	NSMutableDictionary *_dictionary;
 	NSUInteger _maxSize;
 	
 	NSUInteger _totalWords;
 	NSUInteger _totalDocuments;
-	REAL *_idfWeights;
+	MLReal *_idfWeights;
 	
 	NSMutableSet *_documents;
 }
@@ -61,14 +61,14 @@
 #pragma -
 #pragma WordDictionary implementation
 
-@implementation WordDictionary
+@implementation MLWordDictionary
 
 
 #pragma mark -
 #pragma mark Initialization
 
-+ (WordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize {
-	return [[WordDictionary alloc] initWithMaxSize:maxSize];
++ (MLWordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize {
+	return [[MLWordDictionary alloc] initWithMaxSize:maxSize];
 }
 
 - (id) initWithMaxSize:(NSUInteger)maxSize {
@@ -99,18 +99,18 @@
 #pragma mark -
 #pragma mark Dictionary access and manipulation
 
-- (WordInfo *) infoForWord:(NSString *)word {
+- (MLWordInfo *) infoForWord:(NSString *)word {
 	NSString *lowercaseWord= [word lowercaseString];
 	
 	return [_dictionary objectForKey:lowercaseWord];
 }
 
-- (WordInfo *) addOccurrenceForWord:(NSString *)word textID:(NSString *)textID {
+- (MLWordInfo *) addOccurrenceForWord:(NSString *)word textID:(NSString *)textID {
 	NSString *lowercaseWord= [word lowercaseString];
 	
-	WordInfo *wordInfo= [_dictionary objectForKey:lowercaseWord];
+	MLWordInfo *wordInfo= [_dictionary objectForKey:lowercaseWord];
 	if ((!wordInfo) && (_dictionary.count < _maxSize)) {
-		wordInfo= [[WordInfo alloc] initWithPosition:_dictionary.count];
+		wordInfo= [[MLWordInfo alloc] initWithPosition:_dictionary.count];
 		[_dictionary setObject:wordInfo forKey:lowercaseWord];
 	}
 	
@@ -131,30 +131,30 @@
 #pragma mark Dictionary filtering
 
 - (void) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies {
-	[self applyFilter:^WordFilterOutcome(NSString *word, WordInfo *wordInfo) {
-		return (wordInfo.totalOccurrencies < minOccurrencies) ? WordFilterOutcomeDiscardWord : WordFilterOutcomeKeepWord;
+	[self applyFilter:^MLWordFilterOutcome(NSString *word, MLWordInfo *wordInfo) {
+		return (wordInfo.totalOccurrencies < minOccurrencies) ? MLWordFilterOutcomeDiscardWord : MLWordFilterOutcomeKeepWord;
 	}];
 }
 
 - (void) discardWordsWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies {
-	[self applyFilter:^WordFilterOutcome(NSString *word, WordInfo *wordInfo) {
-		return (wordInfo.totalOccurrencies > maxOccurrencies) ? WordFilterOutcomeDiscardWord : WordFilterOutcomeKeepWord;
+	[self applyFilter:^MLWordFilterOutcome(NSString *word, MLWordInfo *wordInfo) {
+		return (wordInfo.totalOccurrencies > maxOccurrencies) ? MLWordFilterOutcomeDiscardWord : MLWordFilterOutcomeKeepWord;
 	}];
 }
 
-- (void) applyFilter:(WordFilter)filter {
+- (void) applyFilter:(MLWordFilter)filter {
 	NSArray *words= [_dictionary allKeys];
 	
 	for (NSString *word in words) {
-		WordInfo *wordInfo= [_dictionary objectForKey:word];
+		MLWordInfo *wordInfo= [_dictionary objectForKey:word];
 
-		WordFilterOutcome outcome= filter(word, wordInfo);
+		MLWordFilterOutcome outcome= filter(word, wordInfo);
 		switch (outcome) {
-			case WordFilterOutcomeDiscardWord:
+			case MLWordFilterOutcomeDiscardWord:
 				[_dictionary removeObjectForKey:word];
 				break;
 				
-			case WordFilterOutcomeKeepWord:
+			case MLWordFilterOutcomeKeepWord:
 				break;
 		}
 	}
@@ -166,9 +166,9 @@
 	NSArray *words= [_dictionary allKeys];
 	
 	for (NSString *word in words) {
-		WordInfo *wordInfo= [_dictionary objectForKey:word];
+		MLWordInfo *wordInfo= [_dictionary objectForKey:word];
 
-		WordInfo *newWordInfo= [[WordInfo alloc] initWithWordInfo:wordInfo newPosition:newDictionary.count];
+		MLWordInfo *newWordInfo= [[MLWordInfo alloc] initWithWordInfo:wordInfo newPosition:newDictionary.count];
 		[newDictionary setObject:newWordInfo forKey:word];
 	}
 	
@@ -188,18 +188,18 @@
 	
 	int err= posix_memalign((void **) &_idfWeights,
 							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(REAL) * _dictionary.count);
+							sizeof(MLReal) * _dictionary.count);
 	if (err)
-		@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"Error while allocating buffer"
+		@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Error while allocating buffer"
 														 userInfo:@{@"buffer": @"idfWeights",
 																	@"error": [NSNumber numberWithInt:err]}];
 	
 	// Clear the IDF buffer
-	nnVDSP_VCLR(_idfWeights, 1, _dictionary.count);
+	ML_VDSP_VCLR(_idfWeights, 1, _dictionary.count);
 	
 	// Compute inverse document frequency
-	for (WordInfo *wordInfo in _dictionary) {
-		REAL weight= log(((REAL) _totalDocuments) / (1.0 + ((REAL) wordInfo.documentOccurrencies)));
+	for (MLWordInfo *wordInfo in _dictionary) {
+		MLReal weight= log(((MLReal) _totalDocuments) / (1.0 + ((MLReal) wordInfo.documentOccurrencies)));
 		_idfWeights[wordInfo.position]= weight;
 	}
 }

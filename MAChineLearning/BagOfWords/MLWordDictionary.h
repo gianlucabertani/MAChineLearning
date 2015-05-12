@@ -1,8 +1,8 @@
 //
-//  NeuralNetwork.h
+//  MLWordDictionary.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
+//  Created by Gianluca Bertani on 10/05/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -33,53 +33,63 @@
 
 #import <Foundation/Foundation.h>
 
-#import "Real.h"
-
-#import "NeuralNetworkStatus.h"
-#import "ActivationFunctionType.h"
+#import "MLReal.h"
 
 
-@interface NeuralNetwork : NSObject
+typedef enum {
+	MLWordFilterOutcomeDiscardWord= 0,
+	MLWordFilterOutcomeKeepWord= 1
+} MLWordFilterOutcome;
+
+@class MLWordInfo;
+
+typedef MLWordFilterOutcome (^MLWordFilter)(NSString *word, MLWordInfo *wordInfo);
+
+
+@interface MLWordDictionary : NSObject
 
 
 #pragma mark -
 #pragma mark Initialization
 
-+ (NeuralNetwork *) createNetworkFromConfigurationDictionary:(NSDictionary *)config;
-+ (NeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes outputFunctionType:(ActivationFunctionType)funcType;
++ (MLWordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize;
 
-- (id) initWithLayerSizes:(NSArray *)sizes outputFunctionType:(ActivationFunctionType)funcType;
-
-
-#pragma mark -
-#pragma mark Operations
-
-- (void) feedForward;
-- (void) backPropagateWithLearningRate:(REAL)learningRate;
-- (void) updateWeights;
-
-- (void) terminate;
+- (id) initWithMaxSize:(NSUInteger)maxSize;
 
 
 #pragma mark -
-#pragma mark Configuration
+#pragma mark Dictionary access and building
 
-- (NSDictionary *) saveConfigurationToDictionary;
+- (MLWordInfo *) infoForWord:(NSString *)word;
+- (MLWordInfo *) addOccurrenceForWord:(NSString *)word textID:(NSString *)textID;
+
+
+#pragma mark -
+#pragma mark Dictionary filtering
+
+- (void) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies;
+- (void) discardWordsWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies;
+
+- (void) applyFilter:(MLWordFilter)filter;
+
+- (void) compact;
+
+
+#pragma mark -
+#pragma mark Inverse document frequency
+
+- (void) computeIDFWeights;
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) NSArray *layers;
+@property (nonatomic, readonly) NSUInteger size;
+@property (nonatomic, readonly) NSUInteger maxSize;
 
-@property (nonatomic, readonly) int inputSize;
-@property (nonatomic, readonly) REAL *inputBuffer;
-
-@property (nonatomic, readonly) int outputSize;
-@property (nonatomic, readonly) REAL *outputBuffer;
-@property (nonatomic, readonly) REAL *expectedOutputBuffer;
-
-@property (nonatomic, readonly) NeuralNetworkStatus status;
+@property (nonatomic, readonly) NSUInteger totalWords;
+@property (nonatomic, readonly) NSUInteger totalDocuments;
+@property (nonatomic, readonly) MLReal *idfWeights;
 
 
 @end

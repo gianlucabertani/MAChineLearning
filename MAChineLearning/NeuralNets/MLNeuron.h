@@ -1,8 +1,8 @@
 //
-//  FeatureNormalizationType.h
+//  MLNeuron.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 23/04/15.
+//  Created by Gianluca Bertani on 01/03/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,16 +31,50 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_FeatureNormalizationType_h
-#define MAChineLearning_FeatureNormalizationType_h
+#import <Foundation/Foundation.h>
+
+#import "MLReal.h"
+
+#import "MLActivationFunctionType.h"
 
 
-typedef enum {
-	FeatureNormalizationTypeNone= 0,
-	FeatureNormalizationTypeBoolean,
-	FeatureNormalizationTypeL2,
-	FeatureNormalizationTypeL2TFiDF
-} FeatureNormalizationType;
+@class MLNeuronLayer;
+
+@interface MLNeuron : NSObject
 
 
-#endif
+#pragma mark -
+#pragma mark Initialization
+
+- (id) initWithLayer:(MLNeuronLayer *)layer index:(int)index outputBuffer:(MLReal *)outputBuffer inputSize:(int)inputSize inputBuffer:(MLReal *)inputBuffer;
+
+
+#pragma mark -
+#pragma mark Operations
+
+- (void) partialFeedForward;
+- (void) partialBackPropagateWithLearningRate:(MLReal)learningRate delta:(MLReal)delta;
+- (void) partialUpdateWeights;
+
+
+#pragma mark -
+#pragma mark Properties
+
+@property (nonatomic, readonly) MLNeuronLayer *layer;
+
+@property (nonatomic, readonly) int index;
+@property (nonatomic, readonly) MLReal *outputBuffer;
+
+@property (nonatomic, readonly) int inputSize;
+@property (nonatomic, readonly) MLReal *inputBuffer;
+
+@property (nonatomic, readonly) MLReal bias;
+@property (nonatomic, readonly) MLReal *weights;
+@property (nonatomic, readonly) MLReal *weightsDelta;
+
+@property (nonatomic, readonly) MLReal error;
+@property (nonatomic, readonly) MLReal delta;
+
+
+
+@end

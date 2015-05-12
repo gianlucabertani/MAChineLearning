@@ -1,8 +1,8 @@
 //
-//  WordInfo.h
+//  MLBagOfWordsException.m
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 10/05/15.
+//  Created by Gianluca Bertani on 23/04/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,31 +31,31 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <Foundation/Foundation.h>
+#import "MLBagOfWordsException.h"
+
+#define BAG_OF_WORDS_EXCEPTION_NAME          (@"BagOfWordsException")
 
 
-@interface WordInfo : NSObject
+@implementation MLBagOfWordsException
 
 
-#pragma -
-#pragma Initialization
+#pragma mark -
+#pragma mark Initialization
 
-- (id) initWithWordInfo:(WordInfo *)wordInfo newPosition:(NSUInteger)newPosition;
-- (id) initWithPosition:(NSUInteger)position;
++ (MLBagOfWordsException *) bagOfWordsExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+	MLBagOfWordsException *exception= [[MLBagOfWordsException alloc] initWithReason:reason userInfo:userInfo];
+	
+	return exception;
+}
 
-
-#pragma -
-#pragma Occurrencies counting
-
-- (void) addOccurrenceForTextID:(NSString *)textID;
-
-
-#pragma -
-#pragma Properties
-
-@property (nonatomic, readonly) NSUInteger position;
-@property (nonatomic, readonly) NSUInteger totalOccurrencies;
-@property (nonatomic, readonly) NSUInteger documentOccurrencies;
+- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+	if ((self = [super initWithName:BAG_OF_WORDS_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
+		
+		// Nothing to do
+	}
+	
+	return self;
+}
 
 
 @end

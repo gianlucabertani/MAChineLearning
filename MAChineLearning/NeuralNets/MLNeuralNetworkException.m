@@ -1,5 +1,5 @@
 //
-//  ActivationFunctionType.h
+//  MLNeuralNetworkException.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 01/03/15.
@@ -31,16 +31,31 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_ActivationFunctionType_h
-#define MAChineLearning_ActivationFunctionType_h
+#import "MLNeuralNetworkException.h"
+
+#define NEURAL_NET_EXCEPTION_NAME          (@"NeuralNetworkException")
 
 
-typedef enum {
-	ActivationFunctionTypeLinear= 0,
-	ActivationFunctionTypeStep,
-	ActivationFunctionTypeLogistic,
-	ActivationFunctionTypeHyperbolic
-} ActivationFunctionType;
+@implementation MLNeuralNetworkException
 
 
-#endif
+#pragma mark -
+#pragma mark Initialization
+
++ (MLNeuralNetworkException *) neuralNetworkExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+	MLNeuralNetworkException *exception= [[MLNeuralNetworkException alloc] initWithReason:reason userInfo:userInfo];
+	
+	return exception;
+}
+
+- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+	if ((self = [super initWithName:NEURAL_NET_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
+		
+		// Nothing to do
+	}
+	
+	return self;
+}
+
+
+@end

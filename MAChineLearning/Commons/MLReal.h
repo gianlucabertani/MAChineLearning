@@ -1,8 +1,8 @@
 //
-//  WordInfo.m
+//  MLReal.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 10/05/15.
+//  Created by Gianluca Bertani on 23/04/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,89 +31,55 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "WordInfo.h"
+#ifndef MAChineLearning_MLReal_h
+#define MAChineLearning_MLReal_h
 
 
-#pragma -
-#pragma WordInfo extension
+/* Uncomment to use double precision.
+ * Beware: it is much slower.
+ 
+typedef double         MLReal;
 
-@interface WordInfo () {
-	NSUInteger _position;
-	NSUInteger _totalOccurrencies;
-	NSUInteger _documentOccurrencies;
-	
-	NSMutableSet *_documents;
-}
+#define ML_VDSP_VCLR   vDSP_vclrD
+#define ML_VDSP_VTHRSC vDSP_vthrscD
+#define ML_VDSP_VTHRES vDSP_vthresD
+#define ML_VDSP_VSMUL  vDSP_vsmulD
+#define ML_VDSP_VSDIV  vDSP_vsdivD
+#define ML_VDSP_SVDIV  vDSP_svdivD
+#define ML_VDSP_VSADD  vDSP_vsaddD
+#define ML_VDSP_DOTPR  vDSP_dotprD
+#define ML_VDSP_VSQ    vDSP_vsqD
+#define ML_VDSP_VMUL   vDSP_vmulD
+#define ML_VDSP_VADD   vDSP_vaddD
+#define ML_VDSP_VSUB   vDSP_vsubD
+#define ML_VDSP_VDIV   vDSP_vdivD
+#define ML_VDSP_VSMA   vDSP_vsmaD
+#define ML_VDSP_SVESQ  vDSP_svesqD
 
-
-#pragma -
-#pragma Internal properties
-
-@property (nonatomic, readonly) NSSet *documents;
-
-
-@end
-
-
-#pragma -
-#pragma WordInfo implementation
-
-@implementation WordInfo
-
-
-#pragma -
-#pragma Initialization
-
-- (id) initWithWordInfo:(WordInfo *)wordInfo newPosition:(NSUInteger)newPosition {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_position= newPosition;
-		_totalOccurrencies= wordInfo.totalOccurrencies;
-		_documentOccurrencies= wordInfo.documentOccurrencies;
-		
-		_documents= [[NSMutableSet alloc] initWithSet:wordInfo.documents];
-	}
-	
-	return self;
-}
-
-- (id) initWithPosition:(NSUInteger)position {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_position= position;
-		_totalOccurrencies= 0;
-		_documentOccurrencies= 0;
-		
-		_documents= [[NSMutableSet alloc] init];
-	}
-	
-	return self;
-}
+#define ML_VVEXP       vvexp
+ 
+ */
 
 
-#pragma -
-#pragma Occurrencies counting
+typedef float          MLReal;
 
-- (void) addOccurrenceForTextID:(NSString *)textID {
-	_totalOccurrencies++;
-	
-	if (textID && (![_documents containsObject:textID])) {
-		[_documents addObject:textID];
-		_documentOccurrencies++;
-	}
-}
+#define ML_VDSP_VCLR   vDSP_vclr
+#define ML_VDSP_VTHRSC vDSP_vthrsc
+#define ML_VDSP_VTHRES vDSP_vthres
+#define ML_VDSP_VSMUL  vDSP_vsmul
+#define ML_VDSP_VSDIV  vDSP_vsdiv
+#define ML_VDSP_SVDIV  vDSP_svdiv
+#define ML_VDSP_VSADD  vDSP_vsadd
+#define ML_VDSP_DOTPR  vDSP_dotpr
+#define ML_VDSP_VSQ    vDSP_vsq
+#define ML_VDSP_VMUL   vDSP_vmul
+#define ML_VDSP_VADD   vDSP_vadd
+#define ML_VDSP_VSUB   vDSP_vsub
+#define ML_VDSP_VDIV   vDSP_vdiv
+#define ML_VDSP_VSMA   vDSP_vsma
+#define ML_VDSP_SVESQ  vDSP_svesq
 
-
-#pragma -
-#pragma Properties
-
-@synthesize position= _position;
-@synthesize totalOccurrencies= _totalOccurrencies;
-@synthesize documentOccurrencies= _documentOccurrencies;
-
-@synthesize documents= _documents;
+#define ML_VVEXP       vvexpf
 
 
-@end
+#endif

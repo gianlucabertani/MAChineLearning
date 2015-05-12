@@ -1,8 +1,8 @@
 //
-//  NeuralNetworkStatus.h
+//  MLWordExtractorType.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 27/03/15.
+//  Created by Gianluca Bertani on 23/04/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,16 +31,14 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_NeuralNetworkStatus_h
-#define MAChineLearning_NeuralNetworkStatus_h
+#ifndef MAChineLearning_MLWordExtractorType_h
+#define MAChineLearning_MLWordExtractorType_h
 
 
 typedef enum {
-	NeuralNetworkStatusIdle= 0,
-	NeuralNetworkStatusFeededForward,
-	NeuralNetworkStatusBackPropagated,
-	NeuralNetworkStatusWeightsUpdated
-} NeuralNetworkStatus;
+	WordExtractorTypeSimpleTokenizer= 0,
+	WordExtractorTypeLinguisticTagger
+} WordExtractorType;
 
 
 #endif

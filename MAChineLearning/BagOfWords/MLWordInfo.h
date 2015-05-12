@@ -1,8 +1,8 @@
 //
-//  Layer.m
+//  MLWordInfo.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
+//  Created by Gianluca Bertani on 10/05/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,50 +31,31 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "Layer.h"
+#import <Foundation/Foundation.h>
 
 
-#pragma mark -
-#pragma mark Layer extension
-
-@interface Layer () {	
-	Layer __weak *_previousLayer;
-	Layer __weak *_nextLayer;
-}
+@interface MLWordInfo : NSObject
 
 
-@end
+#pragma -
+#pragma Initialization
+
+- (id) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition;
+- (id) initWithPosition:(NSUInteger)position;
 
 
-#pragma mark -
-#pragma mark Layer implementation
+#pragma -
+#pragma Occurrencies counting
 
-@implementation Layer
-
-
-#pragma mark -
-#pragma mark Initialization
-
-- (id) initWithIndex:(int)index size:(int)size {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_index= index;
-		_size= size;
-	}
-	
-	return self;
-}
+- (void) addOccurrenceForTextID:(NSString *)textID;
 
 
-#pragma mark -
-#pragma mark Properties
+#pragma -
+#pragma Properties
 
-@synthesize index= _index;
-@synthesize size= _size;
-
-@synthesize previousLayer= _previousLayer;
-@synthesize nextLayer= _nextLayer;
+@property (nonatomic, readonly) NSUInteger position;
+@property (nonatomic, readonly) NSUInteger totalOccurrencies;
+@property (nonatomic, readonly) NSUInteger documentOccurrencies;
 
 
 @end

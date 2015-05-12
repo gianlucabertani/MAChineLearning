@@ -1,5 +1,5 @@
 //
-//  BagOfWordsException.m
+//  MLFeatureNormalizationType.h
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 23/04/15.
@@ -31,31 +31,16 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "BagOfWordsException.h"
-
-#define BAG_OF_WORDS_EXCEPTION_NAME          (@"BagOfWordsException")
-
-
-@implementation BagOfWordsException
+#ifndef MAChineLearning_MLFeatureNormalizationType_h
+#define MAChineLearning_MLFeatureNormalizationType_h
 
 
-#pragma mark -
-#pragma mark Initialization
-
-+ (BagOfWordsException *) bagOfWordsExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
-	BagOfWordsException *exception= [[BagOfWordsException alloc] initWithReason:reason userInfo:userInfo];
-	
-	return exception;
-}
-
-- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
-	if ((self = [super initWithName:BAG_OF_WORDS_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
-		
-		// Nothing to do
-	}
-	
-	return self;
-}
+typedef enum {
+	FeatureNormalizationTypeNone= 0,
+	FeatureNormalizationTypeBoolean,
+	FeatureNormalizationTypeL2,
+	FeatureNormalizationTypeL2TFiDF
+} FeatureNormalizationType;
 
 
-@end
+#endif

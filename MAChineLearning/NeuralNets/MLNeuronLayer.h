@@ -1,5 +1,5 @@
 //
-//  InputLayer.h
+//  MLNeuronLayer.h
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 01/03/15.
@@ -33,24 +33,49 @@
 
 #import <Foundation/Foundation.h>
 
-#import "Real.h"
+#import "MLReal.h"
 
-#import "Layer.h"
+#import "MLLayer.h"
+#import "MLActivationFunctionType.h"
 
 
-@interface InputLayer : Layer
+@interface MLNeuronLayer : MLLayer
 
 
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithIndex:(int)index size:(int)size;
+- (id) initWithIndex:(int)index size:(int)size activationFunctionType:(MLActivationFunctionType)funcType;
+
+
+#pragma mark -
+#pragma mark Operations
+
+- (void) setUp;
+
+- (void) feedForward;
+
+- (void) fetchErrorFromNextLayer;
+
+- (void) backPropagateWithLearningRate:(MLReal)learningRate;
+
+- (void) updateWeights;
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) REAL *inputBuffer;
+@property (nonatomic, readonly) MLActivationFunctionType funcType;
+
+@property (nonatomic, readonly) MLReal *biasBuffer;
+@property (nonatomic, readonly) MLReal *biasDeltaBuffer;
+
+@property (nonatomic, readonly) MLReal *errorBuffer;
+@property (nonatomic, readonly) MLReal *deltaBuffer;
+
+@property (nonatomic, readonly) MLReal *outputBuffer;
+
+@property (nonatomic, readonly) NSArray *neurons;
 
 
 @end

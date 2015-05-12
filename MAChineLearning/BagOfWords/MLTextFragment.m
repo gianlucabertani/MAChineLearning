@@ -1,5 +1,5 @@
 //
-//  TextFragment.m
+//  MLTextFragment.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 26/04/15.
@@ -31,14 +31,14 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "TextFragment.h"
-#import "BagOfWordsException.h"
+#import "MLTextFragment.h"
+#import "MLBagOfWordsException.h"
 
 
 #pragma -
 #pragma TextFragment extension
 
-@interface TextFragment () {
+@interface MLTextFragment () {
 	NSString *_fragment;
 	NSRange _range;
 	NSRange _sentenceRange;
@@ -53,7 +53,7 @@
 #pragma -
 #pragma TextFragment implementation
 
-@implementation TextFragment
+@implementation MLTextFragment
 
 
 #pragma -
@@ -90,17 +90,17 @@
 #pragma -
 #pragma Continuity check and combination
 
-- (BOOL) isContiguous:(TextFragment *)previousFragment {
+- (BOOL) isContiguous:(MLTextFragment *)previousFragment {
 	return ((previousFragment.tokenIndex == _tokenIndex -1.0) &&
 			(previousFragment.sentenceRange.location == _sentenceRange.location));
 }
 
-- (TextFragment *) combineWithFragment:(TextFragment *)previousFragment {
+- (MLTextFragment *) combineWithFragment:(MLTextFragment *)previousFragment {
 	NSString *combinedText= [NSString stringWithFormat:@"%@ %@", previousFragment.fragment, _fragment];
 	NSRange combinedRange= NSMakeRange(previousFragment.range.location, (_range.location + _range.length) - previousFragment.range.location);
 	float combinedTokenIndex= _tokenIndex + 0.1 + (previousFragment.tokenIndex - ((int) previousFragment.tokenIndex));
 
-	TextFragment *combinedFragment= [[TextFragment alloc] initWithFrament:combinedText
+	MLTextFragment *combinedFragment= [[MLTextFragment alloc] initWithFrament:combinedText
 																	range:combinedRange
 															sentenceRange:_sentenceRange
 															   tokenIndex:combinedTokenIndex];
@@ -113,12 +113,12 @@
 #pragma NSObject overrides
 
 - (BOOL) isEqual:(id)object {
-	if (![object isKindOfClass:[TextFragment class]])
-		@throw [BagOfWordsException bagOfWordsExceptionWithReason:@"Trying to compare a TextFragment with something else"
+	if (![object isKindOfClass:[MLTextFragment class]])
+		@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Trying to compare a TextFragment with something else"
 														 userInfo:@{@"self": self,
 																	@"object": object}];
 	
-	TextFragment *fragment= (TextFragment *) object;
+	MLTextFragment *fragment= (MLTextFragment *) object;
 	return ([_fragment isEqualToString:fragment.fragment] &&
 			(_range.location == fragment.range.location));
 }

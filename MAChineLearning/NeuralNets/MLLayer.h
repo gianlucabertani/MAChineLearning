@@ -1,5 +1,5 @@
 //
-//  Layer.h
+//  MLLayer.h
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 01/03/15.
@@ -34,7 +34,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface Layer : NSObject {
+@interface MLLayer : NSObject {
 	
 @protected
 	int _index;
@@ -54,8 +54,8 @@
 @property (nonatomic, readonly) int index;
 @property (nonatomic, readonly) int size;
 
-@property (nonatomic, weak) Layer *previousLayer;
-@property (nonatomic, weak) Layer *nextLayer;
+@property (nonatomic, weak) MLLayer *previousLayer;
+@property (nonatomic, weak) MLLayer *nextLayer;
 
 
 @end

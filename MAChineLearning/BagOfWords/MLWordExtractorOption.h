@@ -1,5 +1,5 @@
 //
-//  BagOfWordsException.h
+//  MLWordExtractorOption.h
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 23/04/15.
@@ -31,18 +31,36 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <Foundation/Foundation.h>
+#ifndef MAChineLearning_MLWordExtractorOption_h
+#define MAChineLearning_MLWordExtractorOption_h
 
 
-@interface BagOfWordsException : NSException
+typedef enum {
+	WordExtractorOptionOmitStopWords= 1,
+
+	WordExtractorOptionOmitVerbs= 1 << 1,
+	WordExtractorOptionOmitAdjectives= 1 << 2,
+	WordExtractorOptionOmitAdverbs= 1 << 3,
+	WordExtractorOptionOmitNouns= 1 << 4,
+	WordExtractorOptionOmitNames= 1 << 5,
+	WordExtractorOptionOmitNumbers= 1 << 6,
+	WordExtractorOptionOmitOthers= 1 << 7,
+
+	WordExtractorOptionKeepVerbAdjectiveCombos= 1 << 10,
+	WordExtractorOptionKeepAdjectiveNounCombos= 1 << 11,
+	WordExtractorOptionKeepAdverbNounCombos= 1 << 12,
+	WordExtractorOptionKeepNounNounCombos= 1 << 13,
+	WordExtractorOptionKeepNounVerbCombos= 1 << 14,
+
+	WordExtractorOptionKeep2WordNames= 1 << 16,
+	WordExtractorOptionKeep3WordNames= 1 << 17,
+	
+	WordExtractorOptionKeepAllBigrams= 1 << 20,
+	WordExtractorOptionKeepAllTrigrams= 1 << 21,
+	
+	WordExtractorOptionKeepEmoticons= 1 << 24,
+	
+} WordExtractorOption;
 
 
-#pragma mark -
-#pragma mark Initialization
-
-+ (BagOfWordsException *) bagOfWordsExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
-
-- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
-
-
-@end
+#endif

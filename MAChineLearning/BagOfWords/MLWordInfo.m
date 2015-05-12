@@ -1,8 +1,8 @@
 //
-//  Neuron.h
+//  MLWordInfo.m
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
+//  Created by Gianluca Bertani on 10/05/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,50 +31,89 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <Foundation/Foundation.h>
-
-#import "Real.h"
-
-#import "ActivationFunctionType.h"
+#import "MLWordInfo.h"
 
 
-@class NeuronLayer;
+#pragma -
+#pragma WordInfo extension
 
-@interface Neuron : NSObject
-
-
-#pragma mark -
-#pragma mark Initialization
-
-- (id) initWithLayer:(NeuronLayer *)layer index:(int)index outputBuffer:(REAL *)outputBuffer inputSize:(int)inputSize inputBuffer:(REAL *)inputBuffer;
-
-
-#pragma mark -
-#pragma mark Operations
-
-- (void) partialFeedForward;
-- (void) partialBackPropagateWithLearningRate:(REAL)learningRate delta:(REAL)delta;
-- (void) partialUpdateWeights;
+@interface MLWordInfo () {
+	NSUInteger _position;
+	NSUInteger _totalOccurrencies;
+	NSUInteger _documentOccurrencies;
+	
+	NSMutableSet *_documents;
+}
 
 
-#pragma mark -
-#pragma mark Properties
+#pragma -
+#pragma Internal properties
 
-@property (nonatomic, readonly) NeuronLayer *layer;
+@property (nonatomic, readonly) NSSet *documents;
 
-@property (nonatomic, readonly) int index;
-@property (nonatomic, readonly) REAL *outputBuffer;
 
-@property (nonatomic, readonly) int inputSize;
-@property (nonatomic, readonly) REAL *inputBuffer;
+@end
 
-@property (nonatomic, readonly) REAL bias;
-@property (nonatomic, readonly) REAL *weights;
-@property (nonatomic, readonly) REAL *weightsDelta;
 
-@property (nonatomic, readonly) REAL error;
-@property (nonatomic, readonly) REAL delta;
+#pragma -
+#pragma WordInfo implementation
 
+@implementation MLWordInfo
+
+
+#pragma -
+#pragma Initialization
+
+- (id) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition {
+	if ((self = [super init])) {
+		
+		// Initialization
+		_position= newPosition;
+		_totalOccurrencies= wordInfo.totalOccurrencies;
+		_documentOccurrencies= wordInfo.documentOccurrencies;
+		
+		_documents= [[NSMutableSet alloc] initWithSet:wordInfo.documents];
+	}
+	
+	return self;
+}
+
+- (id) initWithPosition:(NSUInteger)position {
+	if ((self = [super init])) {
+		
+		// Initialization
+		_position= position;
+		_totalOccurrencies= 0;
+		_documentOccurrencies= 0;
+		
+		_documents= [[NSMutableSet alloc] init];
+	}
+	
+	return self;
+}
+
+
+#pragma -
+#pragma Occurrencies counting
+
+- (void) addOccurrenceForTextID:(NSString *)textID {
+	_totalOccurrencies++;
+	
+	if (textID && (![_documents containsObject:textID])) {
+		[_documents addObject:textID];
+		_documentOccurrencies++;
+	}
+}
+
+
+#pragma -
+#pragma Properties
+
+@synthesize position= _position;
+@synthesize totalOccurrencies= _totalOccurrencies;
+@synthesize documentOccurrencies= _documentOccurrencies;
+
+@synthesize documents= _documents;
 
 
 @end

@@ -1,8 +1,8 @@
 //
-//  WordExtractorOption.h
+//  MLInputLayer.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 23/04/15.
+//  Created by Gianluca Bertani on 01/03/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,36 +31,26 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_WordExtractorOption_h
-#define MAChineLearning_WordExtractorOption_h
+#import <Foundation/Foundation.h>
+
+#import "MLReal.h"
+
+#import "MLLayer.h"
 
 
-typedef enum {
-	WordExtractorOptionOmitStopWords= 1,
-
-	WordExtractorOptionOmitVerbs= 1 << 1,
-	WordExtractorOptionOmitAdjectives= 1 << 2,
-	WordExtractorOptionOmitAdverbs= 1 << 3,
-	WordExtractorOptionOmitNouns= 1 << 4,
-	WordExtractorOptionOmitNames= 1 << 5,
-	WordExtractorOptionOmitNumbers= 1 << 6,
-	WordExtractorOptionOmitOthers= 1 << 7,
-
-	WordExtractorOptionKeepVerbAdjectiveCombos= 1 << 10,
-	WordExtractorOptionKeepAdjectiveNounCombos= 1 << 11,
-	WordExtractorOptionKeepAdverbNounCombos= 1 << 12,
-	WordExtractorOptionKeepNounNounCombos= 1 << 13,
-	WordExtractorOptionKeepNounVerbCombos= 1 << 14,
-
-	WordExtractorOptionKeep2WordNames= 1 << 16,
-	WordExtractorOptionKeep3WordNames= 1 << 17,
-	
-	WordExtractorOptionKeepAllBigrams= 1 << 20,
-	WordExtractorOptionKeepAllTrigrams= 1 << 21,
-	
-	WordExtractorOptionKeepEmoticons= 1 << 24,
-	
-} WordExtractorOption;
+@interface MLInputLayer : MLLayer
 
 
-#endif
+#pragma mark -
+#pragma mark Initialization
+
+- (id) initWithIndex:(int)index size:(int)size;
+
+
+#pragma mark -
+#pragma mark Properties
+
+@property (nonatomic, readonly) MLReal *inputBuffer;
+
+
+@end

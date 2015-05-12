@@ -1,8 +1,8 @@
 //
-//  Real.h
+//  MLInputLayer.m
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 23/04/15.
+//  Created by Gianluca Bertani on 01/03/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,55 +31,65 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_Real_h
-#define MAChineLearning_Real_h
+#import "MLInputLayer.h"
+#import "MLNeuralNetworkException.h"
+
+#import "MLConstants.h"
+
+#import <Accelerate/Accelerate.h>
 
 
-/* Uncomment to use double precision.
- * Beware: it is much slower.
- 
-typedef double        REAL;
+#pragma mark -
+#pragma mark InputLayer extension
 
-#define nnVDSP_VCLR   vDSP_vclrD
-#define nnVDSP_VTHRSC vDSP_vthrscD
-#define nnVDSP_VTHRES vDSP_vthresD
-#define nnVDSP_VSMUL  vDSP_vsmulD
-#define nnVDSP_VSDIV  vDSP_vsdivD
-#define nnVDSP_SVDIV  vDSP_svdivD
-#define nnVDSP_VSADD  vDSP_vsaddD
-#define nnVDSP_DOTPR  vDSP_dotprD
-#define nnVDSP_VSQ    vDSP_vsqD
-#define nnVDSP_VMUL   vDSP_vmulD
-#define nnVDSP_VADD   vDSP_vaddD
-#define nnVDSP_VSUB   vDSP_vsubD
-#define nnVDSP_VDIV   vDSP_vdivD
-#define nnVDSP_VSMA   vDSP_vsmaD
-#define nnVDSP_SVESQ  vDSP_svesqD
-
-#define nnVVEXP       vvexp
- 
- */
+@interface MLInputLayer () {
+	MLReal *_inputBuffer;
+}
 
 
-typedef float         REAL;
-
-#define nnVDSP_VCLR   vDSP_vclr
-#define nnVDSP_VTHRSC vDSP_vthrsc
-#define nnVDSP_VTHRES vDSP_vthres
-#define nnVDSP_VSMUL  vDSP_vsmul
-#define nnVDSP_VSDIV  vDSP_vsdiv
-#define nnVDSP_SVDIV  vDSP_svdiv
-#define nnVDSP_VSADD  vDSP_vsadd
-#define nnVDSP_DOTPR  vDSP_dotpr
-#define nnVDSP_VSQ    vDSP_vsq
-#define nnVDSP_VMUL   vDSP_vmul
-#define nnVDSP_VADD   vDSP_vadd
-#define nnVDSP_VSUB   vDSP_vsub
-#define nnVDSP_VDIV   vDSP_vdiv
-#define nnVDSP_VSMA   vDSP_vsma
-#define nnVDSP_SVESQ  vDSP_svesq
-
-#define nnVVEXP       vvexpf
+@end
 
 
-#endif
+#pragma mark -
+#pragma mark InputLayer implementation
+
+@implementation MLInputLayer
+
+
+#pragma mark -
+#pragma mark Initialization
+
+- (id) initWithIndex:(int)index size:(int)size {
+	if ((self = [super initWithIndex:index size:size])) {
+		
+		// Allocate buffers
+		int err= posix_memalign((void **) &_inputBuffer,
+								BUFFER_MEMORY_ALIGNMENT,
+								sizeof(MLReal) * size);
+		if (err)
+			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
+																   userInfo:@{@"buffer": @"inputBuffer",
+																			  @"error": [NSNumber numberWithInt:err]}];
+		
+		// Clear and fill buffers as needed
+		ML_VDSP_VCLR(_inputBuffer, 1, size);
+	}
+	
+	return self;
+}
+
+- (void) dealloc {
+	
+	// Deallocate the input buffer
+	free(_inputBuffer);
+	_inputBuffer= NULL;
+}
+
+
+#pragma mark -
+#pragma mark Properties
+
+@synthesize inputBuffer= _inputBuffer;
+
+
+@end
