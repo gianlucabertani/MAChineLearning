@@ -47,10 +47,10 @@
 		8CF8D52F1AFF3CD8008FA0AC /* LineReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D52D1AFF3CD8008FA0AC /* LineReader.m */; };
 		8CF8D5321AFF3E76008FA0AC /* LineWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D5301AFF3E76008FA0AC /* LineWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CF8D5331AFF3E76008FA0AC /* LineWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D5311AFF3E76008FA0AC /* LineWriter.m */; };
-		8CF8D54E1AFF6CE0008FA0AC /* TokenInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D54C1AFF6CE0008FA0AC /* TokenInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8CF8D54F1AFF6CE0008FA0AC /* TokenInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D54D1AFF6CE0008FA0AC /* TokenInfo.m */; };
-		8CF8D5521AFF732F008FA0AC /* TokenDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D5501AFF732F008FA0AC /* TokenDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8CF8D5531AFF732F008FA0AC /* TokenDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D5511AFF732F008FA0AC /* TokenDictionary.m */; };
+		8CF8D54E1AFF6CE0008FA0AC /* WordInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D54C1AFF6CE0008FA0AC /* WordInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CF8D54F1AFF6CE0008FA0AC /* WordInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D54D1AFF6CE0008FA0AC /* WordInfo.m */; };
+		8CF8D5521AFF732F008FA0AC /* WordDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D5501AFF732F008FA0AC /* WordDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CF8D5531AFF732F008FA0AC /* WordDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D5511AFF732F008FA0AC /* WordDictionary.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -134,10 +134,10 @@
 		8CF8D52D1AFF3CD8008FA0AC /* LineReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LineReader.m; sourceTree = "<group>"; };
 		8CF8D5301AFF3E76008FA0AC /* LineWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LineWriter.h; sourceTree = "<group>"; };
 		8CF8D5311AFF3E76008FA0AC /* LineWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LineWriter.m; sourceTree = "<group>"; };
-		8CF8D54C1AFF6CE0008FA0AC /* TokenInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenInfo.h; sourceTree = "<group>"; };
-		8CF8D54D1AFF6CE0008FA0AC /* TokenInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenInfo.m; sourceTree = "<group>"; };
-		8CF8D5501AFF732F008FA0AC /* TokenDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenDictionary.h; sourceTree = "<group>"; };
-		8CF8D5511AFF732F008FA0AC /* TokenDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenDictionary.m; sourceTree = "<group>"; };
+		8CF8D54C1AFF6CE0008FA0AC /* WordInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordInfo.h; sourceTree = "<group>"; };
+		8CF8D54D1AFF6CE0008FA0AC /* WordInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordInfo.m; sourceTree = "<group>"; };
+		8CF8D5501AFF732F008FA0AC /* WordDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordDictionary.h; sourceTree = "<group>"; };
+		8CF8D5511AFF732F008FA0AC /* WordDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordDictionary.m; sourceTree = "<group>"; };
 		8CF961F91AF66C240071A995 /* NeuralNets.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = NeuralNets.md; sourceTree = "<group>"; };
 		8CF961FA1AF66FEE0071A995 /* BagOfWords.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BagOfWords.md; sourceTree = "<group>"; };
 		8CF961FC1AF690420071A995 /* Bag Of Words Norm Example.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Bag Of Words Norm Example.png"; sourceTree = SOURCE_ROOT; };
@@ -206,10 +206,10 @@
 				8C94CC001AE91CEE00A0A328 /* WordExtractorType.h */,
 				8CC9E4DB1AE9843B002659EA /* WordExtractorOption.h */,
 				8C94CBFE1AE91C0800A0A328 /* FeatureNormalizationType.h */,
-				8CF8D5501AFF732F008FA0AC /* TokenDictionary.h */,
-				8CF8D5511AFF732F008FA0AC /* TokenDictionary.m */,
-				8CF8D54C1AFF6CE0008FA0AC /* TokenInfo.h */,
-				8CF8D54D1AFF6CE0008FA0AC /* TokenInfo.m */,
+				8CF8D5501AFF732F008FA0AC /* WordDictionary.h */,
+				8CF8D5511AFF732F008FA0AC /* WordDictionary.m */,
+				8CF8D54C1AFF6CE0008FA0AC /* WordInfo.h */,
+				8CF8D54D1AFF6CE0008FA0AC /* WordInfo.m */,
 				8C58A30C1AECD275006AB74D /* TextFragment.h */,
 				8C58A30D1AECD275006AB74D /* TextFragment.m */,
 				8C58A31B1AECDF9D006AB74D /* StopWords.h */,
@@ -344,9 +344,9 @@
 				8C1251DD1AE8D38E00FA493E /* Layer.h in Headers */,
 				8C1251DB1AE8D38E00FA493E /* InputLayer.h in Headers */,
 				8C1251E71AE8D38E00FA493E /* NeuronLayer.h in Headers */,
-				8CF8D5521AFF732F008FA0AC /* TokenDictionary.h in Headers */,
+				8CF8D5521AFF732F008FA0AC /* WordDictionary.h in Headers */,
 				8C1251E51AE8D38E00FA493E /* Neuron.h in Headers */,
-				8CF8D54E1AFF6CE0008FA0AC /* TokenInfo.h in Headers */,
+				8CF8D54E1AFF6CE0008FA0AC /* WordInfo.h in Headers */,
 				8C1251E11AE8D38E00FA493E /* NeuralNetworkException.h in Headers */,
 				8C1251EC1AE8D4BE00FA493E /* BagOfWords.h in Headers */,
 				8C94CC011AE91CEE00A0A328 /* WordExtractorType.h in Headers */,
@@ -505,12 +505,12 @@
 				8CF8D5331AFF3E76008FA0AC /* LineWriter.m in Sources */,
 				8C1251E61AE8D38E00FA493E /* Neuron.m in Sources */,
 				8C1251E01AE8D38E00FA493E /* NeuralNetwork.m in Sources */,
-				8CF8D5531AFF732F008FA0AC /* TokenDictionary.m in Sources */,
+				8CF8D5531AFF732F008FA0AC /* WordDictionary.m in Sources */,
 				8C1251E81AE8D38E00FA493E /* NeuronLayer.m in Sources */,
 				8C1251E21AE8D38E00FA493E /* NeuralNetworkException.m in Sources */,
 				8C58A30F1AECD275006AB74D /* TextFragment.m in Sources */,
 				8CF8D52F1AFF3CD8008FA0AC /* LineReader.m in Sources */,
-				8CF8D54F1AFF6CE0008FA0AC /* TokenInfo.m in Sources */,
+				8CF8D54F1AFF6CE0008FA0AC /* WordInfo.m in Sources */,
 				8CC9E4E01AE985F4002659EA /* NSString+WordUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

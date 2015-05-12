@@ -151,7 +151,7 @@
 
 - (void) testBagOfWordsForSentimentAnalysisWithSimpleTokenizer {
 	@try {
-		TokenDictionary *dictionary= [TokenDictionary dictionaryWithMaxSize:300];
+		WordDictionary *dictionary= [WordDictionary dictionaryWithMaxSize:300];
 		
 		// Bag of words for sentiment analysis uses the (quick) simple tokenizer,
 		// removing stop words but keeping emoticon and all bigrams
@@ -161,46 +161,46 @@
 																   language:@"en"
 													   featureNormalization:FeatureNormalizationTypeNone];
 		
-		XCTAssertTrue([[bag.tokens firstObject] isEqualToString:@"think"]);
-		XCTAssertTrue([bag.tokens containsObject:@"something marginal"]);
-		XCTAssertTrue([bag.tokens containsObject:@"marginal"]);
-		XCTAssertTrue([bag.tokens containsObject:@"commercial"]);
-		XCTAssertTrue([bag.tokens containsObject:@"commercial movie"]);
-		XCTAssertTrue([bag.tokens containsObject:@"genius"]);
-		XCTAssertTrue([bag.tokens containsObject:@"genius people"]);
-		XCTAssertTrue([bag.tokens containsObject:@":)"]);
-		XCTAssertTrue([bag.tokens containsObject:@"mediocre"]);
-		XCTAssertTrue([bag.tokens containsObject:@"mediocre things"]);
-		XCTAssertTrue([bag.tokens containsObject:@"feel like"]);
-		XCTAssertTrue([bag.tokens containsObject:@"like"]);
-		XCTAssertTrue([bag.tokens containsObject:@"boring"]);
-		XCTAssertTrue([bag.tokens containsObject:@"non challenging"]);
-		XCTAssertTrue([bag.tokens containsObject:@"people behavior"]);
-		XCTAssertTrue([bag.tokens containsObject:@"big boredom"]);
-		XCTAssertTrue([bag.tokens containsObject:@"boredom"]);
-		XCTAssertTrue([bag.tokens containsObject:@"logical thing"]);
-		XCTAssertTrue([bag.tokens containsObject:@"right"]);
-		XCTAssertTrue([[bag.tokens lastObject] isEqualToString:@"absolutely right"]);
+		XCTAssertTrue([[bag.words firstObject] isEqualToString:@"think"]);
+		XCTAssertTrue([bag.words containsObject:@"something marginal"]);
+		XCTAssertTrue([bag.words containsObject:@"marginal"]);
+		XCTAssertTrue([bag.words containsObject:@"commercial"]);
+		XCTAssertTrue([bag.words containsObject:@"commercial movie"]);
+		XCTAssertTrue([bag.words containsObject:@"genius"]);
+		XCTAssertTrue([bag.words containsObject:@"genius people"]);
+		XCTAssertTrue([bag.words containsObject:@":)"]);
+		XCTAssertTrue([bag.words containsObject:@"mediocre"]);
+		XCTAssertTrue([bag.words containsObject:@"mediocre things"]);
+		XCTAssertTrue([bag.words containsObject:@"feel like"]);
+		XCTAssertTrue([bag.words containsObject:@"like"]);
+		XCTAssertTrue([bag.words containsObject:@"boring"]);
+		XCTAssertTrue([bag.words containsObject:@"non challenging"]);
+		XCTAssertTrue([bag.words containsObject:@"people behavior"]);
+		XCTAssertTrue([bag.words containsObject:@"big boredom"]);
+		XCTAssertTrue([bag.words containsObject:@"boredom"]);
+		XCTAssertTrue([bag.words containsObject:@"logical thing"]);
+		XCTAssertTrue([bag.words containsObject:@"right"]);
+		XCTAssertTrue([[bag.words lastObject] isEqualToString:@"absolutely right"]);
 		
-		XCTAssertFalse([bag.tokens containsObject:@"it's"]);
-		XCTAssertFalse([bag.tokens containsObject:@"i.e."]);
-		XCTAssertFalse([bag.tokens containsObject:@"\"genius\""]);
-		XCTAssertFalse([bag.tokens containsObject:@"people's"]);
-		XCTAssertFalse([bag.tokens containsObject:@"like-"]);
+		XCTAssertFalse([bag.words containsObject:@"it's"]);
+		XCTAssertFalse([bag.words containsObject:@"i.e."]);
+		XCTAssertFalse([bag.words containsObject:@"\"genius\""]);
+		XCTAssertFalse([bag.words containsObject:@"people's"]);
+		XCTAssertFalse([bag.words containsObject:@"like-"]);
 		
-		XCTAssertFalse([bag.tokens containsObject:@"the"]);
-		XCTAssertFalse([bag.tokens containsObject:@"it"]);
-		XCTAssertFalse([bag.tokens containsObject:@"is"]);
-		XCTAssertFalse([bag.tokens containsObject:@"this"]);
-		XCTAssertFalse([bag.tokens containsObject:@"very"]);
-		XCTAssertFalse([bag.tokens containsObject:@"most"]);
+		XCTAssertFalse([bag.words containsObject:@"the"]);
+		XCTAssertFalse([bag.words containsObject:@"it"]);
+		XCTAssertFalse([bag.words containsObject:@"is"]);
+		XCTAssertFalse([bag.words containsObject:@"this"]);
+		XCTAssertFalse([bag.words containsObject:@"very"]);
+		XCTAssertFalse([bag.words containsObject:@"most"]);
 		
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"marginal"].position], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@":)"].position], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"mediocre"].position], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"big"].position], 2.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"boring"].position], 2.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"right"].position], 2.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"marginal"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@":)"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"mediocre"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"big"].position], 2.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"boring"].position], 2.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"right"].position], 2.0);
 
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
@@ -209,7 +209,7 @@
 
 - (void) testBagOfWordsForSentimentAnalysisWithLinguisticTagger {
 	@try {
-		TokenDictionary *dictionary= [TokenDictionary dictionaryWithMaxSize:300];
+		WordDictionary *dictionary= [WordDictionary dictionaryWithMaxSize:300];
 		
 		// Bag of words for sentiment analysis using the (slow) linguistic tagger,
 		// with same configuration of default sentiment analysis
@@ -223,46 +223,46 @@
 								   featureNormalization:FeatureNormalizationTypeNone
 						    			   outputBuffer:nil];
 		
-		XCTAssertTrue([[bag.tokens firstObject] isEqualToString:@"think"]);
-		XCTAssertTrue([bag.tokens containsObject:@"something marginal"]);
-		XCTAssertTrue([bag.tokens containsObject:@"marginal"]);
-		XCTAssertTrue([bag.tokens containsObject:@"commercial"]);
-		XCTAssertTrue([bag.tokens containsObject:@"commercial movie"]);
-		XCTAssertTrue([bag.tokens containsObject:@"genius"]);
-		XCTAssertTrue([bag.tokens containsObject:@"genius people"]);
-		XCTAssertTrue([bag.tokens containsObject:@":)"]);
-		XCTAssertTrue([bag.tokens containsObject:@"mediocre"]);
-		XCTAssertTrue([bag.tokens containsObject:@"mediocre things"]);
-		XCTAssertTrue([bag.tokens containsObject:@"feel like"]);
-		XCTAssertTrue([bag.tokens containsObject:@"like"]);
-		XCTAssertTrue([bag.tokens containsObject:@"boring"]);
-		XCTAssertTrue([bag.tokens containsObject:@"non challenging"]);
-		XCTAssertTrue([bag.tokens containsObject:@"people behavior"]);
-		XCTAssertTrue([bag.tokens containsObject:@"big boredom"]);
-		XCTAssertTrue([bag.tokens containsObject:@"boredom"]);
-		XCTAssertTrue([bag.tokens containsObject:@"logical thing"]);
-		XCTAssertTrue([bag.tokens containsObject:@"right"]);
-		XCTAssertTrue([[bag.tokens lastObject] isEqualToString:@"absolutely right"]);
+		XCTAssertTrue([[bag.words firstObject] isEqualToString:@"think"]);
+		XCTAssertTrue([bag.words containsObject:@"something marginal"]);
+		XCTAssertTrue([bag.words containsObject:@"marginal"]);
+		XCTAssertTrue([bag.words containsObject:@"commercial"]);
+		XCTAssertTrue([bag.words containsObject:@"commercial movie"]);
+		XCTAssertTrue([bag.words containsObject:@"genius"]);
+		XCTAssertTrue([bag.words containsObject:@"genius people"]);
+		XCTAssertTrue([bag.words containsObject:@":)"]);
+		XCTAssertTrue([bag.words containsObject:@"mediocre"]);
+		XCTAssertTrue([bag.words containsObject:@"mediocre things"]);
+		XCTAssertTrue([bag.words containsObject:@"feel like"]);
+		XCTAssertTrue([bag.words containsObject:@"like"]);
+		XCTAssertTrue([bag.words containsObject:@"boring"]);
+		XCTAssertTrue([bag.words containsObject:@"non challenging"]);
+		XCTAssertTrue([bag.words containsObject:@"people behavior"]);
+		XCTAssertTrue([bag.words containsObject:@"big boredom"]);
+		XCTAssertTrue([bag.words containsObject:@"boredom"]);
+		XCTAssertTrue([bag.words containsObject:@"logical thing"]);
+		XCTAssertTrue([bag.words containsObject:@"right"]);
+		XCTAssertTrue([[bag.words lastObject] isEqualToString:@"absolutely right"]);
 		
-		XCTAssertFalse([bag.tokens containsObject:@"it's"]);
-		XCTAssertFalse([bag.tokens containsObject:@"i.e."]);
-		XCTAssertFalse([bag.tokens containsObject:@"\"genius\""]);
-		XCTAssertFalse([bag.tokens containsObject:@"people's"]);
-		XCTAssertFalse([bag.tokens containsObject:@"like-"]);
+		XCTAssertFalse([bag.words containsObject:@"it's"]);
+		XCTAssertFalse([bag.words containsObject:@"i.e."]);
+		XCTAssertFalse([bag.words containsObject:@"\"genius\""]);
+		XCTAssertFalse([bag.words containsObject:@"people's"]);
+		XCTAssertFalse([bag.words containsObject:@"like-"]);
 		
-		XCTAssertFalse([bag.tokens containsObject:@"the"]);
-		XCTAssertFalse([bag.tokens containsObject:@"it"]);
-		XCTAssertFalse([bag.tokens containsObject:@"is"]);
-		XCTAssertFalse([bag.tokens containsObject:@"this"]);
-		XCTAssertFalse([bag.tokens containsObject:@"very"]);
-		XCTAssertFalse([bag.tokens containsObject:@"most"]);
+		XCTAssertFalse([bag.words containsObject:@"the"]);
+		XCTAssertFalse([bag.words containsObject:@"it"]);
+		XCTAssertFalse([bag.words containsObject:@"is"]);
+		XCTAssertFalse([bag.words containsObject:@"this"]);
+		XCTAssertFalse([bag.words containsObject:@"very"]);
+		XCTAssertFalse([bag.words containsObject:@"most"]);
 		
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"marginal"].position], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@":)"].position], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"mediocre"].position], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"big"].position], 2.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"boring"].position], 2.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"right"].position], 2.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"marginal"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@":)"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"mediocre"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"big"].position], 2.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"boring"].position], 2.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"right"].position], 2.0);
 		
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
@@ -271,7 +271,7 @@
 
 - (void) testBagOfWordsForTopicClassification {
 	@try {
-		TokenDictionary *dictionary= [TokenDictionary dictionaryWithMaxSize:100];
+		WordDictionary *dictionary= [WordDictionary dictionaryWithMaxSize:100];
 		
 		// Bag of words for topic classification uses the (slow) linguistic tagger, removing
 		// stop words, verbs and adjectives, but keeping composite nouns and names
@@ -281,40 +281,40 @@
 																	 language:@"en"
 														 featureNormalization:FeatureNormalizationTypeNone];
 		
-		XCTAssertTrue([[bag.tokens firstObject] isEqualToString:@"NLP"]);
-		XCTAssertTrue([bag.tokens containsObject:@"Alan Turing"]);
-		XCTAssertTrue([bag.tokens containsObject:@"1954"]);
-		XCTAssertTrue([bag.tokens containsObject:@"Computing Machinery"]);
-		XCTAssertTrue([bag.tokens containsObject:@"Turing test"]);
-		XCTAssertTrue([bag.tokens containsObject:@"Georgetown"]);
-		XCTAssertTrue([bag.tokens containsObject:@"Georgetown experiment"]);
-		XCTAssertTrue([bag.tokens containsObject:@"machine translation"]);
-		XCTAssertTrue([bag.tokens containsObject:@"ALPAC"]);
-		XCTAssertTrue([bag.tokens containsObject:@"natural language"]);
-		XCTAssertTrue([bag.tokens containsObject:@"ELIZA"]);
-		XCTAssertTrue([bag.tokens containsObject:@"Rogerian psychotherapist"]);
-		XCTAssertTrue([bag.tokens containsObject:@"human thought"]);
-		XCTAssertTrue([bag.tokens containsObject:@"Joseph Weizenbaum"]);
+		XCTAssertTrue([[bag.words firstObject] isEqualToString:@"NLP"]);
+		XCTAssertTrue([bag.words containsObject:@"Alan Turing"]);
+		XCTAssertTrue([bag.words containsObject:@"1954"]);
+		XCTAssertTrue([bag.words containsObject:@"Computing Machinery"]);
+		XCTAssertTrue([bag.words containsObject:@"Turing test"]);
+		XCTAssertTrue([bag.words containsObject:@"Georgetown"]);
+		XCTAssertTrue([bag.words containsObject:@"Georgetown experiment"]);
+		XCTAssertTrue([bag.words containsObject:@"machine translation"]);
+		XCTAssertTrue([bag.words containsObject:@"ALPAC"]);
+		XCTAssertTrue([bag.words containsObject:@"natural language"]);
+		XCTAssertTrue([bag.words containsObject:@"ELIZA"]);
+		XCTAssertTrue([bag.words containsObject:@"Rogerian psychotherapist"]);
+		XCTAssertTrue([bag.words containsObject:@"human thought"]);
+		XCTAssertTrue([bag.words containsObject:@"Joseph Weizenbaum"]);
 		
-		XCTAssertFalse([bag.tokens containsObject:@"test"]);
-		XCTAssertFalse([bag.tokens containsObject:@"experiment"]);
-		XCTAssertFalse([bag.tokens containsObject:@"machine"]);
-		XCTAssertFalse([bag.tokens containsObject:@"language"]);
-		XCTAssertFalse([bag.tokens containsObject:@"thought"]);
+		XCTAssertFalse([bag.words containsObject:@"test"]);
+		XCTAssertFalse([bag.words containsObject:@"experiment"]);
+		XCTAssertFalse([bag.words containsObject:@"machine"]);
+		XCTAssertFalse([bag.words containsObject:@"language"]);
+		XCTAssertFalse([bag.words containsObject:@"thought"]);
 		
-		XCTAssertFalse([bag.tokens containsObject:@"the"]);
-		XCTAssertFalse([bag.tokens containsObject:@"it"]);
-		XCTAssertFalse([bag.tokens containsObject:@"is"]);
-		XCTAssertFalse([bag.tokens containsObject:@"this"]);
-		XCTAssertFalse([bag.tokens containsObject:@"very"]);
-		XCTAssertFalse([bag.tokens containsObject:@"most"]);
+		XCTAssertFalse([bag.words containsObject:@"the"]);
+		XCTAssertFalse([bag.words containsObject:@"it"]);
+		XCTAssertFalse([bag.words containsObject:@"is"]);
+		XCTAssertFalse([bag.words containsObject:@"this"]);
+		XCTAssertFalse([bag.words containsObject:@"very"]);
+		XCTAssertFalse([bag.words containsObject:@"most"]);
 		
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"alan turing"].position], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"georgetown"].position], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"machine translation"].position], 4.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"eliza"].position], 3.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"human thought"].position], 1.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForToken:@"joseph weizenbaum"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"alan turing"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"georgetown"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"machine translation"].position], 4.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"eliza"].position], 3.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"human thought"].position], 1.0);
+		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"joseph weizenbaum"].position], 1.0);
 		
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);

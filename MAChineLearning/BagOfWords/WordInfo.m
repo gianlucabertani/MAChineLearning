@@ -1,5 +1,5 @@
 //
-//  TokenDictionary.h
+//  WordInfo.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 10/05/15.
@@ -31,65 +31,89 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <Foundation/Foundation.h>
-
-#import "Real.h"
+#import "WordInfo.h"
 
 
-typedef enum {
-	TokenFilterOutcomeDiscardToken= 0,
-	TokenFilterOutcomeKeepToken= 1
-} TokenFilterOutcome;
+#pragma -
+#pragma WordInfo extension
 
-@class TokenInfo;
-
-typedef TokenFilterOutcome (^TokenFilter)(NSString *token, TokenInfo *tokenInfo);
-
-
-@interface TokenDictionary : NSObject
-
-
-#pragma mark -
-#pragma mark Initialization
-
-+ (TokenDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize;
-
-- (id) initWithMaxSize:(NSUInteger)maxSize;
+@interface WordInfo () {
+	NSUInteger _position;
+	NSUInteger _totalOccurrencies;
+	NSUInteger _documentOccurrencies;
+	
+	NSMutableSet *_documents;
+}
 
 
-#pragma mark -
-#pragma mark Dictionary access and building
+#pragma -
+#pragma Internal properties
 
-- (TokenInfo *) infoForToken:(NSString *)token;
-- (TokenInfo *) addOccurrenceForToken:(NSString *)token textID:(NSString *)textID;
-
-
-#pragma mark -
-#pragma mark Dictionary filtering
-
-- (void) discardTokensWithOccurrenciesLessThan:(NSUInteger)minOccurrencies;
-- (void) discardTokensWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies;
-
-- (void) applyFilter:(TokenFilter)filter;
-
-- (void) compact;
+@property (nonatomic, readonly) NSSet *documents;
 
 
-#pragma mark -
-#pragma mark Inverse document frequency
-
-- (void) computeIDFWeights;
+@end
 
 
-#pragma mark -
-#pragma mark Properties
+#pragma -
+#pragma WordInfo implementation
 
-@property (nonatomic, readonly) NSUInteger size;
-@property (nonatomic, readonly) NSUInteger maxSize;
+@implementation WordInfo
 
-@property (nonatomic, readonly) NSUInteger totalTokens;
-@property (nonatomic, readonly) NSUInteger totalDocuments;
-@property (nonatomic, readonly) REAL *idfWeights;
+
+#pragma -
+#pragma Initialization
+
+- (id) initWithWordInfo:(WordInfo *)wordInfo newPosition:(NSUInteger)newPosition {
+	if ((self = [super init])) {
+		
+		// Initialization
+		_position= newPosition;
+		_totalOccurrencies= wordInfo.totalOccurrencies;
+		_documentOccurrencies= wordInfo.documentOccurrencies;
+		
+		_documents= [[NSMutableSet alloc] initWithSet:wordInfo.documents];
+	}
+	
+	return self;
+}
+
+- (id) initWithPosition:(NSUInteger)position {
+	if ((self = [super init])) {
+		
+		// Initialization
+		_position= position;
+		_totalOccurrencies= 0;
+		_documentOccurrencies= 0;
+		
+		_documents= [[NSMutableSet alloc] init];
+	}
+	
+	return self;
+}
+
+
+#pragma -
+#pragma Occurrencies counting
+
+- (void) addOccurrenceForTextID:(NSString *)textID {
+	_totalOccurrencies++;
+	
+	if (textID && (![_documents containsObject:textID])) {
+		[_documents addObject:textID];
+		_documentOccurrencies++;
+	}
+}
+
+
+#pragma -
+#pragma Properties
+
+@synthesize position= _position;
+@synthesize totalOccurrencies= _totalOccurrencies;
+@synthesize documentOccurrencies= _documentOccurrencies;
+
+@synthesize documents= _documents;
 
 
 @end

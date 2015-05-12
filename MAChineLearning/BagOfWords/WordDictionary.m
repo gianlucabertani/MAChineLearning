@@ -1,5 +1,5 @@
 //
-//  TokenDictionary.m
+//  WordDictionary.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 10/05/15.
@@ -31,8 +31,8 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "TokenDictionary.h"
-#import "TokenInfo.h"
+#import "WordDictionary.h"
+#import "WordInfo.h"
 #import "BagOfWordsException.h"
 
 #import "Constants.h"
@@ -41,13 +41,13 @@
 
 
 #pragma -
-#pragma TokenDictionary extension
+#pragma WordDictionary extension
 
-@interface TokenDictionary () {
+@interface WordDictionary () {
 	NSMutableDictionary *_dictionary;
 	NSUInteger _maxSize;
 	
-	NSUInteger _totalTokens;
+	NSUInteger _totalWords;
 	NSUInteger _totalDocuments;
 	REAL *_idfWeights;
 	
@@ -59,16 +59,16 @@
 
 
 #pragma -
-#pragma TokenDictionary implementation
+#pragma WordDictionary implementation
 
-@implementation TokenDictionary
+@implementation WordDictionary
 
 
 #pragma mark -
 #pragma mark Initialization
 
-+ (TokenDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize {
-	return [[TokenDictionary alloc] initWithMaxSize:maxSize];
++ (WordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize {
+	return [[WordDictionary alloc] initWithMaxSize:maxSize];
 }
 
 - (id) initWithMaxSize:(NSUInteger)maxSize {
@@ -78,7 +78,7 @@
 		_dictionary= [[NSMutableDictionary alloc] initWithCapacity:maxSize];
 		_maxSize= maxSize;
 		
-		_totalTokens= 0;
+		_totalWords= 0;
 		_totalDocuments= 0;
 		_idfWeights= NULL;
 		
@@ -99,62 +99,62 @@
 #pragma mark -
 #pragma mark Dictionary access and manipulation
 
-- (TokenInfo *) infoForToken:(NSString *)token {
-	NSString *lowercaseToken= [token lowercaseString];
+- (WordInfo *) infoForWord:(NSString *)word {
+	NSString *lowercaseWord= [word lowercaseString];
 	
-	return [_dictionary objectForKey:lowercaseToken];
+	return [_dictionary objectForKey:lowercaseWord];
 }
 
-- (TokenInfo *) addOccurrenceForToken:(NSString *)token textID:(NSString *)textID {
-	NSString *lowercaseToken= [token lowercaseString];
+- (WordInfo *) addOccurrenceForWord:(NSString *)word textID:(NSString *)textID {
+	NSString *lowercaseWord= [word lowercaseString];
 	
-	TokenInfo *tokenInfo= [_dictionary objectForKey:lowercaseToken];
-	if ((!tokenInfo) && (_dictionary.count < _maxSize)) {
-		tokenInfo= [[TokenInfo alloc] initWithPosition:_dictionary.count];
-		[_dictionary setObject:tokenInfo forKey:lowercaseToken];
+	WordInfo *wordInfo= [_dictionary objectForKey:lowercaseWord];
+	if ((!wordInfo) && (_dictionary.count < _maxSize)) {
+		wordInfo= [[WordInfo alloc] initWithPosition:_dictionary.count];
+		[_dictionary setObject:wordInfo forKey:lowercaseWord];
 	}
 	
-	[tokenInfo addOccurrenceForTextID:textID];
+	[wordInfo addOccurrenceForTextID:textID];
 	
 	if (textID && (![_documents containsObject:textID])) {
 		[_documents addObject:textID];
 		_totalDocuments++;
 	}
 	
-	_totalTokens++;
+	_totalWords++;
 	
-	return tokenInfo;
+	return wordInfo;
 }
 
 
 #pragma mark -
 #pragma mark Dictionary filtering
 
-- (void) discardTokensWithOccurrenciesLessThan:(NSUInteger)minOccurrencies {
-	[self applyFilter:^TokenFilterOutcome(NSString *token, TokenInfo *tokenInfo) {
-		return (tokenInfo.totalOccurrencies < minOccurrencies) ? TokenFilterOutcomeDiscardToken : TokenFilterOutcomeKeepToken;
+- (void) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies {
+	[self applyFilter:^WordFilterOutcome(NSString *word, WordInfo *wordInfo) {
+		return (wordInfo.totalOccurrencies < minOccurrencies) ? WordFilterOutcomeDiscardWord : WordFilterOutcomeKeepWord;
 	}];
 }
 
-- (void) discardTokensWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies {
-	[self applyFilter:^TokenFilterOutcome(NSString *token, TokenInfo *tokenInfo) {
-		return (tokenInfo.totalOccurrencies > maxOccurrencies) ? TokenFilterOutcomeDiscardToken : TokenFilterOutcomeKeepToken;
+- (void) discardWordsWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies {
+	[self applyFilter:^WordFilterOutcome(NSString *word, WordInfo *wordInfo) {
+		return (wordInfo.totalOccurrencies > maxOccurrencies) ? WordFilterOutcomeDiscardWord : WordFilterOutcomeKeepWord;
 	}];
 }
 
-- (void) applyFilter:(TokenFilter)filter {
-	NSArray *tokens= [_dictionary allKeys];
+- (void) applyFilter:(WordFilter)filter {
+	NSArray *words= [_dictionary allKeys];
 	
-	for (NSString *token in tokens) {
-		TokenInfo *tokenInfo= [_dictionary objectForKey:token];
+	for (NSString *word in words) {
+		WordInfo *wordInfo= [_dictionary objectForKey:word];
 
-		TokenFilterOutcome outcome= filter(token, tokenInfo);
+		WordFilterOutcome outcome= filter(word, wordInfo);
 		switch (outcome) {
-			case TokenFilterOutcomeDiscardToken:
-				[_dictionary removeObjectForKey:token];
+			case WordFilterOutcomeDiscardWord:
+				[_dictionary removeObjectForKey:word];
 				break;
 				
-			case TokenFilterOutcomeKeepToken:
+			case WordFilterOutcomeKeepWord:
 				break;
 		}
 	}
@@ -163,13 +163,13 @@
 - (void) compact {
 	NSMutableDictionary *newDictionary= [[NSMutableDictionary alloc] initWithCapacity:_dictionary.count];
 	
-	NSArray *tokens= [_dictionary allKeys];
+	NSArray *words= [_dictionary allKeys];
 	
-	for (NSString *token in tokens) {
-		TokenInfo *tokenInfo= [_dictionary objectForKey:token];
+	for (NSString *word in words) {
+		WordInfo *wordInfo= [_dictionary objectForKey:word];
 
-		TokenInfo *newTokenInfo= [[TokenInfo alloc] initWithTokenInfo:tokenInfo newPosition:newDictionary.count];
-		[newDictionary setObject:newTokenInfo forKey:token];
+		WordInfo *newWordInfo= [[WordInfo alloc] initWithWordInfo:wordInfo newPosition:newDictionary.count];
+		[newDictionary setObject:newWordInfo forKey:word];
 	}
 	
 	[_dictionary removeAllObjects];
@@ -198,9 +198,9 @@
 	nnVDSP_VCLR(_idfWeights, 1, _dictionary.count);
 	
 	// Compute inverse document frequency
-	for (TokenInfo *tokenInfo in _dictionary) {
-		REAL weight= log(((REAL) _totalDocuments) / (1.0 + ((REAL) tokenInfo.documentOccurrencies)));
-		_idfWeights[tokenInfo.position]= weight;
+	for (WordInfo *wordInfo in _dictionary) {
+		REAL weight= log(((REAL) _totalDocuments) / (1.0 + ((REAL) wordInfo.documentOccurrencies)));
+		_idfWeights[wordInfo.position]= weight;
 	}
 }
 
@@ -216,7 +216,7 @@
 
 @synthesize maxSize= _maxSize;
 
-@synthesize totalTokens= _totalTokens;
+@synthesize totalWords= _totalWords;
 @synthesize totalDocuments= _totalDocuments;
 @synthesize idfWeights= _idfWeights;
 

@@ -67,7 +67,7 @@ int main(int argc, const char * argv[]) {
 		NSArray *fileNames= [manager contentsOfDirectoryAtPath:path error:nil];
 		
 		// Prepare the dictionary
-		TokenDictionary *dictionary= [TokenDictionary dictionaryWithMaxSize:300000];
+		WordDictionary *dictionary= [WordDictionary dictionaryWithMaxSize:300000];
 		
 		// First loop on all the files to determine the dictionary
 		for (NSString *fileName in fileNames) {
@@ -102,14 +102,14 @@ int main(int argc, const char * argv[]) {
 			[reader close];
 		}
 		
-		NSLog(@"Pre-filtering size:     %8lu", dictionary.size);
+		NSLog(@"Pre-filtering size:    %8lu", dictionary.size);
 		
 		// Filter dictionary for rare words
-		[dictionary discardTokensWithOccurrenciesLessThan:WORD_MIN_COUNT];
+		[dictionary discardWordsWithOccurrenciesLessThan:WORD_MIN_COUNT];
 		[dictionary compact];
 		
-		NSLog(@"Final dictionary size:  %8lu", dictionary.size);
-		NSLog(@"Total number of tokens: %8lu", dictionary.totalTokens);
+		NSLog(@"Final dictionary size: %8lu", dictionary.size);
+		NSLog(@"Total number of Words: %8lu", dictionary.totalWords);
 		
 		// Prepare the neural network:
 		// - input and output sizes are set to the dictionary (bag of words) size

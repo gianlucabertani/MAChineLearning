@@ -32,8 +32,8 @@
 //
 
 #import "BagOfWords.h"
-#import "TokenDictionary.h"
-#import "TokenInfo.h"
+#import "WordDictionary.h"
+#import "WordInfo.h"
 #import "TextFragment.h"
 #import "StopWords.h"
 #import "NSString+WordUtils.h"
@@ -55,7 +55,7 @@
 
 @interface BagOfWords () {
 	NSString *_textID;
-	NSArray *_tokens;
+	NSArray *_words;
 
 	NSUInteger _outputSize;
 	REAL *_outputBuffer;
@@ -73,8 +73,8 @@
 #pragma mark Internals
 
 - (void) prepareOutputBuffer:(REAL *)outputBuffer;
-- (void) fillOutputBuffer:(TokenDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType;
-- (void) normalizeOutputBuffer:(TokenDictionary *)dictionary featureNormalization:(FeatureNormalizationType)normalizationType;
+- (void) fillOutputBuffer:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType;
+- (void) normalizeOutputBuffer:(WordDictionary *)dictionary featureNormalization:(FeatureNormalizationType)normalizationType;
 
 
 @end
@@ -95,7 +95,7 @@ static NSDictionary *__stopWords= nil;
 #pragma mark -
 #pragma mark Initialization
 
-+ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType {
++ (BagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(WordDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType {
 	return [BagOfWords bagOfWordsWithText:text
 								   textID:textID
 							   dictionary:dictionary
@@ -107,7 +107,7 @@ static NSDictionary *__stopWords= nil;
 							 outputBuffer:nil];
 }
 
-+ (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType {
++ (BagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(WordDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(FeatureNormalizationType)normalizationType {
 	return [BagOfWords bagOfWordsWithText:text
 								   textID:textID
 							   dictionary:dictionary
@@ -119,7 +119,7 @@ static NSDictionary *__stopWords= nil;
 							 outputBuffer:nil];
 }
 
-+ (BagOfWords *) bagOfWordsWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
++ (BagOfWords *) bagOfWordsWithText:(NSString *)text textID:(NSString *)textID dictionary:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
 	BagOfWords *bagOfWords= [[BagOfWords alloc] initWithText:text
 													  textID:textID
 												  dictionary:dictionary
@@ -133,18 +133,18 @@ static NSDictionary *__stopWords= nil;
 	return bagOfWords;
 }
 
-+ (BagOfWords *) bagOfWordsWithTokens:(NSArray *)tokens textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
-	BagOfWords *bagOfWords= [[BagOfWords alloc] initWithTokens:tokens
-														textID:textID
-													dictionary:dictionary
-											   buildDictionary:buildDictionary
-										  featureNormalization:normalizationType
-												  outputBuffer:outputBuffer];
++ (BagOfWords *) bagOfWordsWithWords:(NSArray *)words textID:(NSString *)textID dictionary:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
+	BagOfWords *bagOfWords= [[BagOfWords alloc] initWithWords:words
+													   textID:textID
+												   dictionary:dictionary
+											  buildDictionary:buildDictionary
+										 featureNormalization:normalizationType
+												 outputBuffer:outputBuffer];
 	
 	return bagOfWords;
 }
 
-- (id) initWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
+- (id) initWithText:(NSString *)text textID:(NSString *)textID dictionary:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
 	if ((self = [super init])) {
 		
 		// Fill stop words if not filled already
@@ -194,11 +194,11 @@ static NSDictionary *__stopWords= nil;
 		// Run the appropriate extractor
 		switch (extractorType) {
 			case WordExtractorTypeSimpleTokenizer:
-				_tokens= [BagOfWords extractTokensWithSimpleTokenizer:text language:languageCode extractorOptions:extractorOptions];
+				_words= [BagOfWords extractWordsWithSimpleTokenizer:text language:languageCode extractorOptions:extractorOptions];
 				break;
 				
 			case WordExtractorTypeLinguisticTagger:
-				_tokens= [BagOfWords extractTokensWithLinguisticTagger:text language:languageCode extractorOptions:extractorOptions];
+				_words= [BagOfWords extractWordsWithLinguisticTagger:text language:languageCode extractorOptions:extractorOptions];
 				break;
 		}
 		
@@ -217,7 +217,7 @@ static NSDictionary *__stopWords= nil;
 	return self;
 }
 
-- (id) initWithTokens:(NSArray *)tokens textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
+- (id) initWithWords:(NSArray *)words textID:(NSString *)textID dictionary:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(REAL *)outputBuffer {
 	if ((self = [super init])) {
 		
 		// Checks
@@ -237,7 +237,7 @@ static NSDictionary *__stopWords= nil;
 	
 		// Initialization
 		_textID= textID;
-		_tokens= tokens;
+		_words= words;
 
 		_outputSize= (buildDictionary ? dictionary.maxSize : dictionary.size);
 
@@ -286,34 +286,34 @@ static NSDictionary *__stopWords= nil;
 	nnVDSP_VCLR(_outputBuffer, 1, _outputSize);
 }
 
-- (void) fillOutputBuffer:(TokenDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType {
+- (void) fillOutputBuffer:(WordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType {
 	
 	// Build dictionary and the output buffer
-	for (NSString *token in _tokens) {
-		TokenInfo *tokenInfo= nil;
+	for (NSString *word in _words) {
+		WordInfo *wordInfo= nil;
 		
 		if (buildDictionary)
-			tokenInfo= [dictionary addOccurrenceForToken:token textID:_textID];
+			wordInfo= [dictionary addOccurrenceForWord:word textID:_textID];
 		else
-			tokenInfo= [dictionary infoForToken:token];
+			wordInfo= [dictionary infoForWord:word];
 		
-		if (tokenInfo) {
+		if (wordInfo) {
 			switch (normalizationType) {
 				case FeatureNormalizationTypeNone:
 				case FeatureNormalizationTypeL2:
 				case FeatureNormalizationTypeL2TFiDF:
-					_outputBuffer[tokenInfo.position] += 1.0;
+					_outputBuffer[wordInfo.position] += 1.0;
 					break;
 					
 				case FeatureNormalizationTypeBoolean:
-					_outputBuffer[tokenInfo.position]= 1.0;
+					_outputBuffer[wordInfo.position]= 1.0;
 					break;
 			}
 		}
 	}
 }
 
-- (void) normalizeOutputBuffer:(TokenDictionary *)dictionary featureNormalization:(FeatureNormalizationType)normalizationType {
+- (void) normalizeOutputBuffer:(WordDictionary *)dictionary featureNormalization:(FeatureNormalizationType)normalizationType {
 	
 	// Apply vector-wide normalization
 	switch (normalizationType) {
@@ -330,9 +330,9 @@ static NSDictionary *__stopWords= nil;
 		case FeatureNormalizationTypeL2: {
 			REAL normL2= 0.0;
 			
-			for (NSString *token in _tokens) {
-				TokenInfo *tokenInfo= [dictionary infoForToken:token];
-				normL2 += _outputBuffer[tokenInfo.position] * _outputBuffer[tokenInfo.position];
+			for (NSString *word in _words) {
+				WordInfo *wordInfo= [dictionary infoForWord:word];
+				normL2 += _outputBuffer[wordInfo.position] * _outputBuffer[wordInfo.position];
 			}
 			
 			normL2= sqrt(normL2);
@@ -349,22 +349,22 @@ static NSDictionary *__stopWords= nil;
 #pragma mark -
 #pragma mark Dictionary building
 
-+ (void) buildDictionaryWithText:(NSString *)text textID:(NSString *)textID dictionary:(TokenDictionary *)dictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions {
-	NSArray *tokens= nil;
++ (void) buildDictionaryWithText:(NSString *)text textID:(NSString *)textID dictionary:(WordDictionary *)dictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions {
+	NSArray *words= nil;
 	
 	// Run the appropriate word extractor
 	switch (extractorType) {
 		case WordExtractorTypeSimpleTokenizer:
-			tokens= [BagOfWords extractTokensWithSimpleTokenizer:text language:languageCode extractorOptions:extractorOptions];
+			words= [BagOfWords extractWordsWithSimpleTokenizer:text language:languageCode extractorOptions:extractorOptions];
 			break;
 			
 		case WordExtractorTypeLinguisticTagger:
-			tokens= [BagOfWords extractTokensWithLinguisticTagger:text language:languageCode extractorOptions:extractorOptions];
+			words= [BagOfWords extractWordsWithLinguisticTagger:text language:languageCode extractorOptions:extractorOptions];
 			break;
 	}
 	
-	for (NSString *token in tokens)
-		[dictionary addOccurrenceForToken:token textID:textID];
+	for (NSString *word in words)
+		[dictionary addOccurrenceForWord:word textID:textID];
 }
 
 
@@ -455,7 +455,7 @@ static NSDictionary *__stopWords= nil;
 #pragma mark -
 #pragma mark Word extractors
 
-+ (NSArray *) extractTokensWithLinguisticTagger:(NSString *)text language:(NSString *)languageCode extractorOptions:(WordExtractorOption)extractorOptions {
++ (NSArray *) extractWordsWithLinguisticTagger:(NSString *)text language:(NSString *)languageCode extractorOptions:(WordExtractorOption)extractorOptions {
 	@autoreleasepool {
 	
 		// Make sure full-stops and apostrophes are followed by spaces
@@ -679,16 +679,16 @@ static NSDictionary *__stopWords= nil;
 			[self insertEmoticonFragments:text fragments:fragments];
 
 		// Return the tokens
-		NSMutableArray *tokens= [[NSMutableArray alloc] initWithCapacity:fragments.count];
+		NSMutableArray *words= [[NSMutableArray alloc] initWithCapacity:fragments.count];
 		
 		for (TextFragment *fragment in fragments)
-			[tokens addObject:fragment.fragment];
+			[words addObject:fragment.fragment];
 		
-		return tokens;
+		return words;
 	}
 }
 
-+ (NSArray *) extractTokensWithSimpleTokenizer:(NSString *)text language:(NSString *)languageCode extractorOptions:(WordExtractorOption)extractorOptions {
++ (NSArray *) extractWordsWithSimpleTokenizer:(NSString *)text language:(NSString *)languageCode extractorOptions:(WordExtractorOption)extractorOptions {
 	@autoreleasepool {
 	
 		// Make sure full-stops and apostrophes are followed by spaces
@@ -786,12 +786,12 @@ static NSDictionary *__stopWords= nil;
 			[BagOfWords insertEmoticonFragments:text fragments:fragments];
 		
 		// Return the tokens
-		NSMutableArray *tokens= [[NSMutableArray alloc] initWithCapacity:fragments.count];
+		NSMutableArray *words= [[NSMutableArray alloc] initWithCapacity:fragments.count];
 		
 		for (TextFragment *fragment in fragments)
-			[tokens addObject:fragment.fragment];
+			[words addObject:fragment.fragment];
 		
-		return tokens;
+		return words;
 	}
 }
 
@@ -858,7 +858,7 @@ static NSDictionary *__stopWords= nil;
 #pragma mark Properties
 
 @synthesize textID= _textID;
-@synthesize tokens= _tokens;
+@synthesize words= _words;
 
 @synthesize outputSize= _outputSize;
 @synthesize outputBuffer= _outputBuffer;
