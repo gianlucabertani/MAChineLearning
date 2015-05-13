@@ -33,7 +33,9 @@
 
 #import "IOLineWriter.h"
 
-#define BUFFER_SIZE           (262144)
+#define BUFFER_SIZE                  (262144)
+
+#define LINE_WRITER_EXCEPTION_NAME   (@"IOLineWriterException")
 
 
 #pragma mark -
@@ -57,11 +59,37 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithFileHandle:(NSFileHandle *)fileHandle {
++ (IOLineWriter *) lineWriterWithFilePath:(NSString *)filePath append:(BOOL)append {
+	IOLineWriter *writer= [[IOLineWriter alloc] initWithFilePath:filePath append:append];
+	
+	return writer;
+}
+
+- (id) initWithFilePath:(NSString *)filePath append:(BOOL)append {
 	if ((self = [super init])) {
 		
 		// Initialization
-		_file= fileHandle;
+		NSFileManager *fileManager= [NSFileManager defaultManager];
+		
+		BOOL isDirectory= NO;
+		BOOL fileExists= [fileManager fileExistsAtPath:filePath isDirectory:&isDirectory];
+		if (fileExists && isDirectory)
+			@throw [NSException exceptionWithName:LINE_WRITER_EXCEPTION_NAME
+										   reason:@"File at path already exists and is a directory"
+										 userInfo:@{@"filePath": filePath}];
+		
+		if (!fileExists)
+			[fileManager createFileAtPath:filePath contents:[NSData data] attributes:nil];
+
+		_file= [NSFileHandle fileHandleForWritingAtPath:filePath];
+		if (!_file)
+			@throw [NSException exceptionWithName:LINE_WRITER_EXCEPTION_NAME
+										   reason:@"File at path is read-only"
+										 userInfo:@{@"filePath": filePath}];
+		
+		if (append)
+			[_file seekToEndOfFile];
+
 		_buffer= [[NSMutableString alloc] initWithCapacity:BUFFER_SIZE];
 		_lock= [[NSCondition alloc] init];
 

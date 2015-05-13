@@ -36,9 +36,9 @@
 
 
 typedef enum {
-	WordExtractorTypeSimpleTokenizer= 0,
-	WordExtractorTypeLinguisticTagger
-} WordExtractorType;
+	MLWordExtractorTypeSimpleTokenizer= 0,
+	MLWordExtractorTypeLinguisticTagger
+} MLWordExtractorType;
 
 
 #endif

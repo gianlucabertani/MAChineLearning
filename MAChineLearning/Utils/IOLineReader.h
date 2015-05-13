@@ -40,7 +40,9 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithFileHandle:(NSString *)filePath;
++ (IOLineReader *) lineReaderWithFilePath:(NSString *)filePath;
+
+- (id) initWithFilePath:(NSString *)filePath;
 
 
 #pragma mark -

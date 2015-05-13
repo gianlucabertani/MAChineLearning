@@ -33,7 +33,7 @@
 
 #import "MLBagOfWordsException.h"
 
-#define BAG_OF_WORDS_EXCEPTION_NAME          (@"BagOfWordsException")
+#define BAG_OF_WORDS_EXCEPTION_NAME          (@"MLBagOfWordsException")
 
 
 @implementation MLBagOfWordsException

@@ -33,7 +33,7 @@
 
 #import "MLNeuralNetworkException.h"
 
-#define NEURAL_NET_EXCEPTION_NAME          (@"NeuralNetworkException")
+#define NEURAL_NET_EXCEPTION_NAME          (@"MLNeuralNetworkException")
 
 
 @implementation MLNeuralNetworkException

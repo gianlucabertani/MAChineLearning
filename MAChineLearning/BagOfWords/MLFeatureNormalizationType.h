@@ -36,11 +36,11 @@
 
 
 typedef enum {
-	FeatureNormalizationTypeNone= 0,
-	FeatureNormalizationTypeBoolean,
-	FeatureNormalizationTypeL2,
-	FeatureNormalizationTypeL2TFiDF
-} FeatureNormalizationType;
+	MLFeatureNormalizationTypeNone= 0,
+	MLFeatureNormalizationTypeBoolean,
+	MLFeatureNormalizationTypeL2,
+	MLFeatureNormalizationTypeL2TFiDF
+} MLFeatureNormalizationType;
 
 
 #endif

@@ -34,8 +34,6 @@
 #import <Foundation/Foundation.h>
 #import <MAChineLearning/MAChineLearning.h>
 
-#import "LineReader.h"
-
 #define VECTOR_SZIE                      (300)
 #define TRAINING_ITERATIONS                (5)
 #define SKIP_GRAM_WINDOW                   (6)
@@ -67,7 +65,7 @@ int main(int argc, const char * argv[]) {
 		NSArray *fileNames= [manager contentsOfDirectoryAtPath:path error:nil];
 		
 		// Prepare the dictionary
-		WordDictionary *dictionary= [WordDictionary dictionaryWithMaxSize:300000];
+		MLWordDictionary *dictionary= [MLWordDictionary dictionaryWithMaxSize:300000];
 		
 		// First loop on all the files to determine the dictionary
 		for (NSString *fileName in fileNames) {
@@ -79,20 +77,23 @@ int main(int argc, const char * argv[]) {
 			
 			NSLog(@"Now reading file: %@", fileName);
 
-			LineReader *reader= [[LineReader alloc] initWithFileHandle:filePath];
+			IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:filePath];
 
 			do {
 				NSString *line= [reader readLine];
 				if (!line)
 					break;
 				
+				// Fix residual HTML line breaks
+				[line stringByReplacingOccurrencesOfString:@"<br />" withString:@" "];
+				
 				// Build the dictionary with the current line
-				[BagOfWords buildDictionaryWithText:line
+				[MLBagOfWords buildDictionaryWithText:line
 											 textID:nil
 										 dictionary:dictionary
 										   language:nil
-									  wordExtractor:WordExtractorTypeSimpleTokenizer
-								   extractorOptions:WordExtractorOptionOmitNumbers];
+									  wordExtractor:MLWordExtractorTypeSimpleTokenizer
+								   extractorOptions:MLWordExtractorOptionOmitNumbers];
 				
 				if (reader.lineNumber % 1000 == 0)
 					NSLog(@"- line: %6lu", reader.lineNumber);
@@ -115,10 +116,10 @@ int main(int argc, const char * argv[]) {
 		// - input and output sizes are set to the dictionary (bag of words) size
 		// - hidden size is set to the desired vector size
 		// - activation function is logistic
-		NeuralNetwork *net= [[NeuralNetwork alloc] initWithLayerSizes:@[[NSNumber numberWithInt:(int) dictionary.size],
-																		@VECTOR_SZIE,
-																		[NSNumber numberWithInt:(int) dictionary.size]]
-												   outputFunctionType:ActivationFunctionTypeLogistic];
+		MLNeuralNetwork *net= [[MLNeuralNetwork alloc] initWithLayerSizes:@[[NSNumber numberWithInt:(int) dictionary.size],
+																			@VECTOR_SZIE,
+																			[NSNumber numberWithInt:(int) dictionary.size]]
+													   outputFunctionType:MLActivationFunctionTypeLogistic];
 
 		// Loop for the training iterations
 		for (int iter= 0; iter < TRAINING_ITERATIONS; iter++) {
@@ -131,7 +132,7 @@ int main(int argc, const char * argv[]) {
 				if (![fileName hasSuffix:@".txt"])
 					continue;
 				
-				LineReader *reader= [[LineReader alloc] initWithFileHandle:filePath];
+				IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:filePath];
 				
 				NSLog(@"Iteration %2d, now training with file: %@", iter, fileName);
 
@@ -140,7 +141,56 @@ int main(int argc, const char * argv[]) {
 					if (!line)
 						break;
 					
-					// !! TO DO: to be completed
+					// Fix residual HTML line breaks
+					[line stringByReplacingOccurrencesOfString:@"<br />" withString:@" "];
+
+					NSArray *words= [MLBagOfWords extractWordsWithSimpleTokenizerFromText:line
+																			 withLanguage:nil
+																		 extractorOptions:MLWordExtractorOptionOmitNumbers];
+					
+					@autoreleasepool {
+						NSMutableArray *context= [[NSMutableArray alloc] initWithCapacity:SKIP_GRAM_WINDOW *2];
+
+						for (int i= 0; i < words.count; i++) {
+							
+							// Take the i-th word
+							NSString *word= [words objectAtIndex:i];
+
+							// Pick up the context surroding the i-th word
+							[context removeAllObjects];
+
+							for (int j= i -SKIP_GRAM_WINDOW; j < i +SKIP_GRAM_WINDOW; j++) {
+								if ((j < 0) || (j == i) || (j >= words.count))
+									continue;
+							
+								[context addObject:[words objectAtIndex:j]];
+							}
+							
+							// Use bag of words to load the net's input buffer
+							[MLBagOfWords bagOfWordsWithWords:@[word]
+													   textID:nil
+												   dictionary:dictionary
+											  buildDictionary:NO
+										 featureNormalization:MLFeatureNormalizationTypeBoolean
+												 outputBuffer:net.inputBuffer];
+							
+							
+							// Run the network
+							[net feedForward];
+							
+							// Use bag of words to load the net's expected output buffer
+							[MLBagOfWords bagOfWordsWithWords:context
+													   textID:nil
+												   dictionary:dictionary
+											  buildDictionary:NO
+										 featureNormalization:MLFeatureNormalizationTypeBoolean
+												 outputBuffer:net.expectedOutputBuffer];
+							
+							// Backpropagate the network
+							[net backPropagateWithLearningRate:LEARNING_RATE];
+							[net updateWeights];
+						}
+					}
 					
 					if (reader.lineNumber % 1000 == 0)
 						NSLog(@"- line: %6lu", reader.lineNumber);
@@ -150,6 +200,8 @@ int main(int argc, const char * argv[]) {
 				[reader close];
 			}
 		}
+		
+		// !! TO DO: to be completed
 	}
 	
     return 0;

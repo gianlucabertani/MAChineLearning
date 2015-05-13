@@ -107,19 +107,19 @@
 
 - (void) testGuessLanguageWithLinguisticTagger {
 	@try {
-		NSString *lang1= [MLBagOfWords guessLanguageCodeWithLinguisticTagger:WOODY_ALLEN];
+		NSString *lang1= [MLBagOfWords guessLanguageCodeWithLinguisticTaggerForText:WOODY_ALLEN];
 		XCTAssertEqualObjects(lang1, @"en");
 		
-		NSString *lang2= [MLBagOfWords guessLanguageCodeWithLinguisticTagger:DANTE_ALIGHIERI];
+		NSString *lang2= [MLBagOfWords guessLanguageCodeWithLinguisticTaggerForText:DANTE_ALIGHIERI];
 		XCTAssertEqualObjects(lang2, @"it");
 		
-		NSString *lang3= [MLBagOfWords guessLanguageCodeWithLinguisticTagger:MIGUEL_DE_CERVANTES];
+		NSString *lang3= [MLBagOfWords guessLanguageCodeWithLinguisticTaggerForText:MIGUEL_DE_CERVANTES];
 		XCTAssertEqualObjects(lang3, @"es");
 		
-		NSString *lang4= [MLBagOfWords guessLanguageCodeWithLinguisticTagger:CHARLES_BAUDELAIRE];
+		NSString *lang4= [MLBagOfWords guessLanguageCodeWithLinguisticTaggerForText:CHARLES_BAUDELAIRE];
 		XCTAssertEqualObjects(lang4, @"fr");
 		
-		NSString *lang5= [MLBagOfWords guessLanguageCodeWithLinguisticTagger:ALBERT_EINSTEIN];
+		NSString *lang5= [MLBagOfWords guessLanguageCodeWithLinguisticTaggerForText:ALBERT_EINSTEIN];
 		XCTAssertEqualObjects(lang5, @"de");
 
 	} @catch (NSException *e) {
@@ -129,19 +129,19 @@
 
 - (void) testGuessLanguageWithStopWords {
 	@try {
-		NSString *lang1= [MLBagOfWords guessLanguageCodeWithStopWords:WOODY_ALLEN];
+		NSString *lang1= [MLBagOfWords guessLanguageCodeWithStopWordsForText:WOODY_ALLEN];
 		XCTAssertEqualObjects(lang1, @"en");
 		
-		NSString *lang2= [MLBagOfWords guessLanguageCodeWithStopWords:DANTE_ALIGHIERI];
+		NSString *lang2= [MLBagOfWords guessLanguageCodeWithStopWordsForText:DANTE_ALIGHIERI];
 		XCTAssertEqualObjects(lang2, @"it");
 		
-		NSString *lang3= [MLBagOfWords guessLanguageCodeWithStopWords:MIGUEL_DE_CERVANTES];
+		NSString *lang3= [MLBagOfWords guessLanguageCodeWithStopWordsForText:MIGUEL_DE_CERVANTES];
 		XCTAssertEqualObjects(lang3, @"es");
 		
-		NSString *lang4= [MLBagOfWords guessLanguageCodeWithStopWords:CHARLES_BAUDELAIRE];
+		NSString *lang4= [MLBagOfWords guessLanguageCodeWithStopWordsForText:CHARLES_BAUDELAIRE];
 		XCTAssertEqualObjects(lang4, @"fr");
 		
-		NSString *lang5= [MLBagOfWords guessLanguageCodeWithStopWords:ALBERT_EINSTEIN];
+		NSString *lang5= [MLBagOfWords guessLanguageCodeWithStopWordsForText:ALBERT_EINSTEIN];
 		XCTAssertEqualObjects(lang5, @"de");
 		
 	} @catch (NSException *e) {
@@ -156,10 +156,10 @@
 		// Bag of words for sentiment analysis uses the (quick) simple tokenizer,
 		// removing stop words but keeping emoticon and all bigrams
 		MLBagOfWords *bag= [MLBagOfWords bagOfWordsForSentimentAnalysisWithText:MOVIE_REVIEW
-																	 textID:@"review1"
-																 dictionary:dictionary
-																   language:@"en"
-													   featureNormalization:FeatureNormalizationTypeNone];
+																		 textID:@"review1"
+																	 dictionary:dictionary
+																	   language:@"en"
+														   featureNormalization:MLFeatureNormalizationTypeNone];
 		
 		XCTAssertTrue([[bag.words firstObject] isEqualToString:@"think"]);
 		XCTAssertTrue([bag.words containsObject:@"something marginal"]);
@@ -214,14 +214,14 @@
 		// Bag of words for sentiment analysis using the (slow) linguistic tagger,
 		// with same configuration of default sentiment analysis
 		MLBagOfWords *bag= [MLBagOfWords bagOfWordsWithText:MOVIE_REVIEW
-												 textID:@"review1"
-											 dictionary:dictionary
-										buildDictionary:YES
-											   language:@"en"
-										  wordExtractor:WordExtractorTypeLinguisticTagger
-									   extractorOptions:WordExtractorOptionOmitStopWords | WordExtractorOptionKeepAllBigrams | WordExtractorOptionKeepEmoticons
-								   featureNormalization:FeatureNormalizationTypeNone
-						    			   outputBuffer:nil];
+													 textID:@"review1"
+												 dictionary:dictionary
+											buildDictionary:YES
+												   language:@"en"
+											  wordExtractor:MLWordExtractorTypeLinguisticTagger
+										   extractorOptions:MLWordExtractorOptionOmitStopWords | MLWordExtractorOptionKeepAllBigrams | MLWordExtractorOptionKeepEmoticons
+									   featureNormalization:MLFeatureNormalizationTypeNone
+											outputBuffer:nil];
 		
 		XCTAssertTrue([[bag.words firstObject] isEqualToString:@"think"]);
 		XCTAssertTrue([bag.words containsObject:@"something marginal"]);
@@ -276,10 +276,10 @@
 		// Bag of words for topic classification uses the (slow) linguistic tagger, removing
 		// stop words, verbs and adjectives, but keeping composite nouns and names
 		MLBagOfWords *bag= [MLBagOfWords bagOfWordsForTopicClassificationWithText:ARTICLE_EXTRACT
-																	   textID:@"article1"
-																   dictionary:dictionary
-																	 language:@"en"
-														 featureNormalization:FeatureNormalizationTypeNone];
+																		   textID:@"article1"
+																	   dictionary:dictionary
+																		 language:@"en"
+															 featureNormalization:MLFeatureNormalizationTypeNone];
 		
 		XCTAssertTrue([[bag.words firstObject] isEqualToString:@"NLP"]);
 		XCTAssertTrue([bag.words containsObject:@"Alan Turing"]);

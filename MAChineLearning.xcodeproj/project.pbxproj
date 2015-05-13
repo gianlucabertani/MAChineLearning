@@ -23,6 +23,7 @@
 		8C1251E81AE8D38E00FA493E /* MLNeuronLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251D91AE8D38E00FA493E /* MLNeuronLayer.m */; };
 		8C1251EC1AE8D4BE00FA493E /* MLBagOfWords.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1251EA1AE8D4BE00FA493E /* MLBagOfWords.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C1251ED1AE8D4BE00FA493E /* MLBagOfWords.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251EB1AE8D4BE00FA493E /* MLBagOfWords.m */; };
+		8C140FA81B03349B00B6DA60 /* NeuralNetSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4E43A31AE56DCF005FD73D /* NeuralNetSwiftTests.swift */; };
 		8C4CEF1E1ADAC51200F1E139 /* MAChineLearning.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C4CEF1D1ADAC51200F1E139 /* MAChineLearning.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C4CEF241ADAC51200F1E139 /* MAChineLearning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */; };
 		8C4CEF2B1ADAC51200F1E139 /* NeuralNetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4CEF2A1ADAC51200F1E139 /* NeuralNetTests.m */; };
@@ -31,7 +32,6 @@
 		8C58A3171AECDAA3006AB74D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C58A3161AECDAA3006AB74D /* main.m */; };
 		8C58A31C1AECECC5006AB74D /* MLStopWords.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C58A31B1AECDF9D006AB74D /* MLStopWords.h */; };
 		8C58A31E1AED4DE8006AB74D /* BagOfWordsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */; };
-		8C76573E1B01E89D00D248A6 /* NeuralNetSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4E43A31AE56DCF005FD73D /* NeuralNetSwiftTests.swift */; };
 		8C94CBFF1AE91C0800A0A328 /* MLFeatureNormalizationType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C94CBFE1AE91C0800A0A328 /* MLFeatureNormalizationType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C94CC011AE91CEE00A0A328 /* MLWordExtractorType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C94CC001AE91CEE00A0A328 /* MLWordExtractorType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CA8CE8C1AF75074006D5351 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CA8CE8B1AF75074006D5351 /* main.m */; };
@@ -519,8 +519,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C76573E1B01E89D00D248A6 /* NeuralNetSwiftTests.swift in Sources */,
 				8C4CEF2B1ADAC51200F1E139 /* NeuralNetTests.m in Sources */,
+				8C140FA81B03349B00B6DA60 /* NeuralNetSwiftTests.swift in Sources */,
 				8C58A31E1AED4DE8006AB74D /* BagOfWordsTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

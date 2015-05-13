@@ -37,6 +37,8 @@
 #define CHUNK_SIZE                   (BUFFER_SIZE / 8)
 #define MAX_FILL_THRESHOLD           (7 * (BUFFER_SIZE / 8))
 
+#define LINE_READER_EXCEPTION_NAME   (@"IOLineReaderException")
+
 
 #pragma mark -
 #pragma mark LineReader extension
@@ -65,7 +67,13 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithFileHandle:(NSString *)filePath {
++ (IOLineReader *) lineReaderWithFilePath:(NSString *)filePath {
+	IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:filePath];
+	
+	return reader;
+}
+
+- (id) initWithFilePath:(NSString *)filePath {
 	if ((self = [super init])) {
 		
 		// Initialization
@@ -139,7 +147,7 @@
 		[_lock lock];
 
 		if (!_buffer)
-			@throw [NSException exceptionWithName:@"LineReaderException"
+			@throw [NSException exceptionWithName:LINE_READER_EXCEPTION_NAME
 										   reason:@"Reader is closed"
 										 userInfo:nil];
 

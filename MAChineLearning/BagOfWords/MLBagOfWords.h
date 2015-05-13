@@ -52,33 +52,33 @@
 												   textID:(NSString *)textID
 											   dictionary:(MLWordDictionary *)dictionary
 												 language:(NSString *)languageCode
-									 featureNormalization:(FeatureNormalizationType)normalizationType;
+									 featureNormalization:(MLFeatureNormalizationType)normalizationType;
 
 + (MLBagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text
 												 textID:(NSString *)textID
 											 dictionary:(MLWordDictionary *)dictionary
 											   language:(NSString *)languageCode
-								   featureNormalization:(FeatureNormalizationType)normalizationType;
+								   featureNormalization:(MLFeatureNormalizationType)normalizationType;
 
 + (MLBagOfWords *) bagOfWordsWithText:(NSString *)text
 							 textID:(NSString *)textID
 						 dictionary:(MLWordDictionary *)dictionary
 					buildDictionary:(BOOL)buildDictionary
 						   language:(NSString *)languageCode
-					  wordExtractor:(WordExtractorType)extractorType
-				   extractorOptions:(WordExtractorOption)extractorOptions
-			   featureNormalization:(FeatureNormalizationType)normalizationType
+					  wordExtractor:(MLWordExtractorType)extractorType
+				   extractorOptions:(MLWordExtractorOption)extractorOptions
+			   featureNormalization:(MLFeatureNormalizationType)normalizationType
 					   outputBuffer:(MLReal *)outputBuffer;
 
 + (MLBagOfWords *) bagOfWordsWithWords:(NSArray *)words
 							  textID:(NSString *)textID
 						  dictionary:(MLWordDictionary *)dictionary
 					 buildDictionary:(BOOL)buildDictionary
-				featureNormalization:(FeatureNormalizationType)normalizationType
+				featureNormalization:(MLFeatureNormalizationType)normalizationType
 						outputBuffer:(MLReal *)outputBuffer;
 
-- (id) initWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(WordExtractorType)extractorType extractorOptions:(WordExtractorOption)extractorOptions featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer;
-- (id) initWithWords:(NSArray *)words textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(FeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer;
+- (id) initWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(MLWordExtractorType)extractorType extractorOptions:(MLWordExtractorOption)extractorOptions featureNormalization:(MLFeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer;
+- (id) initWithWords:(NSArray *)words textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(MLFeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer;
 
 
 #pragma mark -
@@ -88,22 +88,22 @@
 						  textID:(NSString *)textID
 					  dictionary:(MLWordDictionary *)dictionary
 						language:(NSString *)languageCode
-				   wordExtractor:(WordExtractorType)extractorType
-				extractorOptions:(WordExtractorOption)extractorOptions;
+				   wordExtractor:(MLWordExtractorType)extractorType
+				extractorOptions:(MLWordExtractorOption)extractorOptions;
 
 
 #pragma mark -
 #pragma mark Languages guessing
 
-+ (NSString *) guessLanguageCodeWithLinguisticTagger:(NSString *)text;
-+ (NSString *) guessLanguageCodeWithStopWords:(NSString *)text;
++ (NSString *) guessLanguageCodeWithLinguisticTaggerForText:(NSString *)text;
++ (NSString *) guessLanguageCodeWithStopWordsForText:(NSString *)text;
 
 
 #pragma mark -
 #pragma mark Word extractors
 
-+ (NSArray *) extractWordsWithSimpleTokenizer:(NSString *)text language:(NSString *)languageCode extractorOptions:(WordExtractorOption)extractorOptions;
-+ (NSArray *) extractWordsWithLinguisticTagger:(NSString *)text language:(NSString *)languageCode extractorOptions:(WordExtractorOption)extractorOptions;
++ (NSArray *) extractWordsWithSimpleTokenizerFromText:(NSString *)text withLanguage:(NSString *)languageCode extractorOptions:(MLWordExtractorOption)extractorOptions;
++ (NSArray *) extractWordsWithLinguisticTaggerFromText:(NSString *)text withLanguage:(NSString *)languageCode extractorOptions:(MLWordExtractorOption)extractorOptions;
 
 
 #pragma mark -

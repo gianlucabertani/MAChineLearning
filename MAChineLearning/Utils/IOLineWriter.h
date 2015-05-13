@@ -40,7 +40,9 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithFileHandle:(NSFileHandle *)fileHandle;
++ (IOLineWriter *) lineWriterWithFilePath:(NSString *)filePath append:(BOOL)append;
+
+- (id) initWithFilePath:(NSString *)filePath append:(BOOL)append;
 
 
 #pragma mark -

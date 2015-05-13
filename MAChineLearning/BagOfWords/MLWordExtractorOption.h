@@ -36,31 +36,31 @@
 
 
 typedef enum {
-	WordExtractorOptionOmitStopWords= 1,
+	MLWordExtractorOptionOmitStopWords= 1,
 
-	WordExtractorOptionOmitVerbs= 1 << 1,
-	WordExtractorOptionOmitAdjectives= 1 << 2,
-	WordExtractorOptionOmitAdverbs= 1 << 3,
-	WordExtractorOptionOmitNouns= 1 << 4,
-	WordExtractorOptionOmitNames= 1 << 5,
-	WordExtractorOptionOmitNumbers= 1 << 6,
-	WordExtractorOptionOmitOthers= 1 << 7,
+	MLWordExtractorOptionOmitVerbs= 1 << 1,
+	MLWordExtractorOptionOmitAdjectives= 1 << 2,
+	MLWordExtractorOptionOmitAdverbs= 1 << 3,
+	MLWordExtractorOptionOmitNouns= 1 << 4,
+	MLWordExtractorOptionOmitNames= 1 << 5,
+	MLWordExtractorOptionOmitNumbers= 1 << 6,
+	MLWordExtractorOptionOmitOthers= 1 << 7,
 
-	WordExtractorOptionKeepVerbAdjectiveCombos= 1 << 10,
-	WordExtractorOptionKeepAdjectiveNounCombos= 1 << 11,
-	WordExtractorOptionKeepAdverbNounCombos= 1 << 12,
-	WordExtractorOptionKeepNounNounCombos= 1 << 13,
-	WordExtractorOptionKeepNounVerbCombos= 1 << 14,
+	MLWordExtractorOptionKeepVerbAdjectiveCombos= 1 << 10,
+	MLWordExtractorOptionKeepAdjectiveNounCombos= 1 << 11,
+	MLWordExtractorOptionKeepAdverbNounCombos= 1 << 12,
+	MLWordExtractorOptionKeepNounNounCombos= 1 << 13,
+	MLWordExtractorOptionKeepNounVerbCombos= 1 << 14,
 
-	WordExtractorOptionKeep2WordNames= 1 << 16,
-	WordExtractorOptionKeep3WordNames= 1 << 17,
+	MLWordExtractorOptionKeep2WordNames= 1 << 16,
+	MLWordExtractorOptionKeep3WordNames= 1 << 17,
 	
-	WordExtractorOptionKeepAllBigrams= 1 << 20,
-	WordExtractorOptionKeepAllTrigrams= 1 << 21,
+	MLWordExtractorOptionKeepAllBigrams= 1 << 20,
+	MLWordExtractorOptionKeepAllTrigrams= 1 << 21,
 	
-	WordExtractorOptionKeepEmoticons= 1 << 24,
+	MLWordExtractorOptionKeepEmoticons= 1 << 24,
 	
-} WordExtractorOption;
+} MLWordExtractorOption;
 
 
 #endif
