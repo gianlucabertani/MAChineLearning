@@ -37,7 +37,7 @@
 #define VECTOR_SZIE                      (300)
 #define TRAINING_ITERATIONS                (5)
 #define SKIP_GRAM_WINDOW                   (6)
-#define WORD_MIN_COUNT                     (5)
+#define WORD_MIN_COUNT                   (100)
 #define LEARNING_RATE                      (0.025)
 
 #define MISSING_ARGUMENT                   (9)
@@ -85,7 +85,7 @@ int main(int argc, const char * argv[]) {
 					break;
 				
 				// Fix residual HTML line breaks
-				[line stringByReplacingOccurrencesOfString:@"<br />" withString:@" "];
+				line= [line stringByReplacingOccurrencesOfString:@"<br />" withString:@" "];
 				
 				// Build the dictionary with the current line
 				[MLBagOfWords buildDictionaryWithText:line
@@ -110,7 +110,7 @@ int main(int argc, const char * argv[]) {
 		[dictionary compact];
 		
 		NSLog(@"Final dictionary size: %8lu", dictionary.size);
-		NSLog(@"Total number of Words: %8lu", dictionary.totalWords);
+		NSLog(@"Total number of words: %8lu", dictionary.totalWords);
 		
 		// Prepare the neural network:
 		// - input and output sizes are set to the dictionary (bag of words) size
@@ -120,8 +120,12 @@ int main(int argc, const char * argv[]) {
 																			@VECTOR_SZIE,
 																			[NSNumber numberWithInt:(int) dictionary.size]]
 													   outputFunctionType:MLActivationFunctionTypeLogistic];
+		
+		// Mark time
+		NSDate *begin= [NSDate date];
 
 		// Loop for the training iterations
+		NSUInteger totalWords= 0;
 		for (int iter= 0; iter < TRAINING_ITERATIONS; iter++) {
 		
 			// Loop all the files
@@ -142,7 +146,7 @@ int main(int argc, const char * argv[]) {
 						break;
 					
 					// Fix residual HTML line breaks
-					[line stringByReplacingOccurrencesOfString:@"<br />" withString:@" "];
+					line= [line stringByReplacingOccurrencesOfString:@"<br />" withString:@" "];
 
 					NSArray *words= [MLBagOfWords extractWordsWithSimpleTokenizerFromText:line
 																			 withLanguage:nil
@@ -190,11 +194,13 @@ int main(int argc, const char * argv[]) {
 							[net backPropagateWithLearningRate:LEARNING_RATE];
 							[net updateWeights];
 						}
+						
+						totalWords += words.count;
+						NSTimeInterval elapsed= [[NSDate date] timeIntervalSinceDate:begin];
+						
+						NSLog(@"- line: %6lu, words: %5lu, total words: %8lu, speed: %2.2f words/sec", reader.lineNumber, words.count, totalWords, ((double) totalWords) / elapsed);
 					}
 					
-					if (reader.lineNumber % 1000 == 0)
-						NSLog(@"- line: %6lu", reader.lineNumber);
-				
 				} while (YES);
 				
 				[reader close];
