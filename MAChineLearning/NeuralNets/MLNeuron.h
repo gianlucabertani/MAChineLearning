@@ -52,6 +52,8 @@
 #pragma mark -
 #pragma mark Operations
 
+- (void) setUp;
+
 - (void) partialFeedForward;
 - (void) partialBackPropagateWithLearningRate:(MLReal)learningRate delta:(MLReal)delta;
 - (void) partialUpdateWeights;
@@ -71,6 +73,9 @@
 @property (nonatomic, readonly) MLReal bias;
 @property (nonatomic, readonly) MLReal *weights;
 @property (nonatomic, readonly) MLReal *weightsDelta;
+
+@property (nonatomic, readonly) MLReal **nextLayerWeightPtrs;
+@property (nonatomic, readonly) MLReal **nextLayerWeightDeltaPtrs;
 
 @property (nonatomic, readonly) MLReal error;
 @property (nonatomic, readonly) MLReal delta;

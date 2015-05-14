@@ -192,8 +192,9 @@
 			i++;
 		}
 		
-		for (int i= 0; i < [_layers count]; i++){
-			MLLayer *layer= [_layers objectAtIndex:i];
+		// Layers setup: create neurons for each layer
+		i= 0;
+		for (MLLayer *layer in _layers) {
 			
 			// Setup layer relationships
 			layer.previousLayer= (i > 0) ? [_layers objectAtIndex:i -1] : nil;
@@ -213,6 +214,21 @@
 
 			} else
 				[(MLNeuronLayer *) layer setUp];
+			
+			i++;
+		}
+		
+		// Neurons setup: connect weights pointer for
+		// weight gathering during backpropagation
+		i= 0;
+		for (MLLayer *layer in _layers) {
+			if (i > 0) {
+				MLNeuronLayer *neuronLayer= (MLNeuronLayer *) layer;
+				for (MLNeuron *neuron in neuronLayer.neurons)
+					[neuron setUp];
+			}
+			
+			i++;
 		}
 		
 		int err= posix_memalign((void **) &_expectedOutputBuffer,

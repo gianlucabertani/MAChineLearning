@@ -57,6 +57,7 @@
 	
 	MLReal *_tempBuffer;
 	MLReal *_nextLayerWeightsBuffer;
+	MLReal *_nextLayerWeightsDeltaBuffer;
 
 	NSMutableArray *_neurons;
 	
@@ -222,6 +223,11 @@
 		_nextLayerWeightsBuffer= NULL;
 	}
 	
+	if (_nextLayerWeightsDeltaBuffer) {
+		free(_nextLayerWeightsDeltaBuffer);
+		_nextLayerWeightsDeltaBuffer= NULL;
+	}
+	
 	free(_minusTwo);
 	_minusTwo= NULL;
 	
@@ -284,7 +290,16 @@
 																   userInfo:@{@"buffer": @"nextLayerWeightsBuffer",
 																			  @"error": [NSNumber numberWithInt:err]}];
 		
+		err= posix_memalign((void **) &_nextLayerWeightsDeltaBuffer,
+								BUFFER_MEMORY_ALIGNMENT,
+								sizeof(MLReal) * nextLayer.size);
+		if (err)
+			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
+																	 userInfo:@{@"buffer": @"nextLayerWeightsDeltaBuffer",
+																				@"error": [NSNumber numberWithInt:err]}];
+		
 		ML_VDSP_VCLR(_nextLayerWeightsBuffer, 1, nextLayer.size);
+		ML_VDSP_VCLR(_nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
 	}
 }
 
@@ -351,17 +366,21 @@
 															   userInfo:nil];
 	
 	MLNeuronLayer *nextLayer= (MLNeuronLayer *) self.nextLayer;
-	for (int i= 0; i < _size; i++) {
+	
+	int i= 0;
+	for (MLNeuron *neuron in _neurons) {
 		
-		// Prepare the vector of weights
-		int j= 0;
-		for (MLNeuron *nextNeuron in nextLayer.neurons) {
-			_nextLayerWeightsBuffer[j]= nextNeuron.weights[i] + nextNeuron.weightsDelta[i];
-			j++;
-		}
+		// Gather next layer weights using vector gathering
+		ML_VDSP_VGATHRA((const MLReal **) neuron.nextLayerWeightPtrs, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
+		ML_VDSP_VGATHRA((const MLReal **) neuron.nextLayerWeightDeltaPtrs, 1, _nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
+		
+		// Sum the delta
+		ML_VDSP_VADD(_nextLayerWeightsBuffer, 1, _nextLayerWeightsDeltaBuffer, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
 		
 		// Compute the dot product
 		ML_VDSP_DOTPR(nextLayer.deltaBuffer, 1, _nextLayerWeightsBuffer, 1, &_errorBuffer[i], nextLayer.size);
+		
+		i++;
 	}
 }
 

@@ -38,48 +38,50 @@
 /* Uncomment to use double precision.
  * Beware: it is much slower.
  
-typedef double         MLReal;
+typedef double          MLReal;
 
-#define ML_VDSP_VCLR   vDSP_vclrD
-#define ML_VDSP_VTHRSC vDSP_vthrscD
-#define ML_VDSP_VTHRES vDSP_vthresD
-#define ML_VDSP_VSMUL  vDSP_vsmulD
-#define ML_VDSP_VSDIV  vDSP_vsdivD
-#define ML_VDSP_SVDIV  vDSP_svdivD
-#define ML_VDSP_VSADD  vDSP_vsaddD
-#define ML_VDSP_DOTPR  vDSP_dotprD
-#define ML_VDSP_VSQ    vDSP_vsqD
-#define ML_VDSP_VMUL   vDSP_vmulD
-#define ML_VDSP_VADD   vDSP_vaddD
-#define ML_VDSP_VSUB   vDSP_vsubD
-#define ML_VDSP_VDIV   vDSP_vdivD
-#define ML_VDSP_VSMA   vDSP_vsmaD
-#define ML_VDSP_SVESQ  vDSP_svesqD
+#define ML_VDSP_VCLR    vDSP_vclrD
+#define ML_VDSP_VTHRSC  vDSP_vthrscD
+#define ML_VDSP_VTHRES  vDSP_vthresD
+#define ML_VDSP_VSMUL   vDSP_vsmulD
+#define ML_VDSP_VSDIV   vDSP_vsdivD
+#define ML_VDSP_SVDIV   vDSP_svdivD
+#define ML_VDSP_VSADD   vDSP_vsaddD
+#define ML_VDSP_DOTPR   vDSP_dotprD
+#define ML_VDSP_VSQ     vDSP_vsqD
+#define ML_VDSP_VMUL    vDSP_vmulD
+#define ML_VDSP_VADD    vDSP_vaddD
+#define ML_VDSP_VSUB    vDSP_vsubD
+#define ML_VDSP_VDIV    vDSP_vdivD
+#define ML_VDSP_VSMA    vDSP_vsmaD
+#define ML_VDSP_SVESQ   vDSP_svesqD
+#define ML_VDSP_VGATHRA vDSP_vgathraD
 
-#define ML_VVEXP       vvexp
+#define ML_VVEXP        vvexp
  
  */
 
 
-typedef float          MLReal;
+typedef float           MLReal;
 
-#define ML_VDSP_VCLR   vDSP_vclr
-#define ML_VDSP_VTHRSC vDSP_vthrsc
-#define ML_VDSP_VTHRES vDSP_vthres
-#define ML_VDSP_VSMUL  vDSP_vsmul
-#define ML_VDSP_VSDIV  vDSP_vsdiv
-#define ML_VDSP_SVDIV  vDSP_svdiv
-#define ML_VDSP_VSADD  vDSP_vsadd
-#define ML_VDSP_DOTPR  vDSP_dotpr
-#define ML_VDSP_VSQ    vDSP_vsq
-#define ML_VDSP_VMUL   vDSP_vmul
-#define ML_VDSP_VADD   vDSP_vadd
-#define ML_VDSP_VSUB   vDSP_vsub
-#define ML_VDSP_VDIV   vDSP_vdiv
-#define ML_VDSP_VSMA   vDSP_vsma
-#define ML_VDSP_SVESQ  vDSP_svesq
+#define ML_VDSP_VCLR    vDSP_vclr
+#define ML_VDSP_VTHRSC  vDSP_vthrsc
+#define ML_VDSP_VTHRES  vDSP_vthres
+#define ML_VDSP_VSMUL   vDSP_vsmul
+#define ML_VDSP_VSDIV   vDSP_vsdiv
+#define ML_VDSP_SVDIV   vDSP_svdiv
+#define ML_VDSP_VSADD   vDSP_vsadd
+#define ML_VDSP_DOTPR   vDSP_dotpr
+#define ML_VDSP_VSQ     vDSP_vsq
+#define ML_VDSP_VMUL    vDSP_vmul
+#define ML_VDSP_VADD    vDSP_vadd
+#define ML_VDSP_VSUB    vDSP_vsub
+#define ML_VDSP_VDIV    vDSP_vdiv
+#define ML_VDSP_VSMA    vDSP_vsma
+#define ML_VDSP_SVESQ   vDSP_svesq
+#define ML_VDSP_VGATHRA vDSP_vgathra
 
-#define ML_VVEXP       vvexpf
+#define ML_VVEXP        vvexpf
 
 
 #endif

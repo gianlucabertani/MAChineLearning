@@ -460,10 +460,17 @@ static NSDictionary *__stopWords= nil;
 														   userInfo:nil];
 	
 	@autoreleasepool {
+		
+		// Keep a pointer to the original text for later search of emoticons
+		NSString *originalText= text;
 	
-		// Make sure full-stops and apostrophes are followed by spaces
+		// Ensure punctuation is followed by a space
 		text= [text stringByReplacingOccurrencesOfString:@"." withString:@". "];
+		text= [text stringByReplacingOccurrencesOfString:@"," withString:@", "];
+		text= [text stringByReplacingOccurrencesOfString:@";" withString:@"; "];
+		text= [text stringByReplacingOccurrencesOfString:@":" withString:@": "];
 		text= [text stringByReplacingOccurrencesOfString:@"'" withString:@"' "];
+		text= [text stringByReplacingOccurrencesOfString:@"\"" withString:@"\" "];
 		
 		// Prepare containers and stopwords list
 		NSMutableArray *fragments= [NSMutableArray arrayWithCapacity:text.length / 5];
@@ -679,7 +686,7 @@ static NSDictionary *__stopWords= nil;
 		}];
 		
 		if (extractorOptions & MLWordExtractorOptionKeepEmoticons)
-			[self insertEmoticonFragments:text fragments:fragments];
+			[self insertEmoticonFragments:originalText fragments:fragments];
 
 		// Return the tokens
 		NSMutableArray *words= [[NSMutableArray alloc] initWithCapacity:fragments.count];
@@ -701,9 +708,16 @@ static NSDictionary *__stopWords= nil;
 
 	@autoreleasepool {
 	
-		// Make sure full-stops and apostrophes are followed by spaces
+		// Keep a pointer to the original text for later search of emoticons
+		NSString *originalText= text;
+
+		// Ensure punctuation is followed by a space
 		text= [text stringByReplacingOccurrencesOfString:@"." withString:@". "];
+		text= [text stringByReplacingOccurrencesOfString:@"," withString:@", "];
+		text= [text stringByReplacingOccurrencesOfString:@";" withString:@"; "];
+		text= [text stringByReplacingOccurrencesOfString:@":" withString:@": "];
 		text= [text stringByReplacingOccurrencesOfString:@"'" withString:@"' "];
+		text= [text stringByReplacingOccurrencesOfString:@"\"" withString:@"\" "];
 		
 		// Prepare containers and stopword list
 		NSMutableArray *fragments= [NSMutableArray arrayWithCapacity:text.length / 5];
@@ -793,7 +807,7 @@ static NSDictionary *__stopWords= nil;
 		}];
 		
 		if (extractorOptions & MLWordExtractorOptionKeepEmoticons)
-			[MLBagOfWords insertEmoticonFragments:text fragments:fragments];
+			[MLBagOfWords insertEmoticonFragments:originalText fragments:fragments];
 		
 		// Return the tokens
 		NSMutableArray *words= [[NSMutableArray alloc] initWithCapacity:fragments.count];

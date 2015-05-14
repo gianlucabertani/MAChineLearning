@@ -54,6 +54,9 @@
 
 	MLReal *_weights;
 	MLReal *_weightsDelta;
+	
+	MLReal **_nextLayerWeightPtrs;
+	MLReal **_nextLayerWeightDeltaPtrs;
 }
 
 @end
@@ -113,11 +116,53 @@
 	
 	free(_weightsDelta);
 	_weightsDelta= NULL;
+	
+	// Deallocate pointes for weight gathering
+	if (_nextLayerWeightPtrs) {
+		free(_nextLayerWeightPtrs);
+		_nextLayerWeightPtrs= NULL;
+	}
+	
+	if (_nextLayerWeightDeltaPtrs) {
+		free(_nextLayerWeightDeltaPtrs);
+		_nextLayerWeightDeltaPtrs= NULL;
+	}
 }
 
 
 #pragma mark -
 #pragma mark Operations
+
+- (void) setUp {
+	if (self.layer.nextLayer) {
+		MLNeuronLayer *nextLayer= (MLNeuronLayer *) self.layer.nextLayer;
+		
+		// Set up pointers to gather weights of next layer
+		int err= posix_memalign((void **) &_nextLayerWeightPtrs,
+								BUFFER_MEMORY_ALIGNMENT,
+								sizeof(MLReal *) * nextLayer.size);
+		if (err)
+			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
+																	 userInfo:@{@"buffer": @"nextLayerWeightPtrs",
+																				@"error": [NSNumber numberWithInt:err]}];
+		
+		err= posix_memalign((void **) &_nextLayerWeightDeltaPtrs,
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(MLReal *) * nextLayer.size);
+		if (err)
+			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
+																	 userInfo:@{@"buffer": @"nextLayerWeightDeltaPtrs",
+																				@"error": [NSNumber numberWithInt:err]}];
+		
+		// Fill pointers
+		int j= 0;
+		for (MLNeuron *nextNeuron in nextLayer.neurons) {
+			_nextLayerWeightPtrs[j]= &(nextNeuron.weights[_index]);
+			_nextLayerWeightDeltaPtrs[j]= &(nextNeuron.weightsDelta[_index]);
+			j++;
+		}
+	}
+}
 
 - (void) partialFeedForward {
 	
@@ -169,6 +214,9 @@
 
 @synthesize weights= _weights;
 @synthesize weightsDelta= _weightsDelta;
+
+@synthesize nextLayerWeightPtrs= _nextLayerWeightPtrs;
+@synthesize nextLayerWeightDeltaPtrs= _nextLayerWeightDeltaPtrs;
 
 @dynamic error;
 
