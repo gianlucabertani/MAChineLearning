@@ -251,7 +251,7 @@
 - (void) setUp {
 	if (_neurons)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer already set up"
-															   userInfo:nil];
+																 userInfo:@{@"layer": [NSNumber numberWithInt:self.index]}];
 	
 	_neurons= [[NSMutableArray alloc] initWithCapacity:self.size];
 	
@@ -266,7 +266,8 @@
 		
 		} else
 			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Unknown type of layer found as previous layer"
-																   userInfo:@{@"previousLayer": self.previousLayer}];
+																	 userInfo:@{@"layer": [NSNumber numberWithInt:self.index],
+																				@"previousLayer": [NSNumber numberWithInt:self.previousLayer.index]}];
 
 		MLNeuron *neuron= [[MLNeuron alloc] initWithLayer:self
 												index:i
@@ -287,8 +288,8 @@
 								sizeof(MLReal) * nextLayer.size);
 		if (err)
 			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"nextLayerWeightsBuffer",
-																			  @"error": [NSNumber numberWithInt:err]}];
+																	 userInfo:@{@"buffer": @"nextLayerWeightsBuffer",
+																				@"error": [NSNumber numberWithInt:err]}];
 		
 		err= posix_memalign((void **) &_nextLayerWeightsDeltaBuffer,
 								BUFFER_MEMORY_ALIGNMENT,
@@ -306,7 +307,7 @@
 - (void) feedForward {
 	if (!_neurons)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-															   userInfo:nil];
+																 userInfo:@{@"layer": [NSNumber numberWithInt:self.index]}];
 	
 	// Reset error and delta
 	ML_VDSP_VCLR(_deltaBuffer, 1, _size);
@@ -363,12 +364,16 @@
 - (void) fetchErrorFromNextLayer {
 	if (!_neurons)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-															   userInfo:nil];
+																 userInfo:@{@"layer": [NSNumber numberWithInt:self.index]}];
 	
 	MLNeuronLayer *nextLayer= (MLNeuronLayer *) self.nextLayer;
 	
 	int i= 0;
 	for (MLNeuron *neuron in _neurons) {
+		if ((!neuron.nextLayerWeightPtrs) || (!neuron.nextLayerWeightDeltaPtrs))
+			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron not yet set up"
+																	 userInfo:@{@"layer": [NSNumber numberWithInt:self.index],
+																				@"neuron": [NSNumber numberWithInt:neuron.index]}];
 		
 		// Gather next layer weights using vector gathering
 		ML_VDSP_VGATHRA((const MLReal **) neuron.nextLayerWeightPtrs, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
@@ -387,7 +392,7 @@
 - (void) backPropagateWithLearningRate:(MLReal)learningRate {
 	if (!_neurons)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-															   userInfo:nil];
+																 userInfo:@{@"layer": [NSNumber numberWithInt:self.index]}];
 	
 	// First step: compute the delta with
 	// activation function derivative
@@ -401,7 +406,7 @@
 		case MLActivationFunctionTypeStep:
 			if (self.nextLayer)
 				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Can't backpropagate in a hidden layer with step function"
-																	   userInfo:nil];
+																		 userInfo:@{@"layer": [NSNumber numberWithInt:self.index]}];
 
 			// Apply formula: delta[i] = error[i]
 			ML_VDSP_VSMUL(_errorBuffer, 1, _one, _deltaBuffer, 1, _size);
@@ -440,7 +445,7 @@
 - (void) updateWeights {
 	if (!_neurons)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-															   userInfo:nil];
+																 userInfo:@{@"layer": [NSNumber numberWithInt:self.index]}];
 	
 	// First step: update the bias with the bias delta
 	ML_VDSP_VADD(_biasBuffer, 1, _biasDeltaBuffer, 1, _biasBuffer, 1, _size);

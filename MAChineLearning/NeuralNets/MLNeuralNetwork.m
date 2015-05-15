@@ -86,12 +86,12 @@
 	NSArray *sizes= [config objectForKey:CONFIG_PARAM_LAYER_SIZES];
 	if (!sizes)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing layer sizes)"
-															   userInfo:@{@"config": config}];
+																 userInfo:@{@"config": config}];
 	
 	NSNumber *funcType= [config objectForKey:CONFIG_PARAM_OUTPUT_FUNCTION_TYPE];
 	if (!funcType)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing output function type)"
-															   userInfo:@{@"config": config}];
+																 userInfo:@{@"config": config}];
 
 	// Create the network
 	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes outputFunctionType:[funcType intValue]];
@@ -105,8 +105,8 @@
 		NSArray *layerConfig= [config objectForKey:layerParam];
 		if (!layerConfig)
 			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing layer configuration)"
-																   userInfo:@{@"config": config,
-																			  @"layer": [NSNumber numberWithInt:i]}];
+																	 userInfo:@{@"config": config,
+																				@"layer": [NSNumber numberWithInt:i]}];
 
 		for (int j= 0; j < neuronLayer.size; j++) {
 			MLNeuron *neuron= [neuronLayer.neurons objectAtIndex:j];
@@ -114,34 +114,34 @@
 			NSDictionary *neuronConfig= [layerConfig objectAtIndex:j];
 			if (!neuronConfig)
 				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing neuron configuration)"
-																	   userInfo:@{@"config": config,
-																				  @"layer": [NSNumber numberWithInt:i],
-																				  @"neuron": [NSNumber numberWithInt:j]}];
+																		 userInfo:@{@"config": config,
+																					@"layer": [NSNumber numberWithInt:i],
+																					@"neuron": [NSNumber numberWithInt:j]}];
 			
 			NSNumber *bias= [neuronConfig objectForKey:CONFIG_PARAM_BIAS];
 			if (!bias)
 				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing neuron bias)"
-																	   userInfo:@{@"config": config,
-																				  @"layer": [NSNumber numberWithInt:i],
-																				  @"neuron": [NSNumber numberWithInt:j]}];
+																		 userInfo:@{@"config": config,
+																					@"layer": [NSNumber numberWithInt:i],
+																					@"neuron": [NSNumber numberWithInt:j]}];
 
 			neuronLayer.biasBuffer[neuron.index]= [bias doubleValue];
 			
 			NSArray *weights= [neuronConfig objectForKey:CONFIG_PARAM_WEIGHTS];
 			if (!weights)
 				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing neuron weights list)"
-																	   userInfo:@{@"config": config,
-																				  @"layer": [NSNumber numberWithInt:i],
-																				  @"neuron": [NSNumber numberWithInt:j]}];
+																		 userInfo:@{@"config": config,
+																					@"layer": [NSNumber numberWithInt:i],
+																					@"neuron": [NSNumber numberWithInt:j]}];
 			
 			for (int k= 0; k < previousLayer.size; k++) {
 				NSNumber *weight= [weights objectAtIndex:k];
 				if (!weight)
 					@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing neuron weight)"
-																		   userInfo:@{@"config": config,
-																					  @"layer": [NSNumber numberWithInt:i],
-																					  @"neuron": [NSNumber numberWithInt:j],
-																					  @"weight": [NSNumber numberWithInt:k]}];
+																			 userInfo:@{@"config": config,
+																						@"layer": [NSNumber numberWithInt:i],
+																						@"neuron": [NSNumber numberWithInt:j],
+																						@"weight": [NSNumber numberWithInt:k]}];
 				
 				neuron.weights[k]= [weight doubleValue];
 			}
@@ -169,7 +169,7 @@
 		for (NSNumber *size in sizes) {
 			if (![size isKindOfClass:[NSNumber class]])
 				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid size specified"
-																	   userInfo:@{@"size": size}];
+																		 userInfo:@{@"size": size}];
 			if (i == 0) {
 				
 				// Create input layer
@@ -236,8 +236,8 @@
 								sizeof(MLReal) * _outputSize);
 		if (err)
 			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"expectedOutputBuffer",
-																			  @"error": [NSNumber numberWithInt:err]}];
+																	 userInfo:@{@"buffer": @"expectedOutputBuffer",
+																				@"error": [NSNumber numberWithInt:err]}];
 		
 		_status= MLNeuralNetworkStatusIdle;
 	}
@@ -276,7 +276,7 @@
 			
 		default:
 			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Wrong call sequence: network must be feeded forward before it can be back propagated"
-																   userInfo:@{@"status": [NSNumber numberWithInt:_status]}];
+																	 userInfo:@{@"status": [NSNumber numberWithInt:_status]}];
 	}
 	
 	_status= MLNeuralNetworkStatusBackPropagated;
@@ -308,7 +308,7 @@
 			
 		default:
 			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Wrong call sequence: network must be back propagated before weights can be updated"
-																   userInfo:@{@"status": [NSNumber numberWithInt:_status]}];
+																	 userInfo:@{@"status": [NSNumber numberWithInt:_status]}];
 	}
 	
 	_status= MLNeuralNetworkStatusWeightsUpdated;

@@ -68,8 +68,8 @@
 								sizeof(MLReal) * size);
 		if (err)
 			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"inputBuffer",
-																			  @"error": [NSNumber numberWithInt:err]}];
+																	 userInfo:@{@"buffer": @"inputBuffer",
+																				@"error": [NSNumber numberWithInt:err]}];
 		
 		// Clear and fill buffers as needed
 		ML_VDSP_VCLR(_inputBuffer, 1, size);
