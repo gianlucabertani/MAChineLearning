@@ -60,12 +60,15 @@ typedef MLWordFilterOutcome (^MLWordFilter)(NSString *word, MLWordInfo *wordInfo
 #pragma mark -
 #pragma mark Dictionary access and building
 
+- (BOOL) containsWord:(NSString *)word;
 - (MLWordInfo *) infoForWord:(NSString *)word;
 - (MLWordInfo *) addOccurrenceForWord:(NSString *)word textID:(NSString *)textID;
 
 
 #pragma mark -
 #pragma mark Dictionary filtering
+
+- (void) keepWordsWithHighestOccurrenciesUpToSize:(NSUInteger)size;
 
 - (void) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies;
 - (void) discardWordsWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies;

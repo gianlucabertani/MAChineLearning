@@ -1,8 +1,8 @@
 //
-//  MLWordInfo.h
+//  MLRandom.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 10/05/15.
+//  Created by Gianluca Bertani on 26/05/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -34,30 +34,14 @@
 #import <Foundation/Foundation.h>
 
 
-@interface MLWordInfo : NSObject
+@interface MLRandom : NSObject
 
 
-#pragma -
-#pragma Initialization
++ (NSUInteger) nextUInt;
++ (NSUInteger) nextUIntWithMax:(NSUInteger)max;
 
-- (id) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition;
-- (id) initWithWord:(NSString *)word position:(NSUInteger)position;
-
-
-#pragma -
-#pragma Occurrencies counting
-
-- (void) addOccurrenceForTextID:(NSString *)textID;
-
-
-#pragma -
-#pragma Properties
-
-@property (nonatomic, readonly) NSString *word;
-@property (nonatomic, readonly) NSUInteger position;
-
-@property (nonatomic, readonly) NSUInteger totalOccurrencies;
-@property (nonatomic, readonly) NSUInteger documentOccurrencies;
++ (double) nextDouble;
++ (double) nextDoubleWithMin:(double)min max:(double)max;
 
 
 @end

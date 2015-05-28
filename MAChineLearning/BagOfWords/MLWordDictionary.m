@@ -99,6 +99,12 @@
 #pragma mark -
 #pragma mark Dictionary access and manipulation
 
+- (BOOL) containsWord:(NSString *)word {
+	NSString *lowercaseWord= [word lowercaseString];
+	
+	return ([_dictionary objectForKey:lowercaseWord] != nil);
+}
+
 - (MLWordInfo *) infoForWord:(NSString *)word {
 	NSString *lowercaseWord= [word lowercaseString];
 	
@@ -110,7 +116,7 @@
 	
 	MLWordInfo *wordInfo= [_dictionary objectForKey:lowercaseWord];
 	if ((!wordInfo) && (_dictionary.count < _maxSize)) {
-		wordInfo= [[MLWordInfo alloc] initWithPosition:_dictionary.count];
+		wordInfo= [[MLWordInfo alloc] initWithWord:word position:_dictionary.count];
 		[_dictionary setObject:wordInfo forKey:lowercaseWord];
 	}
 	
@@ -129,6 +135,30 @@
 
 #pragma mark -
 #pragma mark Dictionary filtering
+
+- (void) keepWordsWithHighestOccurrenciesUpToSize:(NSUInteger)size {
+	NSArray *sortedWordInfos= [[_dictionary allValues] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		MLWordInfo *info1= (MLWordInfo *) obj1;
+		MLWordInfo *info2= (MLWordInfo *) obj2;
+		
+		return (info1.totalOccurrencies < info2.totalOccurrencies) ? NSOrderedDescending :
+			((info1.totalOccurrencies > info2.totalOccurrencies) ? NSOrderedAscending : NSOrderedSame);
+	}];
+
+	NSMutableDictionary *newDictionary= [[NSMutableDictionary alloc] initWithCapacity:_dictionary.count];
+	
+	for (MLWordInfo *wordInfo in sortedWordInfos) {
+		if (newDictionary.count == size)
+			break;
+		
+		NSString *lowercaseWord= [wordInfo.word lowercaseString];
+		
+		[newDictionary setObject:wordInfo forKey:lowercaseWord];
+	}
+	
+	[_dictionary removeAllObjects];
+	_dictionary= newDictionary;
+}
 
 - (void) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies {
 	[self applyFilter:^MLWordFilterOutcome(NSString *word, MLWordInfo *wordInfo) {
@@ -202,6 +232,24 @@
 		MLReal weight= log(((MLReal) _totalDocuments) / (1.0 + ((MLReal) wordInfo.documentOccurrencies)));
 		_idfWeights[wordInfo.position]= weight;
 	}
+}
+
+
+#pragma mark -
+#pragma mark NSObject overrides
+
+- (NSString *) description {
+	NSMutableString *descr= [[NSMutableString alloc] initWithCapacity:100 *_dictionary.count];
+	
+	[descr appendString:@"{\n"];
+
+	NSArray *wordInfos= [_dictionary allValues];
+	for (MLWordInfo *wordInfo in wordInfos)
+		[descr appendFormat:@"\t'%@': %lu (%lu)\n", wordInfo.word, wordInfo.totalOccurrencies, wordInfo.documentOccurrencies];
+	
+	[descr appendString:@"}"];
+
+	return [descr description];
 }
 
 

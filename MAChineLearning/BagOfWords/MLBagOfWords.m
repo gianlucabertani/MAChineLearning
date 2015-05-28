@@ -465,12 +465,15 @@ static NSDictionary *__stopWords= nil;
 		NSString *originalText= text;
 	
 		// Ensure punctuation is followed by a space
-		text= [text stringByReplacingOccurrencesOfString:@"." withString:@". "];
-		text= [text stringByReplacingOccurrencesOfString:@"," withString:@", "];
-		text= [text stringByReplacingOccurrencesOfString:@";" withString:@"; "];
-		text= [text stringByReplacingOccurrencesOfString:@":" withString:@": "];
-		text= [text stringByReplacingOccurrencesOfString:@"'" withString:@"' "];
-		text= [text stringByReplacingOccurrencesOfString:@"\"" withString:@"\" "];
+		NSMutableString *mutableText= [[NSMutableString alloc] initWithCapacity:text.length * 1.5];
+		[mutableText setString:text];
+		[mutableText replaceOccurrencesOfString:@"." withString:@". " options:0 range:NSMakeRange(0, mutableText.length)];
+		[mutableText replaceOccurrencesOfString:@"," withString:@", " options:0 range:NSMakeRange(0, mutableText.length)];
+		[mutableText replaceOccurrencesOfString:@";" withString:@"; " options:0 range:NSMakeRange(0, mutableText.length)];
+		[mutableText replaceOccurrencesOfString:@":" withString:@": " options:0 range:NSMakeRange(0, mutableText.length)];
+		[mutableText replaceOccurrencesOfString:@"'" withString:@"' " options:0 range:NSMakeRange(0, mutableText.length)];
+		[mutableText replaceOccurrencesOfString:@"\"" withString:@"\" " options:0 range:NSMakeRange(0, mutableText.length)];
+		text= [mutableText description];
 		
 		// Prepare containers and stopwords list
 		NSMutableArray *fragments= [NSMutableArray arrayWithCapacity:text.length / 5];
@@ -712,18 +715,21 @@ static NSDictionary *__stopWords= nil;
 		NSString *originalText= text;
 
 		// Ensure punctuation is followed by a space
-		text= [text stringByReplacingOccurrencesOfString:@"." withString:@". "];
-		text= [text stringByReplacingOccurrencesOfString:@"," withString:@", "];
-		text= [text stringByReplacingOccurrencesOfString:@";" withString:@"; "];
-		text= [text stringByReplacingOccurrencesOfString:@":" withString:@": "];
-		text= [text stringByReplacingOccurrencesOfString:@"'" withString:@"' "];
-		text= [text stringByReplacingOccurrencesOfString:@"\"" withString:@"\" "];
+		NSMutableString *mutableText= [[NSMutableString alloc] initWithCapacity:text.length * 1.5];
+		[mutableText setString:text];
+		[mutableText replaceOccurrencesOfString:@"." withString:@". " options:0 range:NSMakeRange(0, mutableText.length)];
+		[mutableText replaceOccurrencesOfString:@"," withString:@", " options:0 range:NSMakeRange(0, mutableText.length)];
+		[mutableText replaceOccurrencesOfString:@";" withString:@"; " options:0 range:NSMakeRange(0, mutableText.length)];
+		[mutableText replaceOccurrencesOfString:@":" withString:@": " options:0 range:NSMakeRange(0, mutableText.length)];
+		[mutableText replaceOccurrencesOfString:@"'" withString:@"' " options:0 range:NSMakeRange(0, mutableText.length)];
+		[mutableText replaceOccurrencesOfString:@"\"" withString:@"\" " options:0 range:NSMakeRange(0, mutableText.length)];
+		text= [mutableText description];
 		
 		// Prepare containers and stopword list
 		NSMutableArray *fragments= [NSMutableArray arrayWithCapacity:text.length / 5];
 		NSMutableArray *combinedFragments= [NSMutableArray arrayWithCapacity:text.length / 10];
 		NSSet *stopWords= (languageCode ? [__stopWords objectForKey:languageCode] : nil);
-		
+
 		// Split text by spaces and new lines
 		int tokenIndex= -1;
 		NSRange range= NSMakeRange(0, text.length);

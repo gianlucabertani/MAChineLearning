@@ -34,14 +34,15 @@
 #import <Foundation/Foundation.h>
 #import <MAChineLearning/MAChineLearning.h>
 
-#define VECTOR_SZIE                      (300)
-#define TRAINING_ITERATIONS                (5)
-#define SKIP_GRAM_WINDOW                   (6)
-#define WORD_MIN_COUNT                   (100)
+#define DICTIONARY_SIZE                (10000)
+#define VECTOR_SIZE                      (100)
+#define SKIP_GRAM_WINDOW                   (5)
+#define DOWNSAMPLING_FREQUENCY_LIMIT       (0.001)
 #define LEARNING_RATE                      (0.025)
 
-#define MISSING_ARGUMENT                   (9)
-#define OK                                 (0)
+#define RETVAL_MISSING_ARGUMENT            (9)
+#define RETVAL_BUFFER_ALLOCATION_ERROR    (17)
+#define RETVAL_OK                          (0)
 
 
 /**
@@ -57,7 +58,7 @@
 int main(int argc, const char * argv[]) {
 	@autoreleasepool {
 		if (argc != 2)
-			return MISSING_ARGUMENT;
+			return RETVAL_MISSING_ARGUMENT;
 		
 		// Get directory list at path of first argument
 		NSFileManager *manager= [NSFileManager defaultManager];
@@ -75,7 +76,7 @@ int main(int argc, const char * argv[]) {
 			if (![fileName hasSuffix:@".txt"])
 				continue;
 			
-			NSLog(@"Now reading file: %@", fileName);
+			NSLog(@"Building dictionary with file: %@", fileName);
 
 			IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:filePath];
 
@@ -103,44 +104,45 @@ int main(int argc, const char * argv[]) {
 			[reader close];
 		}
 		
+		NSLog(@"Total number of words: %8lu", dictionary.totalWords);
 		NSLog(@"Pre-filtering size:    %8lu", dictionary.size);
 		
 		// Filter dictionary for rare words
-		[dictionary discardWordsWithOccurrenciesLessThan:WORD_MIN_COUNT];
+		[dictionary keepWordsWithHighestOccurrenciesUpToSize:DICTIONARY_SIZE];
 		[dictionary compact];
 		
 		NSLog(@"Final dictionary size: %8lu", dictionary.size);
-		NSLog(@"Total number of words: %8lu", dictionary.totalWords);
+		NSLog(@"Dictionary:\n%@", dictionary);
 		
 		// Prepare the neural network:
 		// - input and output sizes are set to the dictionary (bag of words) size
 		// - hidden size is set to the desired vector size
 		// - activation function is logistic
 		MLNeuralNetwork *net= [[MLNeuralNetwork alloc] initWithLayerSizes:@[[NSNumber numberWithInt:(int) dictionary.size],
-																			@VECTOR_SZIE,
+																			@VECTOR_SIZE,
 																			[NSNumber numberWithInt:(int) dictionary.size]]
 													   outputFunctionType:MLActivationFunctionTypeLogistic];
 		
-		// Mark time
-		NSDate *begin= [NSDate date];
-
-		// Loop for the training iterations
+		// Loop all the files
 		NSUInteger totalWords= 0;
-		for (int iter= 0; iter < TRAINING_ITERATIONS; iter++) {
-		
-			// Loop all the files
-			for (NSString *fileName in fileNames) {
-				NSString *filePath= [path stringByAppendingPathComponent:fileName];
+		for (NSString *fileName in fileNames) {
+			NSString *filePath= [path stringByAppendingPathComponent:fileName];
 
-				// Skip non-txt files
-				if (![fileName hasSuffix:@".txt"])
-					continue;
-				
-				IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:filePath];
-				
-				NSLog(@"Iteration %2d, now training with file: %@", iter, fileName);
+			// Skip non-txt files
+			if (![fileName hasSuffix:@".txt"])
+				continue;
+			
+			// Mark time
+			NSDate *begin= [NSDate date];
+			
+			IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:filePath];
+			
+			NSLog(@"Training word2vec with file: %@", fileName);
 
-				do {
+			do {
+				@autoreleasepool {
+					
+					// Read next line
 					NSString *line= [reader readLine];
 					if (!line)
 						break;
@@ -152,63 +154,88 @@ int main(int argc, const char * argv[]) {
 																			 withLanguage:nil
 																		 extractorOptions:MLWordExtractorOptionOmitNumbers];
 					
-					@autoreleasepool {
-						NSMutableArray *context= [[NSMutableArray alloc] initWithCapacity:SKIP_GRAM_WINDOW *2];
+					// Pick a random starting point for the context
+					NSUInteger start= [MLRandom nextUIntWithMax:SKIP_GRAM_WINDOW];
 
-						for (int i= 0; i < words.count; i++) {
-							
-							// Take the i-th word
-							NSString *word= [words objectAtIndex:i];
+					// Build the context and pick up the central word
+					NSMutableArray *context= [[NSMutableArray alloc] initWithCapacity:SKIP_GRAM_WINDOW *2];
+					NSString *centralWord= nil;
 
-							// Pick up the context surroding the i-th word
-							[context removeAllObjects];
+					int pickedUpWords= 0;
+					for (int i= 0; pickedUpWords < (SKIP_GRAM_WINDOW * 2) +1; i++) {
+						
+						// Check if we ran out of words for this line
+						if ((start + i) >= words.count)
+							break;
+						
+						// Pick the i-th word from the starting point
+						NSString *word= [words objectAtIndex:start + i];
+						
+						// Skip the word if it's not in the dictionary
+						MLWordInfo *wordInfo= [dictionary infoForWord:word];
+						if (!wordInfo)
+							continue;
+						
+						// Check if the word is too frequent: above the limit,
+						// it is randomly downsampled
+						double ranking= (sqrt(((double) wordInfo.totalOccurrencies) / (dictionary.totalWords * DOWNSAMPLING_FREQUENCY_LIMIT)) + 1.0) *
+							((dictionary.totalWords * DOWNSAMPLING_FREQUENCY_LIMIT) / ((double) wordInfo.totalOccurrencies));
 
-							for (int j= i -SKIP_GRAM_WINDOW; j < i +SKIP_GRAM_WINDOW; j++) {
-								if ((j < 0) || (j == i) || (j >= words.count))
-									continue;
-							
-								[context addObject:[words objectAtIndex:j]];
-							}
-							
-							// Use bag of words to load the net's input buffer
-							[MLBagOfWords bagOfWordsWithWords:@[word]
-													   textID:nil
-												   dictionary:dictionary
-											  buildDictionary:NO
-										 featureNormalization:MLFeatureNormalizationTypeBoolean
-												 outputBuffer:net.inputBuffer];
-							
-							
-							// Run the network
-							[net feedForward];
-							
-							// Use bag of words to load the net's expected output buffer
-							[MLBagOfWords bagOfWordsWithWords:context
-													   textID:nil
-												   dictionary:dictionary
-											  buildDictionary:NO
-										 featureNormalization:MLFeatureNormalizationTypeBoolean
-												 outputBuffer:net.expectedOutputBuffer];
-							
-							// Backpropagate the network
-							[net backPropagateWithLearningRate:LEARNING_RATE];
-							[net updateWeights];
+						if (ranking < 1.0) {
+							double random= [MLRandom nextDouble];
+							if (ranking < random)
+								continue;
 						}
 						
-						totalWords += words.count;
-						NSTimeInterval elapsed= [[NSDate date] timeIntervalSinceDate:begin];
+						if (pickedUpWords == SKIP_GRAM_WINDOW)
+							centralWord= word;
+						else
+							[context addObject:word];
 						
-						NSLog(@"- line: %6lu, words: %5lu, total words: %8lu, speed: %2.2f words/sec", reader.lineNumber, words.count, totalWords, ((double) totalWords) / elapsed);
+						pickedUpWords++;
 					}
+
+					// Skip this line if the context is incomplete
+					if (context.count < SKIP_GRAM_WINDOW * 2)
+						continue;
 					
-				} while (YES);
+					// Use bag of words to load the net's input buffer
+					[MLBagOfWords bagOfWordsWithWords:@[centralWord]
+											   textID:nil
+										   dictionary:dictionary
+									  buildDictionary:NO
+								 featureNormalization:MLFeatureNormalizationTypeBoolean
+										 outputBuffer:net.inputBuffer];
+					
+					// Use bag of words to load the net's expected output buffer
+					[MLBagOfWords bagOfWordsWithWords:context
+											   textID:nil
+										   dictionary:dictionary
+									  buildDictionary:NO
+								 featureNormalization:MLFeatureNormalizationTypeBoolean
+										 outputBuffer:net.expectedOutputBuffer];
+
+					// Run the network
+					[net feedForward];
+					
+					// Backpropagate the network
+					[net backPropagateWithLearningRate:LEARNING_RATE];
+					[net updateWeights];
+					
+					totalWords += words.count;
+					NSTimeInterval elapsed= [[NSDate date] timeIntervalSinceDate:begin];
+					
+					if (reader.lineNumber % 1000 == 0)
+						NSLog(@"- line: %6lu, words: %6luK, avg. speed: %6.2fK words/sec", reader.lineNumber, totalWords / 1000, (((double) totalWords) / elapsed) / 1000.0);
+				}
 				
-				[reader close];
-			}
+			} while (YES);
+			
+			[reader close];
 		}
 		
 		// !! TO DO: to be completed
 	}
 	
-    return 0;
+    return RETVAL_OK;
 }

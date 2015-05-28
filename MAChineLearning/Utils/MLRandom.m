@@ -1,8 +1,8 @@
 //
-//  MLWordInfo.m
+//  MLRandom.m
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 10/05/15.
+//  Created by Gianluca Bertani on 26/05/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,97 +31,39 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "MLWordInfo.h"
+#import "MLRandom.h"
+
+#define DOUBLE_LIMIT          (((double) NSUIntegerMax) + 1.0)
 
 
-#pragma -
-#pragma WordInfo extension
+@implementation MLRandom
 
-@interface MLWordInfo () {
-	NSString *_word;
-	NSUInteger _position;
 
-	NSUInteger _totalOccurrencies;
-	NSUInteger _documentOccurrencies;
++ (NSUInteger) nextUInt {
+	NSUInteger random= 0;
 	
-	NSMutableSet *_documents;
+	SecRandomCopyBytes(kSecRandomDefault, sizeof(random), (uint8_t *) &random);
+	
+	return random;
 }
 
++ (NSUInteger) nextUIntWithMax:(NSUInteger)max {
+	NSUInteger random= [MLRandom nextUInt];
 
-#pragma -
-#pragma Internal properties
-
-@property (nonatomic, readonly) NSSet *documents;
-
-
-@end
-
-
-#pragma -
-#pragma WordInfo implementation
-
-@implementation MLWordInfo
-
-
-#pragma -
-#pragma Initialization
-
-- (id) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_word= wordInfo.word;
-		_position= newPosition;
-		
-		_totalOccurrencies= wordInfo.totalOccurrencies;
-		_documentOccurrencies= wordInfo.documentOccurrencies;
-		
-		_documents= [[NSMutableSet alloc] initWithSet:wordInfo.documents];
-	}
-	
-	return self;
+	return (random % max);
 }
 
-- (id) initWithWord:(NSString *)word position:(NSUInteger)position {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_word= word;
-		_position= position;
-		
-		_totalOccurrencies= 0;
-		_documentOccurrencies= 0;
-		
-		_documents= [[NSMutableSet alloc] init];
-	}
-	
-	return self;
++ (double) nextDouble {
+	double random= (double) [MLRandom nextUInt];
+
+	return (random / DOUBLE_LIMIT);
 }
 
-
-#pragma -
-#pragma Occurrencies counting
-
-- (void) addOccurrenceForTextID:(NSString *)textID {
-	_totalOccurrencies++;
++ (double) nextDoubleWithMin:(double)min max:(double)max {
+	double random= [MLRandom nextDouble];
 	
-	if (textID && (![_documents containsObject:textID])) {
-		[_documents addObject:textID];
-		_documentOccurrencies++;
-	}
+	return ((random * (max - min)) + min);
 }
-
-
-#pragma -
-#pragma Properties
-
-@synthesize word= _word;
-@synthesize position= _position;
-
-@synthesize totalOccurrencies= _totalOccurrencies;
-@synthesize documentOccurrencies= _documentOccurrencies;
-
-@synthesize documents= _documents;
 
 
 @end
