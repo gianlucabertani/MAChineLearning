@@ -151,7 +151,7 @@
 
 - (void) testBagOfWordsForSentimentAnalysisWithSimpleTokenizer {
 	@try {
-		MLWordDictionary *dictionary= [MLWordDictionary dictionaryWithMaxSize:300];
+		MLMutableWordDictionary *dictionary= [MLMutableWordDictionary dictionaryWithMaxSize:300];
 		
 		// Bag of words for sentiment analysis uses the (quick) simple tokenizer,
 		// removing stop words but keeping emoticon and all bigrams
@@ -209,7 +209,7 @@
 
 - (void) testBagOfWordsForSentimentAnalysisWithLinguisticTagger {
 	@try {
-		MLWordDictionary *dictionary= [MLWordDictionary dictionaryWithMaxSize:300];
+		MLMutableWordDictionary *dictionary= [MLMutableWordDictionary dictionaryWithMaxSize:300];
 		
 		// Bag of words for sentiment analysis using the (slow) linguistic tagger,
 		// with same configuration of default sentiment analysis
@@ -271,7 +271,7 @@
 
 - (void) testBagOfWordsForTopicClassification {
 	@try {
-		MLWordDictionary *dictionary= [MLWordDictionary dictionaryWithMaxSize:100];
+		MLMutableWordDictionary *dictionary= [MLMutableWordDictionary dictionaryWithMaxSize:100];
 		
 		// Bag of words for topic classification uses the (slow) linguistic tagger, removing
 		// stop words, verbs and adjectives, but keeping composite nouns and names

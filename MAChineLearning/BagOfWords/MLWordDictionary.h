@@ -36,52 +36,29 @@
 #import "MLReal.h"
 
 
-typedef enum {
-	MLWordFilterOutcomeDiscardWord= 0,
-	MLWordFilterOutcomeKeepWord= 1
-} MLWordFilterOutcome;
-
 @class MLWordInfo;
 
-typedef MLWordFilterOutcome (^MLWordFilter)(NSString *word, MLWordInfo *wordInfo);
+@interface MLWordDictionary : NSObject {
 
-
-@interface MLWordDictionary : NSObject
+@protected
+	NSMutableDictionary *_dictionary;
+	NSUInteger _maxSize;
+	
+	NSUInteger _totalWords;
+	NSUInteger _totalDocuments;
+	
+	NSMutableSet *_documents;
+	
+	MLReal *_idfWeights;
+	BOOL _idfWeightsDirty;
+}
 
 
 #pragma mark -
-#pragma mark Initialization
-
-+ (MLWordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize;
-
-- (instancetype) initWithMaxSize:(NSUInteger)maxSize;
-
-
-#pragma mark -
-#pragma mark Dictionary access and building
+#pragma mark Dictionary access
 
 - (BOOL) containsWord:(NSString *)word;
 - (MLWordInfo *) infoForWord:(NSString *)word;
-- (MLWordInfo *) addOccurrenceForWord:(NSString *)word textID:(NSString *)textID;
-
-
-#pragma mark -
-#pragma mark Dictionary filtering
-
-- (void) keepWordsWithHighestOccurrenciesUpToSize:(NSUInteger)size;
-
-- (void) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies;
-- (void) discardWordsWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies;
-
-- (void) applyFilter:(MLWordFilter)filter;
-
-- (void) compact;
-
-
-#pragma mark -
-#pragma mark Inverse document frequency
-
-- (void) computeIDFWeights;
 
 
 #pragma mark -

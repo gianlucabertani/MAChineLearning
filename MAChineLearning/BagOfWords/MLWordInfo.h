@@ -34,7 +34,17 @@
 #import <Foundation/Foundation.h>
 
 
-@interface MLWordInfo : NSObject
+@interface MLWordInfo : NSObject {
+	
+@private
+	NSString *_word;
+	NSUInteger _position;
+	
+	NSUInteger _totalOccurrencies;
+	NSUInteger _documentOccurrencies;
+	
+	NSMutableSet *_documents;
+}
 
 
 #pragma -
@@ -45,12 +55,6 @@
 
 
 #pragma -
-#pragma Occurrencies counting
-
-- (void) addOccurrenceForTextID:(NSString *)textID;
-
-
-#pragma -
 #pragma Properties
 
 @property (nonatomic, readonly) NSString *word;
@@ -58,6 +62,8 @@
 
 @property (nonatomic, readonly) NSUInteger totalOccurrencies;
 @property (nonatomic, readonly) NSUInteger documentOccurrencies;
+
+@property (nonatomic, readonly) NSSet *documents;
 
 
 @end

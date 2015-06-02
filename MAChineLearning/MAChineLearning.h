@@ -30,6 +30,7 @@ FOUNDATION_EXPORT const unsigned char MAChineLearningVersionString[];
 #import <MAChineLearning/MLWordExtractorOption.h>
 #import <MAChineLearning/MLFeatureNormalizationType.h>
 #import <MAChineLearning/MLWordDictionary.h>
+#import <MAChineLearning/MLMutableWordDictionary.h>
 #import <MAChineLearning/MLWordInfo.h>
 #import <MAChineLearning/MLBagOfWordsException.h>
 #import <MAChineLearning/MLRandom.h>

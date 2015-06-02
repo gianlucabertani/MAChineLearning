@@ -37,6 +37,10 @@
 		8C9A49471B1454FB003E3041 /* MLRandom.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C9A49451B1454FB003E3041 /* MLRandom.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C9A49481B1454FB003E3041 /* MLRandom.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9A49461B1454FB003E3041 /* MLRandom.m */; };
 		8CA8CE8C1AF75074006D5351 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CA8CE8B1AF75074006D5351 /* main.m */; };
+		8CC07B501B1E11E8004D804B /* MLMutableWordDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC07B4E1B1E11E8004D804B /* MLMutableWordDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CC07B511B1E11E8004D804B /* MLMutableWordDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC07B4F1B1E11E8004D804B /* MLMutableWordDictionary.m */; };
+		8CC07B541B1E173D004D804B /* MLWordInfo+Mutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC07B521B1E173D004D804B /* MLWordInfo+Mutable.h */; };
+		8CC07B551B1E173D004D804B /* MLWordInfo+Mutable.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC07B531B1E173D004D804B /* MLWordInfo+Mutable.m */; };
 		8CC9E4DC1AE9843B002659EA /* MLWordExtractorOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4DB1AE9843B002659EA /* MLWordExtractorOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC9E4DF1AE985F4002659EA /* NSString+WordUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4DD1AE985F4002659EA /* NSString+WordUtils.h */; };
 		8CC9E4E01AE985F4002659EA /* NSString+WordUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC9E4DE1AE985F4002659EA /* NSString+WordUtils.m */; };
@@ -127,6 +131,10 @@
 		8C9A49461B1454FB003E3041 /* MLRandom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLRandom.m; sourceTree = "<group>"; };
 		8CA8CE891AF75074006D5351 /* Word2vec */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Word2vec; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CA8CE8B1AF75074006D5351 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8CC07B4E1B1E11E8004D804B /* MLMutableWordDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLMutableWordDictionary.h; sourceTree = "<group>"; };
+		8CC07B4F1B1E11E8004D804B /* MLMutableWordDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLMutableWordDictionary.m; sourceTree = "<group>"; };
+		8CC07B521B1E173D004D804B /* MLWordInfo+Mutable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MLWordInfo+Mutable.h"; sourceTree = "<group>"; };
+		8CC07B531B1E173D004D804B /* MLWordInfo+Mutable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MLWordInfo+Mutable.m"; sourceTree = "<group>"; };
 		8CC9E4DB1AE9843B002659EA /* MLWordExtractorOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLWordExtractorOption.h; sourceTree = "<group>"; };
 		8CC9E4DD1AE985F4002659EA /* NSString+WordUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+WordUtils.h"; sourceTree = "<group>"; };
 		8CC9E4DE1AE985F4002659EA /* NSString+WordUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+WordUtils.m"; sourceTree = "<group>"; };
@@ -212,8 +220,12 @@
 				8C94CBFE1AE91C0800A0A328 /* MLFeatureNormalizationType.h */,
 				8CF8D5501AFF732F008FA0AC /* MLWordDictionary.h */,
 				8CF8D5511AFF732F008FA0AC /* MLWordDictionary.m */,
+				8CC07B4E1B1E11E8004D804B /* MLMutableWordDictionary.h */,
+				8CC07B4F1B1E11E8004D804B /* MLMutableWordDictionary.m */,
 				8CF8D54C1AFF6CE0008FA0AC /* MLWordInfo.h */,
 				8CF8D54D1AFF6CE0008FA0AC /* MLWordInfo.m */,
+				8CC07B521B1E173D004D804B /* MLWordInfo+Mutable.h */,
+				8CC07B531B1E173D004D804B /* MLWordInfo+Mutable.m */,
 				8C58A30C1AECD275006AB74D /* MLTextFragment.h */,
 				8C58A30D1AECD275006AB74D /* MLTextFragment.m */,
 				8C58A31B1AECDF9D006AB74D /* MLStopWords.h */,
@@ -261,6 +273,7 @@
 				8CC9E4E11AE9887D002659EA /* Commons */,
 				8C1251CA1AE8D2FF00FA493E /* NeuralNets */,
 				8C1251E91AE8D48B00FA493E /* BagOfWords */,
+				8C5FC78E1B16F725004E74C4 /* WordVectors */,
 				8CF8D52B1AFF3C9B008FA0AC /* Utils */,
 				8C4CEF1B1ADAC51200F1E139 /* Supporting Files */,
 			);
@@ -301,6 +314,13 @@
 				8C58A3161AECDAA3006AB74D /* main.m */,
 			);
 			path = StopWordsGen;
+			sourceTree = "<group>";
+		};
+		8C5FC78E1B16F725004E74C4 /* WordVectors */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = WordVectors;
 			sourceTree = "<group>";
 		};
 		8CA8CE8A1AF75074006D5351 /* Word2vec */ = {
@@ -355,10 +375,12 @@
 				8CF8D54E1AFF6CE0008FA0AC /* MLWordInfo.h in Headers */,
 				8C1251E11AE8D38E00FA493E /* MLNeuralNetworkException.h in Headers */,
 				8C1251EC1AE8D4BE00FA493E /* MLBagOfWords.h in Headers */,
+				8CC07B541B1E173D004D804B /* MLWordInfo+Mutable.h in Headers */,
 				8C94CC011AE91CEE00A0A328 /* MLWordExtractorType.h in Headers */,
 				8CF8D5321AFF3E76008FA0AC /* IOLineWriter.h in Headers */,
 				8CC9E4DC1AE9843B002659EA /* MLWordExtractorOption.h in Headers */,
 				8CF8D52E1AFF3CD8008FA0AC /* IOLineReader.h in Headers */,
+				8CC07B501B1E11E8004D804B /* MLMutableWordDictionary.h in Headers */,
 				8C9A49471B1454FB003E3041 /* MLRandom.h in Headers */,
 				8C94CBFF1AE91C0800A0A328 /* MLFeatureNormalizationType.h in Headers */,
 				8CC9E4E61AE98DAE002659EA /* MLBagOfWordsException.h in Headers */,
@@ -513,7 +535,9 @@
 				8CF8D5331AFF3E76008FA0AC /* IOLineWriter.m in Sources */,
 				8C1251E61AE8D38E00FA493E /* MLNeuron.m in Sources */,
 				8C1251E01AE8D38E00FA493E /* MLNeuralNetwork.m in Sources */,
+				8CC07B551B1E173D004D804B /* MLWordInfo+Mutable.m in Sources */,
 				8CF8D5531AFF732F008FA0AC /* MLWordDictionary.m in Sources */,
+				8CC07B511B1E11E8004D804B /* MLMutableWordDictionary.m in Sources */,
 				8C1251E81AE8D38E00FA493E /* MLNeuronLayer.m in Sources */,
 				8C1251E21AE8D38E00FA493E /* MLNeuralNetworkException.m in Sources */,
 				8C58A30F1AECD275006AB74D /* MLTextFragment.m in Sources */,

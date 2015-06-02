@@ -41,6 +41,7 @@
 
 
 @class MLWordDictionary;
+@class MLMutableWordDictionary;
 
 @interface MLBagOfWords : NSObject
 
@@ -50,13 +51,13 @@
 
 + (MLBagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text
 												   textID:(NSString *)textID
-											   dictionary:(MLWordDictionary *)dictionary
+											   dictionary:(MLMutableWordDictionary *)dictionary
 												 language:(NSString *)languageCode
 									 featureNormalization:(MLFeatureNormalizationType)normalizationType;
 
 + (MLBagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text
 												 textID:(NSString *)textID
-											 dictionary:(MLWordDictionary *)dictionary
+											 dictionary:(MLMutableWordDictionary *)dictionary
 											   language:(NSString *)languageCode
 								   featureNormalization:(MLFeatureNormalizationType)normalizationType;
 
@@ -86,7 +87,7 @@
 
 + (void) buildDictionaryWithText:(NSString *)text
 						  textID:(NSString *)textID
-					  dictionary:(MLWordDictionary *)dictionary
+					  dictionary:(MLMutableWordDictionary *)dictionary
 						language:(NSString *)languageCode
 				   wordExtractor:(MLWordExtractorType)extractorType
 				extractorOptions:(MLWordExtractorOption)extractorOptions;

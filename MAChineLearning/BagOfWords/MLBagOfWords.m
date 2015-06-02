@@ -32,7 +32,7 @@
 //
 
 #import "MLBagOfWords.h"
-#import "MLWordDictionary.h"
+#import "MLMutableWordDictionary.h"
 #import "MLWordInfo.h"
 #import "MLTextFragment.h"
 #import "MLStopWords.h"
@@ -96,51 +96,51 @@ static NSDictionary *__stopWords= nil;
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLBagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(MLFeatureNormalizationType)normalizationType {
++ (MLBagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLMutableWordDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(MLFeatureNormalizationType)normalizationType {
 	return [MLBagOfWords bagOfWordsWithText:text
-								   textID:textID
-							   dictionary:dictionary
-						  buildDictionary:YES
-								 language:languageCode
-							wordExtractor:MLWordExtractorTypeLinguisticTagger
-						 extractorOptions:MLWordExtractorOptionOmitStopWords | MLWordExtractorOptionOmitVerbs | MLWordExtractorOptionOmitAdjectives | MLWordExtractorOptionOmitAdverbs | MLWordExtractorOptionOmitNouns | MLWordExtractorOptionOmitOthers | MLWordExtractorOptionKeepAdjectiveNounCombos | MLWordExtractorOptionKeepAdverbNounCombos | MLWordExtractorOptionKeepNounNounCombos | MLWordExtractorOptionKeep2WordNames | MLWordExtractorOptionKeep3WordNames
-					 featureNormalization:normalizationType
-							 outputBuffer:nil];
+									textID:textID
+								dictionary:dictionary
+							buildDictionary:YES
+								   language:languageCode
+							  wordExtractor:MLWordExtractorTypeLinguisticTagger
+						   extractorOptions:MLWordExtractorOptionOmitStopWords | MLWordExtractorOptionOmitVerbs | MLWordExtractorOptionOmitAdjectives | MLWordExtractorOptionOmitAdverbs | MLWordExtractorOptionOmitNouns | MLWordExtractorOptionOmitOthers | MLWordExtractorOptionKeepAdjectiveNounCombos | MLWordExtractorOptionKeepAdverbNounCombos | MLWordExtractorOptionKeepNounNounCombos | MLWordExtractorOptionKeep2WordNames | MLWordExtractorOptionKeep3WordNames
+					   featureNormalization:normalizationType
+							   outputBuffer:nil];
 }
 
-+ (MLBagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(MLFeatureNormalizationType)normalizationType {
++ (MLBagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLMutableWordDictionary *)dictionary language:(NSString *)languageCode featureNormalization:(MLFeatureNormalizationType)normalizationType {
 	return [MLBagOfWords bagOfWordsWithText:text
-								   textID:textID
-							   dictionary:dictionary
-						  buildDictionary:YES
-								 language:languageCode
-							wordExtractor:MLWordExtractorTypeSimpleTokenizer
-						 extractorOptions:MLWordExtractorOptionOmitStopWords | MLWordExtractorOptionKeepEmoticons | MLWordExtractorOptionKeepAllBigrams
-					 featureNormalization:normalizationType
-							 outputBuffer:nil];
+									textID:textID
+								dictionary:dictionary
+							buildDictionary:YES
+								   language:languageCode
+							  wordExtractor:MLWordExtractorTypeSimpleTokenizer
+						   extractorOptions:MLWordExtractorOptionOmitStopWords | MLWordExtractorOptionKeepEmoticons | MLWordExtractorOptionKeepAllBigrams
+					   featureNormalization:normalizationType
+							   outputBuffer:nil];
 }
 
 + (MLBagOfWords *) bagOfWordsWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(MLWordExtractorType)extractorType extractorOptions:(MLWordExtractorOption)extractorOptions featureNormalization:(MLFeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer {
 	MLBagOfWords *bagOfWords= [[MLBagOfWords alloc] initWithText:text
-													  textID:textID
-												  dictionary:dictionary
-											 buildDictionary:buildDictionary
-													language:languageCode
-											   wordExtractor:extractorType
-											extractorOptions:extractorOptions
-										featureNormalization:normalizationType
-												outputBuffer:outputBuffer];
+														  textID:textID
+													  dictionary:dictionary
+												 buildDictionary:buildDictionary
+														language:languageCode
+												   wordExtractor:extractorType
+												extractorOptions:extractorOptions
+											featureNormalization:normalizationType
+													outputBuffer:outputBuffer];
 	
 	return bagOfWords;
 }
 
 + (MLBagOfWords *) bagOfWordsWithWords:(NSArray *)words textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(MLFeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer {
 	MLBagOfWords *bagOfWords= [[MLBagOfWords alloc] initWithWords:words
-													   textID:textID
-												   dictionary:dictionary
-											  buildDictionary:buildDictionary
-										 featureNormalization:normalizationType
-												 outputBuffer:outputBuffer];
+														   textID:textID
+													   dictionary:dictionary
+												  buildDictionary:buildDictionary
+											 featureNormalization:normalizationType
+													 outputBuffer:outputBuffer];
 	
 	return bagOfWords;
 }
@@ -221,6 +221,10 @@ static NSDictionary *__stopWords= nil;
 			@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Missing dictionary"
 															 userInfo:nil];
 		
+		if (buildDictionary && (![dictionary isKindOfClass:[MLMutableWordDictionary class]]))
+			@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Supplied dictionary is not mutable"
+															   userInfo:nil];
+		
 		switch (normalizationType) {
 			case MLFeatureNormalizationTypeL2TFiDF:
 				if (buildDictionary)
@@ -286,12 +290,10 @@ static NSDictionary *__stopWords= nil;
 	
 	// Build dictionary and the output buffer
 	for (NSString *word in _words) {
-		MLWordInfo *wordInfo= nil;
-		
 		if (buildDictionary)
-			wordInfo= [dictionary addOccurrenceForWord:word textID:_textID];
-		else
-			wordInfo= [dictionary infoForWord:word];
+			[(MLMutableWordDictionary *) dictionary countOccurrenceForWord:word textID:_textID];
+
+		MLWordInfo *wordInfo= [dictionary infoForWord:word];
 		
 		if (wordInfo) {
 			switch (normalizationType) {
@@ -314,10 +316,9 @@ static NSDictionary *__stopWords= nil;
 	// Apply vector-wide normalization
 	switch (normalizationType) {
 		case MLFeatureNormalizationTypeL2TFiDF: {
-			if (!dictionary.idfWeights)
-				[dictionary computeIDFWeights];
 			
-			// Multiply by IDF weights
+			// Multiply by IDF weights (the dictionary computes
+			// them on demand, then keeps them caches)
 			ML_VDSP_VMUL(_outputBuffer, 1, dictionary.idfWeights, 1, _outputBuffer, 1, _outputSize);
 			
 			// NOTE: No "break" intended here
@@ -346,7 +347,7 @@ static NSDictionary *__stopWords= nil;
 #pragma mark -
 #pragma mark Dictionary building
 
-+ (void) buildDictionaryWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLWordDictionary *)dictionary language:(NSString *)languageCode wordExtractor:(MLWordExtractorType)extractorType extractorOptions:(MLWordExtractorOption)extractorOptions {
++ (void) buildDictionaryWithText:(NSString *)text textID:(NSString *)textID dictionary:(MLMutableWordDictionary *)dictionary language:(NSString *)languageCode wordExtractor:(MLWordExtractorType)extractorType extractorOptions:(MLWordExtractorOption)extractorOptions {
 	NSArray *words= nil;
 	
 	// Run the appropriate word extractor
@@ -361,7 +362,7 @@ static NSDictionary *__stopWords= nil;
 	}
 	
 	for (NSString *word in words)
-		[dictionary addOccurrenceForWord:word textID:textID];
+		[dictionary countOccurrenceForWord:word textID:textID];
 }
 
 

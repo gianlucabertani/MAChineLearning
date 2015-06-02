@@ -34,7 +34,7 @@
 #import <Foundation/Foundation.h>
 #import <MAChineLearning/MAChineLearning.h>
 
-#define DICTIONARY_SIZE                (10000)
+#define DICTIONARY_SIZE                (20000)
 #define VECTOR_SIZE                      (100)
 #define SKIP_GRAM_WINDOW                   (5)
 #define DOWNSAMPLING_FREQUENCY_LIMIT       (0.001)
@@ -44,92 +44,120 @@
 #define RETVAL_BUFFER_ALLOCATION_ERROR    (17)
 #define RETVAL_OK                          (0)
 
+// Uncomment to dump dictionary when ready
+//#define DUMP_DICTIONARY
+
 
 /**
- * This utility reads *.txt files from a path, specified as the only argument,
- * and builds a dictionary of words using a simplified Word2vec algorithm,
- * designed to be simple to understand rather than to be fast. Parameters may
- * be set with constants here above, but most of the times the defaults 
- * will be ok.
- *
- * Files are read line by line, considering each line a different text. 
- * Numbers are skipped.
+ * This function scans a list of files and builds a word dictionary,
+ * discarding numbers and keeping all the rest.
  */
-int main(int argc, const char * argv[]) {
-	@autoreleasepool {
-		if (argc != 2)
-			return RETVAL_MISSING_ARGUMENT;
-		
-		// Get directory list at path of first argument
-		NSFileManager *manager= [NSFileManager defaultManager];
-		NSString *path= [[NSString alloc] initWithCString:argv[1] encoding:NSUTF8StringEncoding];
-		NSArray *fileNames= [manager contentsOfDirectoryAtPath:path error:nil];
-		
-		// Prepare the dictionary
-		MLWordDictionary *dictionary= [MLWordDictionary dictionaryWithMaxSize:300000];
-		
-		// First loop on all the files to determine the dictionary
-		for (NSString *fileName in fileNames) {
-			NSString *filePath= [path stringByAppendingPathComponent:fileName];
+MLWordDictionary *buildDictionary(NSArray *filePaths) {
+	
+	// Prepare the dictionary
+	MLMutableWordDictionary *dictionary= [MLMutableWordDictionary dictionaryWithMaxSize:20 * DICTIONARY_SIZE];
+	
+	// Loop on all the files to build the dictionary
+	for (NSString *filePath in filePaths) {
+		@autoreleasepool {
 			
 			// Skip non-txt files
-			if (![fileName hasSuffix:@".txt"])
+			if (![filePath hasSuffix:@".txt"])
 				continue;
 			
-			NSLog(@"Building dictionary with file: %@", fileName);
-
+			NSLog(@"Building dictionary with file: %@", filePath);
+			
+			// Use the library's I/O line reader
 			IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:filePath];
-
+			
 			do {
 				NSString *line= [reader readLine];
 				if (!line)
 					break;
 				
-				// Fix residual HTML line breaks
+				// Fix residual HTML line breaks (this is actually a specific flaw
+				// of the text used for testing, but won't make any harm for other texts)
 				line= [line stringByReplacingOccurrencesOfString:@"<br />" withString:@" "];
 				
 				// Build the dictionary with the current line
 				[MLBagOfWords buildDictionaryWithText:line
-											 textID:nil
-										 dictionary:dictionary
-										   language:nil
-									  wordExtractor:MLWordExtractorTypeSimpleTokenizer
-								   extractorOptions:MLWordExtractorOptionOmitNumbers];
+											   textID:filePath
+										   dictionary:dictionary
+											 language:nil
+										wordExtractor:MLWordExtractorTypeSimpleTokenizer
+									 extractorOptions:MLWordExtractorOptionOmitNumbers];
 				
 				if (reader.lineNumber % 1000 == 0)
-					NSLog(@"- line: %6lu", reader.lineNumber);
-
+					NSLog(@"- Lines read: %8lu, words: %7luK", reader.lineNumber, dictionary.totalWords / 1000);
+				
 			} while (YES);
 			
 			[reader close];
 		}
+	}
+	
+	NSLog(@"Total number of words:         %10lu", dictionary.totalWords);
+	NSLog(@"Pre-filtering unique words:    %10lu", dictionary.size);
+	
+	// Filter dictionary and keep only most frequent words
+	[dictionary keepWordsWithHighestOccurrenciesUpToSize:DICTIONARY_SIZE];
+	[dictionary compact];
+	
+	NSLog(@"Final unique words:            %10lu", dictionary.size);
+
+#ifdef DUMP_DICTIONARY
+	NSLog(@"Dictionary:\n%@", dictionary);
+#endif // DUMP_DICTIONARY
+
+	return dictionary;
+}
+
+/**
+ * Word2vec main: builds a word dictionary based on the txt files found at the
+ * specified path. Then trains a word2vec model using a neural network. Finally
+ * tests the model and saves it.
+ *
+ * This implementation is designed to be understandable, not to be particularly
+ * fast. Compared to reference implementation, this is monothreaded and makes no
+ * particular optimization, but takes advantage of neural network vectorization.
+ * Expect it to be faster with small dictionaries and way slower with large
+ * dictionaries.
+ */
+int main(int argc, const char * argv[]) {
+	@autoreleasepool {
+		if (argc != 2)
+			return RETVAL_MISSING_ARGUMENT;
+
+		// Preprare the path from the first argument
+		NSString *path= [[NSString alloc] initWithCString:argv[1] encoding:NSUTF8StringEncoding];
 		
-		NSLog(@"Total number of words: %8lu", dictionary.totalWords);
-		NSLog(@"Pre-filtering size:    %8lu", dictionary.size);
+		// Get directory list at path
+		NSFileManager *manager= [NSFileManager defaultManager];
+		NSArray *fileNames= [manager contentsOfDirectoryAtPath:path error:nil];
 		
-		// Filter dictionary for rare words
-		[dictionary keepWordsWithHighestOccurrenciesUpToSize:DICTIONARY_SIZE];
-		[dictionary compact];
+		// Preapre a list of file paths
+		NSMutableArray *filePaths= [[NSMutableArray alloc] init];
+		for (NSString *fileName in fileNames)
+			[filePaths addObject:[path stringByAppendingPathComponent:fileName]];
 		
-		NSLog(@"Final dictionary size: %8lu", dictionary.size);
-		NSLog(@"Dictionary:\n%@", dictionary);
+		// Build the dictionary
+		MLWordDictionary *dictionary= buildDictionary(filePaths);
 		
 		// Prepare the neural network:
 		// - input and output sizes are set to the dictionary (bag of words) size
 		// - hidden size is set to the desired vector size
 		// - activation function is logistic
-		MLNeuralNetwork *net= [[MLNeuralNetwork alloc] initWithLayerSizes:@[[NSNumber numberWithInt:(int) dictionary.size],
+		MLNeuralNetwork *net= [[MLNeuralNetwork alloc] initWithLayerSizes:@[[NSNumber numberWithUnsignedInteger:dictionary.size],
 																			@VECTOR_SIZE,
-																			[NSNumber numberWithInt:(int) dictionary.size]]
+																			[NSNumber numberWithUnsignedInteger:dictionary.size]]
 													   outputFunctionType:MLActivationFunctionTypeLogistic];
 		
 		// Loop all the files
 		NSUInteger totalWords= 0;
-		for (NSString *fileName in fileNames) {
-			NSString *filePath= [path stringByAppendingPathComponent:fileName];
+		for (NSString *filePath in filePaths) {
 
 			// Skip non-txt files
-			if (![fileName hasSuffix:@".txt"])
+			if (![filePath hasSuffix:@".txt"])
 				continue;
 			
 			// Mark time
@@ -137,7 +165,7 @@ int main(int argc, const char * argv[]) {
 			
 			IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:filePath];
 			
-			NSLog(@"Training word2vec with file: %@", fileName);
+			NSLog(@"Training word2vec with file: %@", filePath);
 
 			do {
 				@autoreleasepool {
@@ -225,8 +253,8 @@ int main(int argc, const char * argv[]) {
 					totalWords += words.count;
 					NSTimeInterval elapsed= [[NSDate date] timeIntervalSinceDate:begin];
 					
-					if (reader.lineNumber % 1000 == 0)
-						NSLog(@"- line: %6lu, words: %6luK, avg. speed: %6.2fK words/sec", reader.lineNumber, totalWords / 1000, (((double) totalWords) / elapsed) / 1000.0);
+					if (reader.lineNumber % 100 == 0)
+						NSLog(@"- Lines trained: %8lu, words: %7luK, avg. speed: %6.2fK words/sec", reader.lineNumber, totalWords / 1000, (((double) totalWords) / elapsed) / 1000.0);
 				}
 				
 			} while (YES);
