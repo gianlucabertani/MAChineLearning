@@ -66,6 +66,7 @@
 #pragma mark -
 #pragma mark Extractor support
 
++ (NSString *) addSpaceInText:(NSString *)text afterCharactersInSet:(NSCharacterSet *)charSet;
 + (void) insertEmoticonFragments:(NSString *)text fragments:(NSMutableArray *)fragments;
 
 
@@ -465,15 +466,7 @@ static NSDictionary *__stopWords= nil;
 		NSString *originalText= text;
 	
 		// Ensure punctuation is followed by a space
-		NSMutableString *mutableText= [[NSMutableString alloc] initWithCapacity:text.length * 1.5];
-		[mutableText setString:text];
-		[mutableText replaceOccurrencesOfString:@"." withString:@". " options:0 range:NSMakeRange(0, mutableText.length)];
-		[mutableText replaceOccurrencesOfString:@"," withString:@", " options:0 range:NSMakeRange(0, mutableText.length)];
-		[mutableText replaceOccurrencesOfString:@";" withString:@"; " options:0 range:NSMakeRange(0, mutableText.length)];
-		[mutableText replaceOccurrencesOfString:@":" withString:@": " options:0 range:NSMakeRange(0, mutableText.length)];
-		[mutableText replaceOccurrencesOfString:@"'" withString:@"' " options:0 range:NSMakeRange(0, mutableText.length)];
-		[mutableText replaceOccurrencesOfString:@"\"" withString:@"\" " options:0 range:NSMakeRange(0, mutableText.length)];
-		text= [mutableText description];
+		text= [MLBagOfWords addSpaceInText:text afterCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
 		
 		// Prepare containers and stopwords list
 		NSMutableArray *fragments= [NSMutableArray arrayWithCapacity:text.length / 5];
@@ -715,15 +708,7 @@ static NSDictionary *__stopWords= nil;
 		NSString *originalText= text;
 
 		// Ensure punctuation is followed by a space
-		NSMutableString *mutableText= [[NSMutableString alloc] initWithCapacity:text.length * 1.5];
-		[mutableText setString:text];
-		[mutableText replaceOccurrencesOfString:@"." withString:@". " options:0 range:NSMakeRange(0, mutableText.length)];
-		[mutableText replaceOccurrencesOfString:@"," withString:@", " options:0 range:NSMakeRange(0, mutableText.length)];
-		[mutableText replaceOccurrencesOfString:@";" withString:@"; " options:0 range:NSMakeRange(0, mutableText.length)];
-		[mutableText replaceOccurrencesOfString:@":" withString:@": " options:0 range:NSMakeRange(0, mutableText.length)];
-		[mutableText replaceOccurrencesOfString:@"'" withString:@"' " options:0 range:NSMakeRange(0, mutableText.length)];
-		[mutableText replaceOccurrencesOfString:@"\"" withString:@"\" " options:0 range:NSMakeRange(0, mutableText.length)];
-		text= [mutableText description];
+		text= [MLBagOfWords addSpaceInText:text afterCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
 		
 		// Prepare containers and stopword list
 		NSMutableArray *fragments= [NSMutableArray arrayWithCapacity:text.length / 5];
@@ -828,6 +813,27 @@ static NSDictionary *__stopWords= nil;
 
 #pragma mark -
 #pragma mark Extractor support
+
++ (NSString *) addSpaceInText:(NSString *)text afterCharactersInSet:(NSCharacterSet *)charSet {
+	NSMutableString *expandedText= [[NSMutableString alloc] initWithCapacity:text.length * 1.2];
+	
+	NSRange range= NSMakeRange(0, text.length);
+	do {
+		NSRange charPos= [text rangeOfCharacterFromSet:charSet options:0 range:range];
+		if (charPos.location == NSNotFound) {
+			[expandedText appendString:[text substringWithRange:range]];
+			break;
+		}
+		
+		[expandedText appendString:[text substringWithRange:NSMakeRange(range.location, charPos.location +1 - range.location)]];
+		[expandedText appendString:@" "];
+		
+		range= NSMakeRange(charPos.location +1, text.length - (charPos.location +1));
+		
+	} while (YES);
+	
+	return expandedText;
+}
 
 + (void) insertEmoticonFragments:(NSString *)text fragments:(NSMutableArray *)fragments {
 	NSMutableArray *matches= [NSMutableArray array];
