@@ -55,7 +55,7 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithIndex:(int)index size:(int)size {
+- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size {
 	if ((self = [super init])) {
 		
 		// Initialization

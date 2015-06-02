@@ -48,7 +48,7 @@
 + (MLNeuralNetwork *) createNetworkFromConfigurationDictionary:(NSDictionary *)config;
 + (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType;
 
-- (id) initWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType;
+- (instancetype) initWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType;
 
 
 #pragma mark -
@@ -72,10 +72,10 @@
 
 @property (nonatomic, readonly) NSArray *layers;
 
-@property (nonatomic, readonly) int inputSize;
+@property (nonatomic, readonly) NSUInteger inputSize;
 @property (nonatomic, readonly) MLReal *inputBuffer;
 
-@property (nonatomic, readonly) int outputSize;
+@property (nonatomic, readonly) NSUInteger outputSize;
 @property (nonatomic, readonly) MLReal *outputBuffer;
 @property (nonatomic, readonly) MLReal *expectedOutputBuffer;
 

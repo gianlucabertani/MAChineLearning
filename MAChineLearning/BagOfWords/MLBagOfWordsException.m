@@ -48,7 +48,7 @@
 	return exception;
 }
 
-- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+- (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
 	if ((self = [super initWithName:BAG_OF_WORDS_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
 		
 		// Nothing to do

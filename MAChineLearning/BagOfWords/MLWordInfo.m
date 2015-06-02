@@ -66,7 +66,7 @@
 #pragma -
 #pragma Initialization
 
-- (id) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition {
+- (instancetype) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition {
 	if ((self = [super init])) {
 		
 		// Initialization
@@ -82,7 +82,7 @@
 	return self;
 }
 
-- (id) initWithWord:(NSString *)word position:(NSUInteger)position {
+- (instancetype) initWithWord:(NSString *)word position:(NSUInteger)position {
 	if ((self = [super init])) {
 		
 		// Initialization

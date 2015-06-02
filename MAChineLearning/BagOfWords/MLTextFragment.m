@@ -59,7 +59,7 @@
 #pragma -
 #pragma Initialization
 
-- (id) initWithFrament:(NSString *)fragment range:(NSRange)range sentenceRange:(NSRange)sentenceRange tokenIndex:(float)index {
+- (instancetype) initWithFrament:(NSString *)fragment range:(NSRange)range sentenceRange:(NSRange)sentenceRange tokenIndex:(float)index {
 	if ((self = [super init])) {
 		
 		// Initialization
@@ -72,7 +72,7 @@
 	return self;
 }
 
-- (id) initWithFrament:(NSString *)fragment range:(NSRange)range sentenceRange:(NSRange)sentenceRange tokenIndex:(float)index linguisticTag:(NSString *)linguisticTag {
+- (instancetype) initWithFrament:(NSString *)fragment range:(NSRange)range sentenceRange:(NSRange)sentenceRange tokenIndex:(float)index linguisticTag:(NSString *)linguisticTag {
 	if ((self = [super init])) {
 		
 		// Initialization

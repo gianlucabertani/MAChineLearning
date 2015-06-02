@@ -40,8 +40,8 @@
 #pragma -
 #pragma Initialization
 
-- (id) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition;
-- (id) initWithWord:(NSString *)word position:(NSUInteger)position;
+- (instancetype) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition;
+- (instancetype) initWithWord:(NSString *)word position:(NSUInteger)position;
 
 
 #pragma -

@@ -71,7 +71,7 @@
 	return [[MLWordDictionary alloc] initWithMaxSize:maxSize];
 }
 
-- (id) initWithMaxSize:(NSUInteger)maxSize {
+- (instancetype) initWithMaxSize:(NSUInteger)maxSize {
 	if ((self = [super init])) {
 		
 		// Initialization

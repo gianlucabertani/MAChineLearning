@@ -42,7 +42,7 @@
 
 + (IOLineWriter *) lineWriterWithFilePath:(NSString *)filePath append:(BOOL)append;
 
-- (id) initWithFilePath:(NSString *)filePath append:(BOOL)append;
+- (instancetype) initWithFilePath:(NSString *)filePath append:(BOOL)append;
 
 
 #pragma mark -

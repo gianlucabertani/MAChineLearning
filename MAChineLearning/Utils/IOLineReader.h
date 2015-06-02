@@ -42,7 +42,7 @@
 
 + (IOLineReader *) lineReaderWithFilePath:(NSString *)filePath;
 
-- (id) initWithFilePath:(NSString *)filePath;
+- (instancetype) initWithFilePath:(NSString *)filePath;
 
 
 #pragma mark -

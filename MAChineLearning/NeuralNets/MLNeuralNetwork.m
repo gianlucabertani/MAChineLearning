@@ -56,10 +56,10 @@
 	NSMutableArray *_layers;
 	MLActivationFunctionType _funcType;
 	
-	int _inputSize;
+	NSUInteger _inputSize;
 	MLReal *_inputBuffer;
 	
-	int _outputSize;
+	NSUInteger _outputSize;
 	MLReal *_outputBuffer;
 	MLReal *_expectedOutputBuffer;
 	MLReal *_errorBuffer;
@@ -157,7 +157,7 @@
 	return network;
 }
 
-- (id) initWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType {
+- (instancetype) initWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType {
 	if ((self = [super init])) {
 		
 		// Initialize the layers: layer 0 is the input layer,
@@ -282,7 +282,7 @@
 	_status= MLNeuralNetworkStatusBackPropagated;
 	
 	// Apply backward propagation
-	for (int i= (int) [_layers count] -1; i > 0; i--) {
+	for (NSUInteger i= _layers.count -1; i > 0; i--) {
 		MLNeuronLayer *layer= [_layers objectAtIndex:i];
 		
 		if (i == [_layers count] -1) {
@@ -346,7 +346,7 @@
 	// Save layer sizes
 	NSMutableArray *sizes= [[NSMutableArray alloc] initWithCapacity:[_layers count]];
 	for (MLLayer *layer in _layers)
-		[sizes addObject:[NSNumber numberWithInt:layer.size]];
+		[sizes addObject:[NSNumber numberWithUnsignedInteger:layer.size]];
 	
 	[config setObject:sizes forKey:CONFIG_PARAM_LAYER_SIZES];
 	

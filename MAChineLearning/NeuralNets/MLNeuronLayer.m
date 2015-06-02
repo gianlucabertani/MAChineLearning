@@ -81,7 +81,7 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithIndex:(int)index size:(int)size activationFunctionType:(MLActivationFunctionType)funcType {
+- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size activationFunctionType:(MLActivationFunctionType)funcType {
 	if ((self = [super initWithIndex:index size:size])) {
 		
 		// Initialization
@@ -251,7 +251,7 @@
 - (void) setUp {
 	if (_neurons)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer already set up"
-																 userInfo:@{@"layer": [NSNumber numberWithInt:self.index]}];
+																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 	
 	_neurons= [[NSMutableArray alloc] initWithCapacity:self.size];
 	
@@ -266,8 +266,8 @@
 		
 		} else
 			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Unknown type of layer found as previous layer"
-																	 userInfo:@{@"layer": [NSNumber numberWithInt:self.index],
-																				@"previousLayer": [NSNumber numberWithInt:self.previousLayer.index]}];
+																	 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index],
+																				@"previousLayer": [NSNumber numberWithUnsignedInteger:self.previousLayer.index]}];
 
 		MLNeuron *neuron= [[MLNeuron alloc] initWithLayer:self
 												index:i
@@ -307,7 +307,7 @@
 - (void) feedForward {
 	if (!_neurons)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-																 userInfo:@{@"layer": [NSNumber numberWithInt:self.index]}];
+																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 	
 	// Reset error and delta
 	ML_VDSP_VCLR(_deltaBuffer, 1, _size);
@@ -335,23 +335,32 @@
 			ML_VDSP_VTHRES(_tempBuffer, 1, _zero, _outputBuffer, 1, _size);
 			break;
 			
-		case MLActivationFunctionTypeLogistic:
+		case MLActivationFunctionTypeLogistic: {
+			
+			// An "int" size is needed by vvexp,
+			// the others still use _size
+			int size= (int) _size;
 			
 			// Apply formula: output[i] = 1 / (1 + exp(-output[i])
 			ML_VDSP_VSMUL(_outputBuffer, 1, _minusOne, _tempBuffer, 1, _size);
-			ML_VVEXP(_tempBuffer, _tempBuffer, &_size);
+			ML_VVEXP(_tempBuffer, _tempBuffer, &size);
 			ML_VDSP_VSADD(_tempBuffer, 1, _one, _tempBuffer, 1, _size);
 			ML_VDSP_SVDIV(_one, _tempBuffer, 1, _outputBuffer, 1, _size);
 			break;
+		}
 			
 		case MLActivationFunctionTypeHyperbolic: {
+			
+			// An "int" size is needed by vvexp,
+			// the others still use _size
+			int size= (int) _size;
 
 			// Apply formula: output[i] = (1 - exp(-2 * output[i])) / (1 + exp(-2 * output[i]))
 			// Equivalent to: output[i] = tanh(output[i])
 			// NOTE: VDIV operands are inverted compared to documentation (see function
 			// definition for operand order)
 			ML_VDSP_VSMUL(_outputBuffer, 1, _minusTwo, _tempBuffer, 1, _size);
-			ML_VVEXP(_tempBuffer, _tempBuffer, &_size);
+			ML_VVEXP(_tempBuffer, _tempBuffer, &size);
 			ML_VDSP_VSADD(_tempBuffer, 1, _one, _outputBuffer, 1, _size);
 			ML_VDSP_VSMUL(_tempBuffer, 1, _minusOne, _tempBuffer, 1, _size);
 			ML_VDSP_VSADD(_tempBuffer, 1, _one, _tempBuffer, 1, _size);
@@ -364,7 +373,7 @@
 - (void) fetchErrorFromNextLayer {
 	if (!_neurons)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-																 userInfo:@{@"layer": [NSNumber numberWithInt:self.index]}];
+																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 	
 	MLNeuronLayer *nextLayer= (MLNeuronLayer *) self.nextLayer;
 	
@@ -372,8 +381,8 @@
 	for (MLNeuron *neuron in _neurons) {
 		if ((!neuron.nextLayerWeightPtrs) || (!neuron.nextLayerWeightDeltaPtrs))
 			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron not yet set up"
-																	 userInfo:@{@"layer": [NSNumber numberWithInt:self.index],
-																				@"neuron": [NSNumber numberWithInt:neuron.index]}];
+																	 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index],
+																				@"neuron": [NSNumber numberWithUnsignedInteger:neuron.index]}];
 		
 		// Gather next layer weights using vector gathering
 		ML_VDSP_VGATHRA((const MLReal **) neuron.nextLayerWeightPtrs, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
@@ -392,7 +401,7 @@
 - (void) backPropagateWithLearningRate:(MLReal)learningRate {
 	if (!_neurons)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-																 userInfo:@{@"layer": [NSNumber numberWithInt:self.index]}];
+																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 	
 	// First step: compute the delta with
 	// activation function derivative
@@ -406,7 +415,7 @@
 		case MLActivationFunctionTypeStep:
 			if (self.nextLayer)
 				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Can't backpropagate in a hidden layer with step function"
-																		 userInfo:@{@"layer": [NSNumber numberWithInt:self.index]}];
+																		 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 
 			// Apply formula: delta[i] = error[i]
 			ML_VDSP_VSMUL(_errorBuffer, 1, _one, _deltaBuffer, 1, _size);
@@ -445,7 +454,7 @@
 - (void) updateWeights {
 	if (!_neurons)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-																 userInfo:@{@"layer": [NSNumber numberWithInt:self.index]}];
+																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 	
 	// First step: update the bias with the bias delta
 	ML_VDSP_VADD(_biasBuffer, 1, _biasDeltaBuffer, 1, _biasBuffer, 1, _size);

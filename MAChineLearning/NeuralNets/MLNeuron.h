@@ -46,7 +46,7 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithLayer:(MLNeuronLayer *)layer index:(int)index outputBuffer:(MLReal *)outputBuffer inputSize:(int)inputSize inputBuffer:(MLReal *)inputBuffer;
+- (instancetype) initWithLayer:(MLNeuronLayer *)layer index:(NSUInteger)index outputBuffer:(MLReal *)outputBuffer inputSize:(NSUInteger)inputSize inputBuffer:(MLReal *)inputBuffer;
 
 
 #pragma mark -
@@ -64,10 +64,10 @@
 
 @property (nonatomic, readonly) MLNeuronLayer *layer;
 
-@property (nonatomic, readonly) int index;
+@property (nonatomic, readonly) NSUInteger index;
 @property (nonatomic, readonly) MLReal *outputBuffer;
 
-@property (nonatomic, readonly) int inputSize;
+@property (nonatomic, readonly) NSUInteger inputSize;
 @property (nonatomic, readonly) MLReal *inputBuffer;
 
 @property (nonatomic, readonly) MLReal bias;

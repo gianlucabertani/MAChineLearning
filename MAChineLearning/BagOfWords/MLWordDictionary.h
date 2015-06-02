@@ -54,7 +54,7 @@ typedef MLWordFilterOutcome (^MLWordFilter)(NSString *word, MLWordInfo *wordInfo
 
 + (MLWordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize;
 
-- (id) initWithMaxSize:(NSUInteger)maxSize;
+- (instancetype) initWithMaxSize:(NSUInteger)maxSize;
 
 
 #pragma mark -

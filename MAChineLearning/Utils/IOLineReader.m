@@ -73,7 +73,7 @@
 	return reader;
 }
 
-- (id) initWithFilePath:(NSString *)filePath {
+- (instancetype) initWithFilePath:(NSString *)filePath {
 	if ((self = [super init])) {
 		
 		// Initialization

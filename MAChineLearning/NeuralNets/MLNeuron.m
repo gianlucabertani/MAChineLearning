@@ -46,10 +46,10 @@
 @interface MLNeuron () {
 	MLNeuronLayer __weak *_layer;
 	
-	int _index;
+	NSUInteger _index;
 	MLReal *_outputBuffer;
 	
-	int _inputSize;
+	NSUInteger _inputSize;
 	MLReal *_inputBuffer;
 
 	MLReal *_weights;
@@ -71,7 +71,7 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithLayer:(MLNeuronLayer *)layer index:(int)index outputBuffer:(MLReal *)outputBuffer inputSize:(int)inputSize inputBuffer:(MLReal *)inputBuffer {
+- (instancetype) initWithLayer:(MLNeuronLayer *)layer index:(NSUInteger)index outputBuffer:(MLReal *)outputBuffer inputSize:(NSUInteger)inputSize inputBuffer:(MLReal *)inputBuffer {
 	if ((self = [super init])) {
 		
 		// Initialization

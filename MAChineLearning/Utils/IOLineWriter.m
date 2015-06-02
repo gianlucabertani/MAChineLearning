@@ -65,7 +65,7 @@
 	return writer;
 }
 
-- (id) initWithFilePath:(NSString *)filePath append:(BOOL)append {
+- (instancetype) initWithFilePath:(NSString *)filePath append:(BOOL)append {
 	if ((self = [super init])) {
 		
 		// Initialization

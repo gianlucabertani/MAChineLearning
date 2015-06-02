@@ -42,7 +42,7 @@
 
 + (MLBagOfWordsException *) bagOfWordsExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
 
-- (id) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
+- (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
 
 
 @end

@@ -37,22 +37,22 @@
 @interface MLLayer : NSObject {
 	
 @protected
-	int _index;
-	int _size;
+	NSUInteger _index;
+	NSUInteger _size;
 }
 
 
 #pragma mark -
 #pragma mark Initialization
 
-- (id) initWithIndex:(int)index size:(int)size;
+- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size;
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) int index;
-@property (nonatomic, readonly) int size;
+@property (nonatomic, readonly) NSUInteger index;
+@property (nonatomic, readonly) NSUInteger size;
 
 @property (nonatomic, weak) MLLayer *previousLayer;
 @property (nonatomic, weak) MLLayer *nextLayer;
