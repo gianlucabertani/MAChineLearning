@@ -36,22 +36,22 @@
 
 @interface MLWordInfo : NSObject {
 	
-@private
+@protected
 	NSString *_word;
 	NSUInteger _position;
 	
 	NSUInteger _totalOccurrencies;
 	NSUInteger _documentOccurrencies;
 	
-	NSMutableSet *_documents;
+	NSMutableSet *_documentIDs;
 }
 
 
 #pragma -
 #pragma Initialization
 
-- (instancetype) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition;
 - (instancetype) initWithWord:(NSString *)word position:(NSUInteger)position;
+- (instancetype) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition;
 
 
 #pragma -
@@ -63,7 +63,7 @@
 @property (nonatomic, readonly) NSUInteger totalOccurrencies;
 @property (nonatomic, readonly) NSUInteger documentOccurrencies;
 
-@property (nonatomic, readonly) NSSet *documents;
+@property (nonatomic, readonly) NSSet *documentIDs;
 
 
 @end

@@ -36,14 +36,6 @@
 #import "MLWordDictionary.h"
 
 
-typedef enum {
-	MLWordFilterOutcomeDiscardWord= 0,
-	MLWordFilterOutcomeKeepWord= 1
-} MLWordFilterOutcome;
-
-typedef MLWordFilterOutcome (^MLWordFilter)(NSString *word, MLWordInfo *wordInfo);
-
-
 @interface MLMutableWordDictionary : MLWordDictionary
 
 
@@ -52,26 +44,11 @@ typedef MLWordFilterOutcome (^MLWordFilter)(NSString *word, MLWordInfo *wordInfo
 
 + (MLMutableWordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize;
 
-- (instancetype) initWithMaxSize:(NSUInteger)maxSize;
-
 
 #pragma mark -
 #pragma mark Dictionary building
 
-- (void) countOccurrenceForWord:(NSString *)word textID:(NSString *)textID;
-
-
-#pragma mark -
-#pragma mark Dictionary filtering
-
-- (void) keepWordsWithHighestOccurrenciesUpToSize:(NSUInteger)size;
-
-- (void) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies;
-- (void) discardWordsWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies;
-
-- (void) applyFilter:(MLWordFilter)filter;
-
-- (void) compact;
+- (void) countOccurrenceForWord:(NSString *)word documentID:(NSString *)documentID;
 
 
 @end

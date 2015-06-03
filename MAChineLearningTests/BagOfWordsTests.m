@@ -156,7 +156,7 @@
 		// Bag of words for sentiment analysis uses the (quick) simple tokenizer,
 		// removing stop words but keeping emoticon and all bigrams
 		MLBagOfWords *bag= [MLBagOfWords bagOfWordsForSentimentAnalysisWithText:MOVIE_REVIEW
-																		 textID:@"review1"
+																		 documentID:@"review1"
 																	 dictionary:dictionary
 																	   language:@"en"
 														   featureNormalization:MLFeatureNormalizationTypeNone];
@@ -214,7 +214,7 @@
 		// Bag of words for sentiment analysis using the (slow) linguistic tagger,
 		// with same configuration of default sentiment analysis
 		MLBagOfWords *bag= [MLBagOfWords bagOfWordsWithText:MOVIE_REVIEW
-													 textID:@"review1"
+													 documentID:@"review1"
 												 dictionary:dictionary
 											buildDictionary:YES
 												   language:@"en"
@@ -276,7 +276,7 @@
 		// Bag of words for topic classification uses the (slow) linguistic tagger, removing
 		// stop words, verbs and adjectives, but keeping composite nouns and names
 		MLBagOfWords *bag= [MLBagOfWords bagOfWordsForTopicClassificationWithText:ARTICLE_EXTRACT
-																		   textID:@"article1"
+																		   documentID:@"article1"
 																	   dictionary:dictionary
 																		 language:@"en"
 															 featureNormalization:MLFeatureNormalizationTypeNone];

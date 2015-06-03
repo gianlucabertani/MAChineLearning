@@ -38,8 +38,16 @@
 
 @class MLWordInfo;
 
-@interface MLWordDictionary : NSObject {
+typedef enum {
+	MLWordFilterOutcomeDiscardWord= 0,
+	MLWordFilterOutcomeKeepWord= 1
+} MLWordFilterOutcome;
 
+typedef MLWordFilterOutcome (^MLWordFilter)(MLWordInfo *wordInfo);
+
+
+@interface MLWordDictionary : NSObject {
+	
 @protected
 	NSMutableDictionary *_dictionary;
 	NSUInteger _maxSize;
@@ -55,10 +63,29 @@
 
 
 #pragma mark -
+#pragma mark Initialization
+
+- (instancetype) initWithMaxSize:(NSUInteger)maxSize;
+- (instancetype) initWithDictionary:(MLWordDictionary *)dictionary;
+- (instancetype) initWithWordInfos:(NSArray *)wordInfos;
+
+
+#pragma mark -
 #pragma mark Dictionary access
 
 - (BOOL) containsWord:(NSString *)word;
 - (MLWordInfo *) infoForWord:(NSString *)word;
+
+
+#pragma mark -
+#pragma mark Dictionary filtering
+
+- (MLWordDictionary *) keepWordsWithHighestOccurrenciesUpToSize:(NSUInteger)size;
+
+- (MLWordDictionary *) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies;
+- (MLWordDictionary *) discardWordsWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies;
+
+- (MLWordDictionary *) filterWordsWith:(MLWordFilter)filter;
 
 
 #pragma mark -
@@ -67,8 +94,11 @@
 @property (nonatomic, readonly) NSUInteger size;
 @property (nonatomic, readonly) NSUInteger maxSize;
 
+@property (nonatomic, readonly) NSArray *wordInfos;
+
 @property (nonatomic, readonly) NSUInteger totalWords;
 @property (nonatomic, readonly) NSUInteger totalDocuments;
+
 @property (nonatomic, readonly) MLReal *idfWeights;
 
 

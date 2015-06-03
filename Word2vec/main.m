@@ -81,7 +81,7 @@ MLWordDictionary *buildDictionary(NSArray *filePaths) {
 				
 				// Build the dictionary with the current line
 				[MLBagOfWords buildDictionaryWithText:line
-											   textID:filePath
+											   documentID:filePath
 										   dictionary:dictionary
 											 language:nil
 										wordExtractor:MLWordExtractorTypeSimpleTokenizer
@@ -100,16 +100,7 @@ MLWordDictionary *buildDictionary(NSArray *filePaths) {
 	NSLog(@"Pre-filtering unique words:    %10lu", dictionary.size);
 	
 	// Filter dictionary and keep only most frequent words
-	[dictionary keepWordsWithHighestOccurrenciesUpToSize:DICTIONARY_SIZE];
-	[dictionary compact];
-	
-	NSLog(@"Final unique words:            %10lu", dictionary.size);
-
-#ifdef DUMP_DICTIONARY
-	NSLog(@"Dictionary:\n%@", dictionary);
-#endif // DUMP_DICTIONARY
-
-	return dictionary;
+	return [dictionary keepWordsWithHighestOccurrenciesUpToSize:DICTIONARY_SIZE];
 }
 
 /**
@@ -142,6 +133,12 @@ int main(int argc, const char * argv[]) {
 		
 		// Build the dictionary
 		MLWordDictionary *dictionary= buildDictionary(filePaths);
+		
+		NSLog(@"Final unique words:            %10lu", dictionary.size);
+		
+#ifdef DUMP_DICTIONARY
+		NSLog(@"Dictionary:\n%@", dictionary);
+#endif // DUMP_DICTIONARY
 		
 		// Prepare the neural network:
 		// - input and output sizes are set to the dictionary (bag of words) size
@@ -229,7 +226,7 @@ int main(int argc, const char * argv[]) {
 					
 					// Use bag of words to load the net's input buffer
 					[MLBagOfWords bagOfWordsWithWords:@[centralWord]
-											   textID:nil
+											   documentID:nil
 										   dictionary:dictionary
 									  buildDictionary:NO
 								 featureNormalization:MLFeatureNormalizationTypeBoolean
@@ -237,7 +234,7 @@ int main(int argc, const char * argv[]) {
 					
 					// Use bag of words to load the net's expected output buffer
 					[MLBagOfWords bagOfWordsWithWords:context
-											   textID:nil
+											   documentID:nil
 										   dictionary:dictionary
 									  buildDictionary:NO
 								 featureNormalization:MLFeatureNormalizationTypeBoolean

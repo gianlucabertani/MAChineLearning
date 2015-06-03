@@ -32,9 +32,20 @@
 //
 
 #import "MLMutableWordDictionary.h"
-#import "MLWordInfo.h"
-#import "MLWordInfo+Mutable.h"
+#import "MLMutableWordInfo.h"
+#import "MLBagOfWordsException.h"
 
+
+#pragma mark -
+#pragma mark MLMutableWordDictionary extension
+
+@interface MLMutableWordDictionary () 
+
+@end
+
+
+#pragma mark -
+#pragma mark MLMutableWordDictionary implementation
 
 @implementation MLMutableWordDictionary
 
@@ -46,118 +57,27 @@
 	return [[MLMutableWordDictionary alloc] initWithMaxSize:maxSize];
 }
 
-- (instancetype) initWithMaxSize:(NSUInteger)maxSize {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_dictionary= [[NSMutableDictionary alloc] initWithCapacity:maxSize];
-		_maxSize= maxSize;
-	}
-	
-	return self;
-}
-
 
 #pragma mark -
 #pragma mark Dictionary building
 
-- (void) countOccurrenceForWord:(NSString *)word textID:(NSString *)textID {
+- (void) countOccurrenceForWord:(NSString *)word documentID:(NSString *)documentID {
 	NSString *lowercaseWord= [word lowercaseString];
 	
-	MLWordInfo *wordInfo= [_dictionary objectForKey:lowercaseWord];
+	MLMutableWordInfo *wordInfo= [_dictionary objectForKey:lowercaseWord];
 	if ((!wordInfo) && (_dictionary.count < _maxSize)) {
-		wordInfo= [[MLWordInfo alloc] initWithWord:word position:_dictionary.count];
+		wordInfo= [[MLMutableWordInfo alloc] initWithWord:word position:_dictionary.count];
 		[_dictionary setObject:wordInfo forKey:lowercaseWord];
 	}
 	
-	[wordInfo countOccurrenceForTextID:textID];
+	[wordInfo countOccurrenceForDocumentID:documentID];
 	
-	if (textID && (![_documents containsObject:textID])) {
-		[_documents addObject:textID];
+	if (documentID && (![_documents containsObject:documentID])) {
+		[_documents addObject:documentID];
 		_totalDocuments++;
 	}
 	
 	_totalWords++;
-	
-	_idfWeightsDirty= YES;
-}
-
-
-#pragma mark -
-#pragma mark Dictionary filtering
-
-- (void) keepWordsWithHighestOccurrenciesUpToSize:(NSUInteger)size {
-	NSArray *sortedWordInfos= [[_dictionary allValues] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		MLWordInfo *info1= (MLWordInfo *) obj1;
-		MLWordInfo *info2= (MLWordInfo *) obj2;
-		
-		return (info1.totalOccurrencies < info2.totalOccurrencies) ? NSOrderedDescending :
-		((info1.totalOccurrencies > info2.totalOccurrencies) ? NSOrderedAscending : NSOrderedSame);
-	}];
-	
-	NSMutableDictionary *newDictionary= [[NSMutableDictionary alloc] initWithCapacity:_dictionary.count];
-	
-	for (MLWordInfo *wordInfo in sortedWordInfos) {
-		if (newDictionary.count == size)
-			break;
-		
-		NSString *lowercaseWord= [wordInfo.word lowercaseString];
-		
-		[newDictionary setObject:wordInfo forKey:lowercaseWord];
-	}
-	
-	[_dictionary removeAllObjects];
-	_dictionary= newDictionary;
-	
-	_idfWeightsDirty= YES;
-}
-
-- (void) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies {
-	[self applyFilter:^MLWordFilterOutcome(NSString *word, MLWordInfo *wordInfo) {
-		return (wordInfo.totalOccurrencies < minOccurrencies) ? MLWordFilterOutcomeDiscardWord : MLWordFilterOutcomeKeepWord;
-	}];
-}
-
-- (void) discardWordsWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies {
-	[self applyFilter:^MLWordFilterOutcome(NSString *word, MLWordInfo *wordInfo) {
-		return (wordInfo.totalOccurrencies > maxOccurrencies) ? MLWordFilterOutcomeDiscardWord : MLWordFilterOutcomeKeepWord;
-	}];
-}
-
-- (void) applyFilter:(MLWordFilter)filter {
-	NSArray *words= [_dictionary allKeys];
-	
-	for (NSString *word in words) {
-		MLWordInfo *wordInfo= [_dictionary objectForKey:word];
-		
-		MLWordFilterOutcome outcome= filter(word, wordInfo);
-		switch (outcome) {
-			case MLWordFilterOutcomeDiscardWord:
-				[_dictionary removeObjectForKey:word];
-				break;
-				
-			case MLWordFilterOutcomeKeepWord:
-				break;
-		}
-	}
-	
-	_idfWeightsDirty= YES;
-}
-
-- (void) compact {
-	NSMutableDictionary *newDictionary= [[NSMutableDictionary alloc] initWithCapacity:_dictionary.count];
-	
-	NSArray *words= [_dictionary allKeys];
-	
-	for (NSString *word in words) {
-		MLWordInfo *wordInfo= [_dictionary objectForKey:word];
-		
-		MLWordInfo *newWordInfo= [[MLWordInfo alloc] initWithWordInfo:wordInfo newPosition:newDictionary.count];
-		[newDictionary setObject:newWordInfo forKey:word];
-	}
-	
-	[_dictionary removeAllObjects];
-	_dictionary= newDictionary;
 	
 	_idfWeightsDirty= YES;
 }

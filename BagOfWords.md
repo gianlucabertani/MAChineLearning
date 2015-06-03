@@ -48,7 +48,7 @@ for (NSString *movieReview in movieReviews) {
 
 	// Extract the bag of words for the current text
 	BagOfWords *bag= [BagOfWords bagOfWordsForSentimentAnalysisWithText:movieReview
-																 textID:nil
+															 documentID:nil
 														     dictionary:dictionary
 														 dictionarySize:dictionaryMaxSize
 															   language:@"en"
@@ -89,7 +89,7 @@ for (NSString *movieReview in movieReviews) {
 
 	// Extract the bag of words for the current text
 	BagOfWords *bag= [BagOfWords bagOfWordsForSentimentAnalysisWithText:movieReview
-																 textID:nil
+															 documentID:nil
 															 dictionary:dictionary
 														 dictionarySize:net.inputSize // Use network input size
 															   language:@"en"
@@ -148,7 +148,7 @@ The most extended version of the BagOfWords factory methods includes parameters 
 
 ```obj-c
 BagOfWords *bag= [BagOfWords bagOfWordsWithText:text
-										 textID:textID
+									 documentID:documentID
 									 dictionary:dictionary
 								 dictionarySize:net.inputSize
 									   language:@"en"

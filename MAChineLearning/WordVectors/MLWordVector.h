@@ -1,8 +1,8 @@
 //
-//  MLWordInfo.m
+//  MLWordVector.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 10/05/15.
+//  Created by Gianluca Bertani on 03/06/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,58 +31,9 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "MLWordInfo.h"
+#import <Foundation/Foundation.h>
 
 
-@implementation MLWordInfo
-
-
-#pragma -
-#pragma Initialization
-
-- (instancetype) initWithWord:(NSString *)word position:(NSUInteger)position {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_word= word;
-		_position= position;
-		
-		_totalOccurrencies= 0;
-		_documentOccurrencies= 0;
-		
-		_documentIDs= [[NSMutableSet alloc] init];
-	}
-	
-	return self;
-}
-
-- (instancetype) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_word= wordInfo.word;
-		_position= newPosition;
-		
-		_totalOccurrencies= wordInfo.totalOccurrencies;
-		_documentOccurrencies= wordInfo.documentOccurrencies;
-		
-		_documentIDs= [[NSMutableSet alloc] initWithSet:wordInfo.documentIDs];
-	}
-	
-	return self;
-}
-
-
-#pragma -
-#pragma Properties
-
-@synthesize word= _word;
-@synthesize position= _position;
-
-@synthesize totalOccurrencies= _totalOccurrencies;
-@synthesize documentOccurrencies= _documentOccurrencies;
-
-@synthesize documentIDs= _documentIDs;
-
+@interface MLWordVector : NSObject
 
 @end

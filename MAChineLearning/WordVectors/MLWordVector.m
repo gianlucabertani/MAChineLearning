@@ -1,8 +1,8 @@
 //
-//  MLWordInfo+Mutable.h
+//  MLWordVector.m
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 02/06/15.
+//  Created by Gianluca Bertani on 03/06/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,18 +31,9 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <Foundation/Foundation.h>
-
-#import "MLWordInfo.h"
+#import "MLWordVector.h"
 
 
-@interface MLWordInfo (Mutable)
-
-
-#pragma -
-#pragma Occurrencies counting
-
-- (void) countOccurrenceForTextID:(NSString *)textID;
-
+@implementation MLWordVector
 
 @end
