@@ -202,7 +202,7 @@ static NSDictionary *__stopWords= nil;
 				break;
 		}
 		
-		_outputSize= (buildDictionary ? dictionary.maxSize : dictionary.size);
+		_outputSize= (buildDictionary ? [(MLMutableWordDictionary *) dictionary maxSize] : [dictionary size]);
 		
 		// Set up the output buffer
 		[self prepareOutputBuffer:outputBuffer];
@@ -243,7 +243,7 @@ static NSDictionary *__stopWords= nil;
 		_documentID= documentID;
 		_words= words;
 
-		_outputSize= (buildDictionary ? dictionary.maxSize : dictionary.size);
+		_outputSize= (buildDictionary ? [(MLMutableWordDictionary *) dictionary maxSize] : [dictionary size]);
 
 		// Set up the output buffer
 		[self prepareOutputBuffer:outputBuffer];

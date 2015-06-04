@@ -44,11 +44,19 @@
 
 + (MLMutableWordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize;
 
+- (instancetype) initWithMaxSize:(NSUInteger)maxSize;
+
 
 #pragma mark -
 #pragma mark Dictionary building
 
 - (void) countOccurrenceForWord:(NSString *)word documentID:(NSString *)documentID;
+
+
+#pragma mark -
+#pragma mark Properties
+
+@property (nonatomic, readonly) NSUInteger maxSize;
 
 
 @end

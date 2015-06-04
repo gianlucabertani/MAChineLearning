@@ -46,17 +46,16 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithMaxSize:(NSUInteger)maxSize {
+- (instancetype) init {
 	if ((self = [super init])) {
 		
 		// Initialization
-		_dictionary= [[NSMutableDictionary alloc] initWithCapacity:maxSize];
-		_maxSize= maxSize;
+		_dictionary= [[NSMutableDictionary alloc] init];
 		
 		_totalWords= 0;
 		_totalDocuments= 0;
 		
-		_documents= [[NSMutableSet alloc] init];
+		_documentIDs= [[NSMutableSet alloc] init];
 		
 		_idfWeights= NULL;
 		_idfWeightsDirty= YES;
@@ -70,7 +69,7 @@
 }
 
 - (instancetype) initWithWordInfos:(NSArray *)wordInfos {
-	if ((self = [self initWithMaxSize:wordInfos.count])) {
+	if ([self init]) {
 		
 		// Initialization
 		for (MLWordInfo *wordInfo in wordInfos) {
@@ -82,8 +81,8 @@
 			_totalWords += wordInfo.totalOccurrencies;
 			
 			for (NSString *documentID in wordInfo.documentIDs) {
-				if (![_documents containsObject:documentID]) {
-					[_documents addObject:documentID];
+				if (![_documentIDs containsObject:documentID]) {
+					[_documentIDs addObject:documentID];
 					_totalDocuments++;
 				}
 			}
@@ -200,8 +199,6 @@
 	return _dictionary.count;
 }
 
-@synthesize maxSize= _maxSize;
-
 @dynamic wordInfos;
 
 - (NSArray *) wordInfos {
@@ -210,6 +207,8 @@
 
 @synthesize totalWords= _totalWords;
 @synthesize totalDocuments= _totalDocuments;
+
+@synthesize documentIDs= _documentIDs;
 
 @dynamic idfWeights;
 

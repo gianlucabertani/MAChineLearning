@@ -39,7 +39,10 @@
 #pragma mark -
 #pragma mark MLMutableWordDictionary extension
 
-@interface MLMutableWordDictionary () 
+@interface MLMutableWordDictionary () {
+	NSUInteger _maxSize;
+}
+
 
 @end
 
@@ -57,6 +60,16 @@
 	return [[MLMutableWordDictionary alloc] initWithMaxSize:maxSize];
 }
 
+- (instancetype) initWithMaxSize:(NSUInteger)maxSize {
+	if ((self = [super init])) {
+		
+		// Initialization
+		_maxSize= maxSize;
+	}
+	
+	return self;
+}
+
 
 #pragma mark -
 #pragma mark Dictionary building
@@ -65,15 +78,18 @@
 	NSString *lowercaseWord= [word lowercaseString];
 	
 	MLMutableWordInfo *wordInfo= [_dictionary objectForKey:lowercaseWord];
-	if ((!wordInfo) && (_dictionary.count < _maxSize)) {
+	if (!wordInfo) {
+		if (_dictionary.count >= _maxSize)
+			return;
+		
 		wordInfo= [[MLMutableWordInfo alloc] initWithWord:word position:_dictionary.count];
 		[_dictionary setObject:wordInfo forKey:lowercaseWord];
 	}
 	
 	[wordInfo countOccurrenceForDocumentID:documentID];
 	
-	if (documentID && (![_documents containsObject:documentID])) {
-		[_documents addObject:documentID];
+	if (documentID && (![_documentIDs containsObject:documentID])) {
+		[_documentIDs addObject:documentID];
 		_totalDocuments++;
 	}
 	
@@ -81,6 +97,12 @@
 	
 	_idfWeightsDirty= YES;
 }
+
+
+#pragma mark -
+#pragma mark Properties
+
+@synthesize maxSize= _maxSize;
 
 
 @end

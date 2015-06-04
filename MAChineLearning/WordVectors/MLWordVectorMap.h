@@ -34,6 +34,28 @@
 #import <Foundation/Foundation.h>
 
 
+@class MLNeuralNetwork;
+@class MLWordDictionary;
+@class MLWordVector;
+
 @interface MLWordVectorMap : NSObject
+
+
+#pragma mark -
+#pragma mark Initialization
+
++ (MLWordVectorMap *) mapWithWord2vecNeuralNet:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary;
+
+- (instancetype) initWithWord2vecNeuralNet:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary;
+
+
+#pragma mark -
+#pragma mark Map lookup
+
+- (BOOL) containsWord:(NSString *)word;
+- (MLWordVector *) vectorForWord:(NSString *)word;
+
+- (NSString *) mostSimilarWordToVector:(MLWordVector *)vector;
+
 
 @end

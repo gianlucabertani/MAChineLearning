@@ -57,8 +57,11 @@ typedef double          MLReal;
 #define ML_VDSP_SVESQ   vDSP_svesqD
 #define ML_VDSP_VGATHRA vDSP_vgathraD
 #define ML_VDSP_SVE     vDSP_sveD
+#define ML_VDSP_DIST    vDSP_vdistD
 
 #define ML_VVEXP        vvexp
+ 
+#define ML_SQRT         sqrt
  
  */
 
@@ -82,8 +85,11 @@ typedef float           MLReal;
 #define ML_VDSP_SVESQ   vDSP_svesq
 #define ML_VDSP_VGATHRA vDSP_vgathra
 #define ML_VDSP_SVE     vDSP_sve
+#define ML_VDSP_DIST    vDSP_vdist
 
 #define ML_VVEXP        vvexpf
+
+#define ML_SQRT         sqrtf
 
 
 #endif

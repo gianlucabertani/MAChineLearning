@@ -50,12 +50,11 @@ typedef MLWordFilterOutcome (^MLWordFilter)(MLWordInfo *wordInfo);
 	
 @protected
 	NSMutableDictionary *_dictionary;
-	NSUInteger _maxSize;
 	
 	NSUInteger _totalWords;
 	NSUInteger _totalDocuments;
 	
-	NSMutableSet *_documents;
+	NSMutableSet *_documentIDs;
 	
 	MLReal *_idfWeights;
 	BOOL _idfWeightsDirty;
@@ -65,7 +64,6 @@ typedef MLWordFilterOutcome (^MLWordFilter)(MLWordInfo *wordInfo);
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithMaxSize:(NSUInteger)maxSize;
 - (instancetype) initWithDictionary:(MLWordDictionary *)dictionary;
 - (instancetype) initWithWordInfos:(NSArray *)wordInfos;
 
@@ -92,12 +90,13 @@ typedef MLWordFilterOutcome (^MLWordFilter)(MLWordInfo *wordInfo);
 #pragma mark Properties
 
 @property (nonatomic, readonly) NSUInteger size;
-@property (nonatomic, readonly) NSUInteger maxSize;
 
 @property (nonatomic, readonly) NSArray *wordInfos;
 
 @property (nonatomic, readonly) NSUInteger totalWords;
 @property (nonatomic, readonly) NSUInteger totalDocuments;
+
+@property (nonatomic, readonly) NSSet *documentIDs;
 
 @property (nonatomic, readonly) MLReal *idfWeights;
 

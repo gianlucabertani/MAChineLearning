@@ -32,8 +32,139 @@
 //
 
 #import "MLWordVectorMap.h"
+#import "MLWordVector.h"
+#import "MLWordVectorException.h"
+#import "MLWordDictionary.h"
+#import "MLWordInfo.h"
+#import "MLNeuralNetwork.h"
+#import "MLNeuronLayer.h"
+#import "MLNeuron.h"
 
+#import "MLConstants.h"
+
+#import <Accelerate/Accelerate.h>
+
+
+#pragma mark -
+#pragma mark MLWordVectorMap extension
+
+@interface MLWordVectorMap () {
+	NSMutableDictionary *_vectors;
+}
+
+@end
+
+
+#pragma mark -
+#pragma mark MLWordVectorMap implementation
 
 @implementation MLWordVectorMap
+
+
+#pragma mark -
+#pragma mark Initialization
+
++ (MLWordVectorMap *) mapWithWord2vecNeuralNet:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary {
+	return [[MLWordVectorMap alloc] initWithWord2vecNeuralNet:net dictionary:dictionary];
+}
+
+
+- (instancetype) initWithWord2vecNeuralNet:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary {
+	if ((self = [super init])) {
+		
+		// Checks
+		if (net.layers.count != 3)
+			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Neural network must have exactly 3 layers"
+															   userInfo:@{@"layersCount": [NSNumber numberWithUnsignedInteger:net.layers.count]}];
+		
+		if ([[net.layers objectAtIndex:0] size] != dictionary.size)
+			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Neural network input layer must have same size as dictionary"
+															   userInfo:@{@"inputLayerSize": [NSNumber numberWithUnsignedInteger:[[net.layers objectAtIndex:0] size]],
+																		  @"dictionarySize": [NSNumber numberWithUnsignedInteger:dictionary.size]}];
+		
+		if ([[net.layers objectAtIndex:2] size] != dictionary.size)
+			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Neural network output layer must have same size as dictionary"
+															   userInfo:@{@"outputLayerSize": [NSNumber numberWithUnsignedInteger:[[net.layers objectAtIndex:2] size]],
+																		  @"dictionarySize": [NSNumber numberWithUnsignedInteger:dictionary.size]}];
+		
+		// Initialization
+		_vectors= [[NSMutableDictionary alloc] initWithCapacity:dictionary.size];
+
+		// Creation of vector map
+		MLNeuronLayer *hiddenLayer= [net.layers objectAtIndex:1];
+		NSUInteger vectorSize= hiddenLayer.size;
+		
+		for (MLWordInfo *wordInfo in dictionary.wordInfos) {
+			
+			// Creation of vector
+			MLReal *vector= NULL;
+			
+			int err= posix_memalign((void **) &vector,
+									BUFFER_MEMORY_ALIGNMENT,
+									sizeof(MLReal) * vectorSize);
+			if (err)
+				@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
+																   userInfo:@{@"buffer": @"vector",
+																			  @"error": [NSNumber numberWithInt:err]}];
+			
+			
+			// Fill vector from neural network hidden layer
+			NSUInteger wordPos= wordInfo.position;
+
+			int i= 0;
+			for (MLNeuron *neuron in hiddenLayer.neurons) {
+				vector[i]= neuron.weights[wordPos];
+				i++;
+			}
+
+			// Creation of vector wrapper
+			MLWordVector *wordVector= [[MLWordVector alloc] initWithWordInfo:wordInfo
+																	  vector:vector
+																		size:vectorSize
+														 freeVectorOnDealloc:YES];
+			
+			NSString *word= [wordInfo.word lowercaseString];
+			
+			[_vectors setObject:wordVector forKey:word];
+		}
+	}
+	
+	return self;
+}
+
+
+#pragma mark -
+#pragma mark Map lookup
+
+- (BOOL) containsWord:(NSString *)word {
+	NSString *lowercaseWord= [word lowercaseString];
+	
+	return ([_vectors objectForKey:lowercaseWord] != nil);
+}
+
+- (MLWordVector *) vectorForWord:(NSString *)word {
+	NSString *lowercaseWord= [word lowercaseString];
+	
+	return [_vectors objectForKey:lowercaseWord];
+}
+
+- (NSString *) mostSimilarWordToVector:(MLWordVector *)vector {
+	MLWordVector *mostSimilarVector= nil;
+	MLReal bestSimilarity= -1.0;
+	
+	// We use a sequential scan for now, slow but secure;
+	// an improved search (based on clusters) will follow
+	for (MLWordVector *otherVector in [_vectors allValues]) {
+		MLReal similarity= [vector similarityToVector:otherVector];
+		
+		if (similarity > bestSimilarity) {
+			bestSimilarity= similarity;
+			mostSimilarVector= otherVector;
+		}
+	}
+	
+	return mostSimilarVector.wordInfo.word;
+}
+
 
 @end

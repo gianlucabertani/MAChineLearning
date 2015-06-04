@@ -1,8 +1,8 @@
 //
-//  MLWordVector.h
+//  MLWordVectorException.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 03/06/15.
+//  Created by Gianluca Bertani on 04/06/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -33,32 +33,16 @@
 
 #import <Foundation/Foundation.h>
 
-#import "MLReal.h"
+
+@interface MLWordVectorException : NSException
 
 
-@class MLWordInfo;
+#pragma mark -
+#pragma mark Initialization
 
-@interface MLWordVector : NSObject
++ (MLWordVectorException *) wordVectorExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
 
-
-#pragma -
-#pragma Initialization
-
-- (instancetype) initWithWordInfo:(MLWordInfo *)wordInfo vector:(MLReal *)vector size:(NSUInteger)size freeVectorOnDealloc:(BOOL)freeOnDealloc;
-
-
-#pragma -
-#pragma Vector algebra
-
-- (MLReal) similarityToVector:(MLWordVector *)vector;
-
-
-#pragma -
-#pragma Properties
-
-@property (nonatomic, readonly) MLWordInfo *wordInfo;
-@property (nonatomic, readonly) MLReal *vector;
-@property (nonatomic, readonly) NSUInteger size;
+- (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
 
 
 @end

@@ -1,8 +1,8 @@
 //
-//  MLWordVector.h
+//  MLWordVectorException.m
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 03/06/15.
+//  Created by Gianluca Bertani on 04/06/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,34 +31,31 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <Foundation/Foundation.h>
+#import "MLWordVectorException.h"
 
-#import "MLReal.h"
-
-
-@class MLWordInfo;
-
-@interface MLWordVector : NSObject
+#define WORD_VECTOR_EXCEPTION_NAME          (@"MLWordVectorException")
 
 
-#pragma -
-#pragma Initialization
-
-- (instancetype) initWithWordInfo:(MLWordInfo *)wordInfo vector:(MLReal *)vector size:(NSUInteger)size freeVectorOnDealloc:(BOOL)freeOnDealloc;
+@implementation MLWordVectorException
 
 
-#pragma -
-#pragma Vector algebra
+#pragma mark -
+#pragma mark Initialization
 
-- (MLReal) similarityToVector:(MLWordVector *)vector;
++ (MLWordVectorException *) wordVectorExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+	MLWordVectorException *exception= [[MLWordVectorException alloc] initWithReason:reason userInfo:userInfo];
+	
+	return exception;
+}
 
-
-#pragma -
-#pragma Properties
-
-@property (nonatomic, readonly) MLWordInfo *wordInfo;
-@property (nonatomic, readonly) MLReal *vector;
-@property (nonatomic, readonly) NSUInteger size;
+- (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+	if ((self = [super initWithName:WORD_VECTOR_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
+		
+		// Nothing to do
+	}
+	
+	return self;
+}
 
 
 @end
