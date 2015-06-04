@@ -59,6 +59,7 @@
 @property (nonatomic, readonly) MLWordInfo *wordInfo;
 @property (nonatomic, readonly) MLReal *vector;
 @property (nonatomic, readonly) NSUInteger size;
+@property (nonatomic, readonly) MLReal magnitude;
 
 
 @end

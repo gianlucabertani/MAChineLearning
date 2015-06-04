@@ -50,9 +50,7 @@
 
 	BOOL _freeOnDealloc;
 
-	MLReal *_temp1;
-	MLReal *_temp2;
-	MLReal *_temp3;
+	MLReal _magnitude;
 }
 
 
@@ -78,29 +76,9 @@
 		
 		_freeOnDealloc= freeOnDealloc;
 		
-		int err= posix_memalign((void **) &_temp1,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal));
-		if (err)
-			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
-															   userInfo:@{@"buffer": @"temp1",
-																		  @"error": [NSNumber numberWithInt:err]}];
-		
-		err= posix_memalign((void **) &_temp2,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal));
-		if (err)
-			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
-															   userInfo:@{@"buffer": @"temp2",
-																		  @"error": [NSNumber numberWithInt:err]}];
-		
-		err= posix_memalign((void **) &_temp3,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal));
-		if (err)
-			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
-															   userInfo:@{@"buffer": @"temp3",
-																		  @"error": [NSNumber numberWithInt:err]}];
+		// Compute magnitude
+		ML_VDSP_SVESQ(_vector, 1, &_magnitude, _size);
+		_magnitude= ML_SQRT(_magnitude);
 	}
 	
 	return self;
@@ -111,15 +89,6 @@
 		free(_vector);
 		_vector= NULL;
 	}
-	
-	free(_temp1);
-	_temp1= NULL;
-	
-	free(_temp2);
-	_temp2= NULL;
-	
-	free(_temp3);
-	_temp3= NULL;
 }
 
 
@@ -135,16 +104,11 @@
 																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
 	
 	// Dot product of vectors
-	ML_VDSP_DOTPR(_vector, 1, vector.vector, 1, _temp1, _size);
-	
-	// Square of magnitude of this vector
-	ML_VDSP_SVESQ(_vector, 1, _temp2, _size);
-	
-	// Square of magnitude of other vector
-	ML_VDSP_SVESQ(vector.vector, 1, _temp3, _size);
+	MLReal dot= 0.0;
+	ML_VDSP_DOTPR(_vector, 1, vector.vector, 1, &dot, _size);
 	
 	// Return cosine similarity
-	return *_temp1 / ML_SQRT(*_temp2 * *_temp3);
+	return dot / (_magnitude * vector.magnitude);
 }
 
 
@@ -154,6 +118,7 @@
 @synthesize wordInfo= _wordInfo;
 @synthesize vector= _vector;
 @synthesize size= _size;
+@synthesize magnitude= _magnitude;
 
 
 @end
