@@ -1,6 +1,6 @@
 //
 //  main.m
-//  Word2vec
+//  WordVectorGen
 //
 //  Created by Gianluca Bertani on 04/05/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
@@ -58,15 +58,15 @@ void testModel(MLWordVectorMap *map, NSArray *equivalenceList);
 
 
 /**
- * Word2vec main: builds a word dictionary based on the txt files found at the
- * specified path. Then trains a word2vec model using a neural network. Finally
+ * WordVectorGen main: builds a word dictionary based on the txt files found at the
+ * specified path. Then trains a word-vector model using a neural network. Finally
  * tests the model and saves it.
  *
  * This implementation is designed to be understandable, not to be particularly
- * fast. Compared to reference implementation, this is monothreaded and makes no
+ * fast. Compared to other implementations this is monothreaded and makes no
  * particular optimization, but takes advantage of neural network vectorization.
- * Expect it to be faster with small dictionaries and way slower with large
- * dictionaries.
+ * Expect it to be relatively fast with a small dictionary and very slow with a
+ * large dictionary.
  */
 int main(int argc, const char * argv[]) {
 	@autoreleasepool {
@@ -207,7 +207,7 @@ int main(int argc, const char * argv[]) {
 					if (reader.lineNumber % 5000 == 0) {
 						
 						// Test the model
-						MLWordVectorMap *map= [[MLWordVectorMap alloc] initWithWord2vecNeuralNet:net dictionary:dictionary];
+						MLWordVectorMap *map= [[MLWordVectorMap alloc] initWithNeuralNetwork:net dictionary:dictionary];
 						testModel(map, equivalenceList);
 					}
 				}
@@ -221,7 +221,7 @@ int main(int argc, const char * argv[]) {
 		} while (trainingCycles < TRAIN_CYCLES);
 		
 		// Final test of the model
-		MLWordVectorMap *map= [[MLWordVectorMap alloc] initWithWord2vecNeuralNet:net dictionary:dictionary];
+		MLWordVectorMap *map= [[MLWordVectorMap alloc] initWithNeuralNetwork:net dictionary:dictionary];
 		testModel(map, equivalenceList);
 	}
 	

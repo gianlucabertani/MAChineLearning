@@ -45,7 +45,7 @@
 		8C9A49471B1454FB003E3041 /* MLRandom.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C9A49451B1454FB003E3041 /* MLRandom.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C9A49481B1454FB003E3041 /* MLRandom.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9A49461B1454FB003E3041 /* MLRandom.m */; };
 		8C9C8DBC1B218A18004C0F7B /* WordVectorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9C8DBB1B218A18004C0F7B /* WordVectorTests.m */; };
-		8CA8CE8C1AF75074006D5351 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CA8CE8B1AF75074006D5351 /* main.m */; };
+		8CB9AB801B2354F2001E072C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB9AB7E1B2354E3001E072C /* main.m */; };
 		8CC07B501B1E11E8004D804B /* MLMutableWordDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC07B4E1B1E11E8004D804B /* MLMutableWordDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC07B511B1E11E8004D804B /* MLMutableWordDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC07B4F1B1E11E8004D804B /* MLMutableWordDictionary.m */; };
 		8CC9E4DC1AE9843B002659EA /* MLWordExtractorOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4DB1AE9843B002659EA /* MLWordExtractorOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -145,8 +145,8 @@
 		8C9A49451B1454FB003E3041 /* MLRandom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLRandom.h; sourceTree = "<group>"; };
 		8C9A49461B1454FB003E3041 /* MLRandom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLRandom.m; sourceTree = "<group>"; };
 		8C9C8DBB1B218A18004C0F7B /* WordVectorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordVectorTests.m; sourceTree = "<group>"; };
-		8CA8CE891AF75074006D5351 /* Word2vec */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Word2vec; sourceTree = BUILT_PRODUCTS_DIR; };
-		8CA8CE8B1AF75074006D5351 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8CA8CE891AF75074006D5351 /* WordVectorGen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WordVectorGen; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CB9AB7E1B2354E3001E072C /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8CC07B4E1B1E11E8004D804B /* MLMutableWordDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLMutableWordDictionary.h; sourceTree = "<group>"; };
 		8CC07B4F1B1E11E8004D804B /* MLMutableWordDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLMutableWordDictionary.m; sourceTree = "<group>"; };
 		8CC9E4DB1AE9843B002659EA /* MLWordExtractorOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLWordExtractorOption.h; sourceTree = "<group>"; };
@@ -255,7 +255,9 @@
 			isa = PBXGroup;
 			children = (
 				8C4CEF1A1ADAC51200F1E139 /* MAChineLearning */,
-				8CA8CE8A1AF75074006D5351 /* Word2vec */,
+				8C4CEF271ADAC51200F1E139 /* MAChineLearningTests */,
+				8CB9AB7D1B2354A7001E072C /* WordVectorGen */,
+				8C58A3151AECDAA3006AB74D /* StopWordsGen */,
 				8C4CEF581ADACE4500F1E139 /* LICENSE */,
 				8C4CEF591ADACE4500F1E139 /* README.md */,
 				8CF961F91AF66C240071A995 /* NeuralNets.md */,
@@ -263,8 +265,6 @@
 				8C4CEF5E1ADAED9300F1E139 /* 3-Input Perceptron.png */,
 				8C4CEF5F1ADAED9300F1E139 /* Network States.png */,
 				8CF961FC1AF690420071A995 /* Bag Of Words Norm Example.png */,
-				8C4CEF271ADAC51200F1E139 /* MAChineLearningTests */,
-				8C58A3151AECDAA3006AB74D /* StopWordsGen */,
 				8C4CEF191ADAC51200F1E139 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -275,7 +275,7 @@
 				8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */,
 				8C4CEF231ADAC51200F1E139 /* MAChineLearningTests.xctest */,
 				8C58A3141AECDAA3006AB74D /* StopWordsGen */,
-				8CA8CE891AF75074006D5351 /* Word2vec */,
+				8CA8CE891AF75074006D5351 /* WordVectorGen */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -344,12 +344,12 @@
 			path = WordVectors;
 			sourceTree = "<group>";
 		};
-		8CA8CE8A1AF75074006D5351 /* Word2vec */ = {
+		8CB9AB7D1B2354A7001E072C /* WordVectorGen */ = {
 			isa = PBXGroup;
 			children = (
-				8CA8CE8B1AF75074006D5351 /* main.m */,
+				8CB9AB7E1B2354E3001E072C /* main.m */,
 			);
-			path = Word2vec;
+			path = WordVectorGen;
 			sourceTree = "<group>";
 		};
 		8CC9E4E11AE9887D002659EA /* Commons */ = {
@@ -469,9 +469,9 @@
 			productReference = 8C58A3141AECDAA3006AB74D /* StopWordsGen */;
 			productType = "com.apple.product-type.tool";
 		};
-		8CA8CE881AF75074006D5351 /* Word2vec */ = {
+		8CA8CE881AF75074006D5351 /* WordVectorGen */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8CA8CE8D1AF75074006D5351 /* Build configuration list for PBXNativeTarget "Word2vec" */;
+			buildConfigurationList = 8CA8CE8D1AF75074006D5351 /* Build configuration list for PBXNativeTarget "WordVectorGen" */;
 			buildPhases = (
 				8CA8CE851AF75074006D5351 /* Sources */,
 				8CA8CE861AF75074006D5351 /* Frameworks */,
@@ -481,9 +481,9 @@
 			);
 			dependencies = (
 			);
-			name = Word2vec;
+			name = WordVectorGen;
 			productName = Word2vec;
-			productReference = 8CA8CE891AF75074006D5351 /* Word2vec */;
+			productReference = 8CA8CE891AF75074006D5351 /* WordVectorGen */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -522,8 +522,8 @@
 			projectRoot = "";
 			targets = (
 				8C4CEF171ADAC51200F1E139 /* MAChineLearning */,
-				8CA8CE881AF75074006D5351 /* Word2vec */,
 				8C4CEF221ADAC51200F1E139 /* MAChineLearningTests */,
+				8CA8CE881AF75074006D5351 /* WordVectorGen */,
 				8C58A3131AECDAA3006AB74D /* StopWordsGen */,
 			);
 		};
@@ -597,7 +597,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8CA8CE8C1AF75074006D5351 /* main.m in Sources */,
+				8CB9AB801B2354F2001E072C /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -845,7 +845,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8CA8CE8D1AF75074006D5351 /* Build configuration list for PBXNativeTarget "Word2vec" */ = {
+		8CA8CE8D1AF75074006D5351 /* Build configuration list for PBXNativeTarget "WordVectorGen" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8CA8CE8E1AF75074006D5351 /* Debug */,

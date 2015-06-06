@@ -64,11 +64,11 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLWordVectorMap *) mapWithWord2vecNeuralNet:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary {
-	return [[MLWordVectorMap alloc] initWithWord2vecNeuralNet:net dictionary:dictionary];
++ (MLWordVectorMap *) createFromNeuralNetwork:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary {
+	return [[MLWordVectorMap alloc] initWithNeuralNetwork:net dictionary:dictionary];
 }
 
-- (instancetype) initWithWord2vecNeuralNet:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary {
+- (instancetype) initWithNeuralNetwork:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary {
 	if ((self = [super init])) {
 		
 		// Checks

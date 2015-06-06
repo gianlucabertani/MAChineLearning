@@ -44,9 +44,9 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLWordVectorMap *) mapWithWord2vecNeuralNet:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary;
++ (MLWordVectorMap *) createFromNeuralNetwork:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary;
 
-- (instancetype) initWithWord2vecNeuralNet:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary;
+- (instancetype) initWithNeuralNetwork:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary;
 
 
 #pragma mark -
