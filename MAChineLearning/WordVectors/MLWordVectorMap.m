@@ -44,6 +44,8 @@
 
 #import <Accelerate/Accelerate.h>
 
+#define WORD2VEC_MAX_WORD_LENGTH            (200)
+
 
 #pragma mark -
 #pragma mark MLWordVectorMap extension
@@ -65,35 +67,171 @@
 #pragma mark Initialization
 
 + (MLWordVectorMap *) createFromNeuralNetwork:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary {
-	return [[MLWordVectorMap alloc] initWithNeuralNetwork:net dictionary:dictionary];
+
+	// Checks
+	if (net.layers.count != 3)
+		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Neural network must have exactly 3 layers"
+														   userInfo:@{@"layersCount": [NSNumber numberWithUnsignedInteger:net.layers.count]}];
+	
+	if ([[net.layers objectAtIndex:0] size] != dictionary.size)
+		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Neural network input layer must have same size as dictionary"
+														   userInfo:@{@"inputLayerSize": [NSNumber numberWithUnsignedInteger:[[net.layers objectAtIndex:0] size]],
+																	  @"dictionarySize": [NSNumber numberWithUnsignedInteger:dictionary.size]}];
+	
+	if ([[net.layers objectAtIndex:2] size] != dictionary.size)
+		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Neural network output layer must have same size as dictionary"
+														   userInfo:@{@"outputLayerSize": [NSNumber numberWithUnsignedInteger:[[net.layers objectAtIndex:2] size]],
+																	  @"dictionarySize": [NSNumber numberWithUnsignedInteger:dictionary.size]}];
+	
+	// Prepare the transitory dictionary
+	NSMutableDictionary *vectorDictionary= [[NSMutableDictionary alloc] initWithCapacity:dictionary.size];
+	
+	// Creation of vector map from hidden layer
+	MLNeuronLayer *hiddenLayer= [net.layers objectAtIndex:1];
+	NSUInteger vectorSize= hiddenLayer.size;
+	
+	for (MLWordInfo *wordInfo in dictionary.wordInfos) {
+		
+		// Prepare the vector
+		NSMutableArray *vector= [[NSMutableArray alloc] initWithCapacity:vectorSize];
+
+		// Fill vector from neural network hidden layer
+		NSUInteger wordPos= wordInfo.position;
+		
+		for (MLNeuron *neuron in hiddenLayer.neurons)
+			[vector addObject:[NSNumber numberWithDouble:neuron.weights[wordPos]]];
+		
+		NSString *lowercaseWord= [wordInfo.word lowercaseString];
+		[vectorDictionary setObject:vector forKey:lowercaseWord];
+	}
+	
+	return [[MLWordVectorMap alloc] initWithDictionary:vectorDictionary];
 }
 
-- (instancetype) initWithNeuralNetwork:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary {
++ (MLWordVectorMap *) createFromWord2vecFile:(NSString *)vectorFilePath binary:(BOOL)binary {
+	
+	// Checks
+	NSFileManager *fileManger= [NSFileManager defaultManager];
+	if (![fileManger fileExistsAtPath:vectorFilePath])
+		@throw [MLWordVectorException wordVectorExceptionWithReason:@"File does not exist"
+														   userInfo:@{@"filePath": vectorFilePath}];
+	
+	// Use ANSI C APIs to read the file, to ensure compatibility
+	const char *filePath= [vectorFilePath cStringUsingEncoding:NSUTF8StringEncoding];
+	
+	FILE *f= fopen(filePath, "r");
+	if (!f)
+		@throw [MLWordVectorException wordVectorExceptionWithReason:@"File access denied"
+														   userInfo:@{@"filePath": vectorFilePath}];
+	NSMutableDictionary *vectorDictionary= nil;
+
+	@try {
+		int result= 0;
+		
+		NSUInteger dictionarySize= 0;
+		NSUInteger vectorSize= 0;
+
+		result= fscanf(f, "%lu", &dictionarySize);
+		if (result != 1)
+			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading the dictionary size"
+															   userInfo:@{@"result": [NSNumber numberWithInt:result]}];
+		
+		result= fscanf(f, "%lu", &vectorSize);
+		if (result != 1)
+			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading the vector size"
+															   userInfo:@{@"result": [NSNumber numberWithInt:result]}];
+		
+		// Prepare the transitory dictionary
+		vectorDictionary= [[NSMutableDictionary alloc] initWithCapacity:dictionarySize];
+
+		// Loop for all the words
+		for (NSUInteger i= 0; i < dictionarySize; i++) {
+			
+			// Read the word
+			char wordStr[WORD2VEC_MAX_WORD_LENGTH];
+			result= fscanf(f, "%s ", wordStr);
+			if (result != 1)
+				@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading the next word"
+																   userInfo:@{@"result": [NSNumber numberWithInt:result]}];
+			
+			// Prepare the vector
+			NSMutableArray *vector= [[NSMutableArray alloc] initWithCapacity:vectorSize];
+			
+			for (NSUInteger j= 0; j < vectorSize; j++) {
+				
+				// Read and store the vector element
+				if (binary) {
+					float elem= 0.0;
+
+					result= (int) fread(&elem, sizeof(float), 1, f);
+					if (result != 1)
+						@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading a vector element"
+																		   userInfo:@{@"result": [NSNumber numberWithInt:result]}];
+					
+					[vector addObject:[NSNumber numberWithFloat:elem]];
+					
+				} else {
+					double elem= 0.0;
+					
+					result= fscanf(f, "%lf", &elem);
+					if (result != 1)
+						@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading a vector element"
+																		   userInfo:@{@"result": [NSNumber numberWithInt:result]}];
+					
+					[vector addObject:[NSNumber numberWithDouble:elem]];
+				}
+			}
+			
+			// Store the vector in the transitory dictionary
+			NSString *word= [[NSString alloc] initWithCString:wordStr encoding:NSUTF8StringEncoding];
+			[vectorDictionary setObject:vector forKey:word];
+		}
+		
+	} @catch (NSException *e) {
+		@throw e;
+		
+	} @finally {
+		fclose(f);
+	}
+	
+	return [[MLWordVectorMap alloc] initWithDictionary:vectorDictionary];
+}
+
+- (instancetype) initWithDictionary:(NSDictionary *)vectorDictionary {
 	if ((self = [super init])) {
-		
-		// Checks
-		if (net.layers.count != 3)
-			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Neural network must have exactly 3 layers"
-															   userInfo:@{@"layersCount": [NSNumber numberWithUnsignedInteger:net.layers.count]}];
-		
-		if ([[net.layers objectAtIndex:0] size] != dictionary.size)
-			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Neural network input layer must have same size as dictionary"
-															   userInfo:@{@"inputLayerSize": [NSNumber numberWithUnsignedInteger:[[net.layers objectAtIndex:0] size]],
-																		  @"dictionarySize": [NSNumber numberWithUnsignedInteger:dictionary.size]}];
-		
-		if ([[net.layers objectAtIndex:2] size] != dictionary.size)
-			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Neural network output layer must have same size as dictionary"
-															   userInfo:@{@"outputLayerSize": [NSNumber numberWithUnsignedInteger:[[net.layers objectAtIndex:2] size]],
-																		  @"dictionarySize": [NSNumber numberWithUnsignedInteger:dictionary.size]}];
-		
+	
 		// Initialization
-		_vectors= [[NSMutableDictionary alloc] initWithCapacity:dictionary.size];
+		_vectors= [[NSMutableDictionary alloc] initWithCapacity:vectorDictionary.count];
 		
-		// Creation of vector map from hidden layer
-		MLNeuronLayer *hiddenLayer= [net.layers objectAtIndex:1];
-		NSUInteger vectorSize= hiddenLayer.size;
-		
-		for (MLWordInfo *wordInfo in dictionary.wordInfos) {
+		NSUInteger vectorSize= 0;
+		for (NSObject *key in [vectorDictionary allKeys]) {
+			if (![key isKindOfClass:[NSString class]])
+				@throw [MLWordVectorException wordVectorExceptionWithReason:@"Dictionary keys must be strings"
+																   userInfo:@{@"dictionaryKey": key}];
+			
+			NSObject *vectorObj= [vectorDictionary objectForKey:key];
+			if (![vectorObj isKindOfClass:[NSArray class]])
+				@throw [MLWordVectorException wordVectorExceptionWithReason:@"Dictionary values must be arrays of numbers"
+																   userInfo:@{@"dictionaryValue": vectorObj}];
+			
+			NSString *word= (NSString *) key;
+			NSArray *vectorArray= (NSArray *) vectorObj;
+			
+			if (!vectorSize) {
+				vectorSize= vectorArray.count;
+				
+				if (!vectorSize)
+					@throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must contain at least a number"
+																	   userInfo:@{@"vectorSize": [NSNumber numberWithUnsignedInteger:vectorSize],
+																				  @"word": word}];
+			
+			} else {
+				if (vectorArray.count != vectorSize)
+					@throw [MLWordVectorException wordVectorExceptionWithReason:@"Vector size mismatch"
+																	   userInfo:@{@"expectedVectorSize": [NSNumber numberWithUnsignedInteger:vectorSize],
+																				  @"actualVectorSize": [NSNumber numberWithUnsignedInteger:vectorArray.count],
+																				  @"word": word}];
+			}
 			
 			// Creation of vector
 			MLReal *vector= NULL;
@@ -106,22 +244,34 @@
 																   userInfo:@{@"buffer": @"vector",
 																			  @"error": [NSNumber numberWithInt:err]}];
 			
-			// Fill vector from neural network hidden layer
-			NSUInteger wordPos= wordInfo.position;
+			// Fill vector from array
+			NSUInteger i= 0;
+			for (NSObject *elemObj in vectorArray) {
+				if (![elemObj isKindOfClass:[NSNumber class]])
+					@throw [MLWordVectorException wordVectorExceptionWithReason:@"Dictionary values must be arrays of numbers"
+																	   userInfo:@{@"vectorElement": elemObj,
+																				  @"word": word,
+																				  @"index": [NSNumber numberWithUnsignedInteger:i]}];
 
-			int i= 0;
-			for (MLNeuron *neuron in hiddenLayer.neurons) {
-				vector[i]= neuron.weights[wordPos];
+				NSNumber *elem= (NSNumber *) elemObj;
+				vector[i]= (MLReal) [elem doubleValue];
 				i++;
 			}
-
+			
+			// Normalization of vector
+			MLReal normL2= 0.0;
+			ML_VDSP_SVESQ(vector, 1, &normL2, vectorSize);
+			normL2= ML_SQRT(normL2);
+			
+			ML_VDSP_VSDIV(vector, 1, &normL2, vector, 1, vectorSize);
+			
 			// Creation of vector wrapper
 			MLWordVector *wordVector= [[MLWordVector alloc] initWithVector:vector
 																	  size:vectorSize
 													   freeVectorOnDealloc:YES];
-			
-			NSString *word= [wordInfo.word lowercaseString];
-			[_vectors setObject:wordVector forKey:word];
+
+			NSString *lowercaseWord= [word lowercaseString];
+			[_vectors setObject:wordVector forKey:lowercaseWord];
 		}
 	}
 	

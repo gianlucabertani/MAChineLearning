@@ -54,7 +54,7 @@
 MLWordDictionary *buildDictionary(NSString *textPath);
 NSArray *buildEquivalenceList(NSString *equivalenceListPath, MLWordDictionary *dictionary);
 BOOL extractContext(MLWordDictionary *dictionary, NSArray *words, NSUInteger offset, NSMutableArray *context, NSMutableString *centralWord);
-void testModel(MLWordVectorMap *map, NSArray *equivalenceList);
+NSUInteger testModel(MLWordVectorMap *map, NSArray *equivalenceList);
 
 
 /**
@@ -70,12 +70,13 @@ void testModel(MLWordVectorMap *map, NSArray *equivalenceList);
  */
 int main(int argc, const char * argv[]) {
 	@autoreleasepool {
-		if (argc != 3)
+		if (argc != 4)
 			return RETVAL_MISSING_ARGUMENT;
 
 		// Prepare file paths from arguments
 		NSString *textPath= [[NSString alloc] initWithCString:argv[1] encoding:NSUTF8StringEncoding];
 		NSString *equivalenceListPath= [[NSString alloc] initWithCString:argv[2] encoding:NSUTF8StringEncoding];
+		NSString *comparisonModelPath= [[NSString alloc] initWithCString:argv[3] encoding:NSUTF8StringEncoding];
 		
 		// Build the dictionary
 		MLWordDictionary *dictionary= buildDictionary(textPath);
@@ -88,6 +89,12 @@ int main(int argc, const char * argv[]) {
 
 		// Build equivalence list
 		NSArray *equivalenceList= buildEquivalenceList(equivalenceListPath, dictionary);
+		
+		// Load an test the comparison model
+		MLWordVectorMap *compMap= [MLWordVectorMap createFromWord2vecFile:comparisonModelPath binary:YES];
+		NSUInteger compMatchedEquivalences= testModel(compMap, equivalenceList);
+		
+		NSLog(@"Testing comparison model: matched %lu/%lu equivalences (%.2f%%)", compMatchedEquivalences, equivalenceList.count, 100.0 * ((float) compMatchedEquivalences) / ((float) equivalenceList.count));
 		
 		// Prepare the neural network:
 		// - input and output sizes are set to the dictionary (bag of words) size
@@ -204,11 +211,13 @@ int main(int argc, const char * argv[]) {
 						begin= nil;
 					}
 					
-					if (reader.lineNumber % 5000 == 0) {
+					if (reader.lineNumber % 10000 == 0) {
 						
 						// Test the model
-						MLWordVectorMap *map= [[MLWordVectorMap alloc] initWithNeuralNetwork:net dictionary:dictionary];
-						testModel(map, equivalenceList);
+						MLWordVectorMap *map= [MLWordVectorMap createFromNeuralNetwork:net dictionary:dictionary];
+						NSUInteger matchedEquivalences= testModel(map, equivalenceList);
+						
+						NSLog(@"Testing model: matched %lu/%lu equivalences (%.2f%%)", matchedEquivalences, equivalenceList.count, 100.0 * ((float) matchedEquivalences) / ((float) equivalenceList.count));
 					}
 				}
 				
@@ -221,8 +230,10 @@ int main(int argc, const char * argv[]) {
 		} while (trainingCycles < TRAIN_CYCLES);
 		
 		// Final test of the model
-		MLWordVectorMap *map= [[MLWordVectorMap alloc] initWithNeuralNetwork:net dictionary:dictionary];
-		testModel(map, equivalenceList);
+		MLWordVectorMap *map= [MLWordVectorMap createFromNeuralNetwork:net dictionary:dictionary];
+		NSUInteger matchedEquivalences= testModel(map, equivalenceList);
+		
+		NSLog(@"Testing model: matched %lu/%lu equivalences (%.2f%%)", matchedEquivalences, equivalenceList.count, 100.0 * ((float) matchedEquivalences) / ((float) equivalenceList.count));
 	}
 	
     return RETVAL_OK;
@@ -272,6 +283,8 @@ MLWordDictionary *buildDictionary(NSString *textPath) {
 	
 	NSLog(@"Total number of words:         %10lu", dictionary.totalWords);
 	NSLog(@"Pre-filtering unique words:    %10lu", dictionary.size);
+	
+	// !! TO DO: filtering does not lower the "totalWords" count, leading to error while calculating the progress
 	
 	// Filter dictionary and keep only most frequent words
 	return [dictionary keepWordsWithHighestOccurrenciesUpToSize:DICTIONARY_SIZE];
@@ -390,7 +403,7 @@ BOOL extractContext(MLWordDictionary *dictionary, NSArray *words, NSUInteger off
  * Tests the model by subtracting and adding two vectors from a base vector,
  * and checking the distance from the expect resulting word.
  */
-void testModel(MLWordVectorMap *map, NSArray *equivalenceList) {
+NSUInteger testModel(MLWordVectorMap *map, NSArray *equivalenceList) {
 	
 	// Prepare counters
 	NSUInteger matchedEquivalences= 0;
@@ -408,8 +421,11 @@ void testModel(MLWordVectorMap *map, NSArray *equivalenceList) {
 			MLWordVector *base= [map vectorForWord:baseWord];
 			MLWordVector *minus= [map vectorForWord:minusWord];
 			MLWordVector *plus= [map vectorForWord:plusWord];
-			MLWordVector *result= [[base subtractVector:minus] addVector:plus];
 			
+			if ((!base) || (!minus) || (!plus))
+				continue;
+			
+			MLWordVector *result= [[base subtractVector:minus] addVector:plus];
 			NSString *resultWord= [map nearestWordToVector:result];
 			
 			if ([expectedWord caseInsensitiveCompare:resultWord] == NSOrderedSame)
@@ -417,6 +433,6 @@ void testModel(MLWordVectorMap *map, NSArray *equivalenceList) {
 		}
 	}
 	
-	NSLog(@"Testing model: matched %lu/%lu equivalences (%.2f%%)", matchedEquivalences, equivalenceList.count, 100.0 * ((float) matchedEquivalences) / ((float) equivalenceList.count));
+	return matchedEquivalences;
 }
 

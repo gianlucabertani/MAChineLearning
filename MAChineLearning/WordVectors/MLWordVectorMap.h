@@ -45,8 +45,9 @@
 #pragma mark Initialization
 
 + (MLWordVectorMap *) createFromNeuralNetwork:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary;
++ (MLWordVectorMap *) createFromWord2vecFile:(NSString *)vectorFilePath binary:(BOOL)binary;
 
-- (instancetype) initWithNeuralNetwork:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary;
+- (instancetype) initWithDictionary:(NSDictionary *)vectorDictionary;
 
 
 #pragma mark -
