@@ -55,7 +55,8 @@
 - (BOOL) containsWord:(NSString *)word;
 - (MLWordVector *) vectorForWord:(NSString *)word;
 
-- (NSString *) mostSimilarWordToVector:(MLWordVector *)vector;
+- (NSArray *) mostSimilarWordsToVector:(MLWordVector *)vector;
+- (NSArray *) nearestWordsToVector:(MLWordVector *)vector;
 
 
 @end

@@ -44,6 +44,7 @@
 		8C94CC011AE91CEE00A0A328 /* MLWordExtractorType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C94CC001AE91CEE00A0A328 /* MLWordExtractorType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C9A49471B1454FB003E3041 /* MLRandom.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C9A49451B1454FB003E3041 /* MLRandom.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C9A49481B1454FB003E3041 /* MLRandom.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9A49461B1454FB003E3041 /* MLRandom.m */; };
+		8C9C8DBC1B218A18004C0F7B /* WordVectorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9C8DBB1B218A18004C0F7B /* WordVectorTests.m */; };
 		8CA8CE8C1AF75074006D5351 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CA8CE8B1AF75074006D5351 /* main.m */; };
 		8CC07B501B1E11E8004D804B /* MLMutableWordDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC07B4E1B1E11E8004D804B /* MLMutableWordDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC07B511B1E11E8004D804B /* MLMutableWordDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC07B4F1B1E11E8004D804B /* MLMutableWordDictionary.m */; };
@@ -143,6 +144,7 @@
 		8C94CC001AE91CEE00A0A328 /* MLWordExtractorType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLWordExtractorType.h; sourceTree = "<group>"; };
 		8C9A49451B1454FB003E3041 /* MLRandom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLRandom.h; sourceTree = "<group>"; };
 		8C9A49461B1454FB003E3041 /* MLRandom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLRandom.m; sourceTree = "<group>"; };
+		8C9C8DBB1B218A18004C0F7B /* WordVectorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordVectorTests.m; sourceTree = "<group>"; };
 		8CA8CE891AF75074006D5351 /* Word2vec */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Word2vec; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CA8CE8B1AF75074006D5351 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8CC07B4E1B1E11E8004D804B /* MLMutableWordDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLMutableWordDictionary.h; sourceTree = "<group>"; };
@@ -305,6 +307,7 @@
 			children = (
 				8C4CEF2A1ADAC51200F1E139 /* NeuralNetTests.m */,
 				8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */,
+				8C9C8DBB1B218A18004C0F7B /* WordVectorTests.m */,
 				8C4E43A21AE56DCF005FD73D /* MAChineLearningTests-Bridging-Header.h */,
 				8C4E43A31AE56DCF005FD73D /* NeuralNetSwiftTests.swift */,
 				8C4CEF281ADAC51200F1E139 /* Supporting Files */,
@@ -577,6 +580,7 @@
 			files = (
 				8C4CEF2B1ADAC51200F1E139 /* NeuralNetTests.m in Sources */,
 				8C140FA81B03349B00B6DA60 /* NeuralNetSwiftTests.swift in Sources */,
+				8C9C8DBC1B218A18004C0F7B /* WordVectorTests.m in Sources */,
 				8C58A31E1AED4DE8006AB74D /* BagOfWordsTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

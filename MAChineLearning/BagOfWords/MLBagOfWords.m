@@ -467,6 +467,10 @@ static NSDictionary *__stopWords= nil;
 	
 	@autoreleasepool {
 		
+		// Fill stop words if not filled already
+		if (!__stopWords)
+			__stopWords= ML_STOP_WORDS;
+		
 		// Keep a pointer to the original text for later search of emoticons
 		NSString *originalText= text;
 	
@@ -708,6 +712,10 @@ static NSDictionary *__stopWords= nil;
 														   userInfo:nil];
 
 	@autoreleasepool {
+		
+		// Fill stop words if not filled already
+		if (!__stopWords)
+			__stopWords= ML_STOP_WORDS;
 	
 		// Keep a pointer to the original text for later search of emoticons
 		NSString *originalText= text;

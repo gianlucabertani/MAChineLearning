@@ -44,7 +44,6 @@
 #pragma mark MLWordVectorMap extension
 
 @interface MLWordVector () {
-	MLWordInfo *_wordInfo;
 	MLReal *_vector;
 	NSUInteger _size;
 
@@ -66,16 +65,15 @@
 #pragma -
 #pragma Initialization
 
-- (instancetype) initWithWordInfo:(MLWordInfo *)wordInfo vector:(MLReal *)vector size:(NSUInteger)size freeVectorOnDealloc:(BOOL)freeOnDealloc {
+- (instancetype) initWithVector:(MLReal *)vector size:(NSUInteger)size freeVectorOnDealloc:(BOOL)freeOnDealloc {
 	if ((self = [super init])) {
 		
 		// Initialization
-		_wordInfo= wordInfo;
 		_vector= vector;
 		_size= size;
 		
 		_freeOnDealloc= freeOnDealloc;
-		
+
 		// Compute magnitude
 		ML_VDSP_SVESQ(_vector, 1, &_magnitude, _size);
 		_magnitude= ML_SQRT(_magnitude);
@@ -95,6 +93,58 @@
 #pragma -
 #pragma Vector algebra and comparison
 
+- (MLWordVector *) addVector:(MLWordVector *)vector {
+	
+	// Checks
+	if (_size != vector.size)
+		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must have the same size"
+														   userInfo:@{@"size": [NSNumber numberWithUnsignedInteger:_size],
+																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
+	
+	// Creation of sum vector
+	MLReal *sumVector= NULL;
+	
+	int err= posix_memalign((void **) &sumVector,
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(MLReal) * _size);
+	if (err)
+		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
+														   userInfo:@{@"buffer": @"sumVector",
+																	  @"error": [NSNumber numberWithInt:err]}];
+	
+	// Sum of vectors
+	ML_VDSP_VADD(_vector, 1, vector.vector, 1, sumVector, 1, _size);
+	
+	// Creation of vector object
+	return [[MLWordVector alloc] initWithVector:sumVector size:_size freeVectorOnDealloc:YES];
+}
+
+- (MLWordVector *) subtractVector:(MLWordVector *)vector {
+	
+	// Checks
+	if (_size != vector.size)
+		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must have the same size"
+														   userInfo:@{@"size": [NSNumber numberWithUnsignedInteger:_size],
+																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
+	
+	// Creation of difference vector
+	MLReal *subVector= NULL;
+	
+	int err= posix_memalign((void **) &subVector,
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(MLReal) * _size);
+	if (err)
+		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
+														   userInfo:@{@"buffer": @"subVector",
+																	  @"error": [NSNumber numberWithInt:err]}];
+	
+	// Subtraction of vectors
+	ML_VDSP_VSUB(vector.vector, 1, _vector, 1, subVector, 1, _size);
+	
+	// Creation of vector object
+	return [[MLWordVector alloc] initWithVector:subVector size:_size freeVectorOnDealloc:YES];
+}
+
 - (MLReal) similarityToVector:(MLWordVector *)vector {
 	
 	// Checks
@@ -102,6 +152,10 @@
 		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must have the same size"
 														   userInfo:@{@"size": [NSNumber numberWithUnsignedInteger:_size],
 																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
+	
+	// If one of magnitues is 0 return 0 (i.e. orthogonality)
+	if ((_magnitude * vector.magnitude) == 0.0)
+		return 0.0;
 	
 	// Dot product of vectors
 	MLReal dot= 0.0;
@@ -111,11 +165,42 @@
 	return dot / (_magnitude * vector.magnitude);
 }
 
+- (MLReal) distanceToVector:(MLWordVector *)vector {
+	
+	// Checks
+	if (_size != vector.size)
+		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must have the same size"
+														   userInfo:@{@"size": [NSNumber numberWithUnsignedInteger:_size],
+																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
+	
+	// Creation of difference vector
+	MLReal *subVector= NULL;
+	
+	int err= posix_memalign((void **) &subVector,
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(MLReal) * _size);
+	if (err)
+		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
+														   userInfo:@{@"buffer": @"subVector",
+																	  @"error": [NSNumber numberWithInt:err]}];
+
+	// Subtraction of vectors
+	ML_VDSP_VSUB(vector.vector, 1, _vector, 1, subVector, 1, _size);
+	
+	// Compute magnitude of vector difference
+	MLReal distance= 0.0;
+	ML_VDSP_SVESQ(subVector, 1, &distance, _size);
+	distance= ML_SQRT(distance);
+	
+	free(subVector);
+	
+	return distance;
+}
+
 
 #pragma -
 #pragma Properties
 
-@synthesize wordInfo= _wordInfo;
 @synthesize vector= _vector;
 @synthesize size= _size;
 @synthesize magnitude= _magnitude;

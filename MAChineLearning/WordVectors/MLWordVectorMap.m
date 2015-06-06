@@ -68,7 +68,6 @@
 	return [[MLWordVectorMap alloc] initWithWord2vecNeuralNet:net dictionary:dictionary];
 }
 
-
 - (instancetype) initWithWord2vecNeuralNet:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary {
 	if ((self = [super init])) {
 		
@@ -89,8 +88,8 @@
 		
 		// Initialization
 		_vectors= [[NSMutableDictionary alloc] initWithCapacity:dictionary.size];
-
-		// Creation of vector map
+		
+		// Creation of vector map from hidden layer
 		MLNeuronLayer *hiddenLayer= [net.layers objectAtIndex:1];
 		NSUInteger vectorSize= hiddenLayer.size;
 		
@@ -107,7 +106,6 @@
 																   userInfo:@{@"buffer": @"vector",
 																			  @"error": [NSNumber numberWithInt:err]}];
 			
-			
 			// Fill vector from neural network hidden layer
 			NSUInteger wordPos= wordInfo.position;
 
@@ -118,13 +116,11 @@
 			}
 
 			// Creation of vector wrapper
-			MLWordVector *wordVector= [[MLWordVector alloc] initWithWordInfo:wordInfo
-																	  vector:vector
-																		size:vectorSize
-														 freeVectorOnDealloc:YES];
+			MLWordVector *wordVector= [[MLWordVector alloc] initWithVector:vector
+																	  size:vectorSize
+													   freeVectorOnDealloc:YES];
 			
 			NSString *word= [wordInfo.word lowercaseString];
-			
 			[_vectors setObject:wordVector forKey:word];
 		}
 	}
@@ -148,22 +144,42 @@
 	return [_vectors objectForKey:lowercaseWord];
 }
 
-- (NSString *) mostSimilarWordToVector:(MLWordVector *)vector {
-	MLWordVector *mostSimilarVector= nil;
-	MLReal bestSimilarity= -1.0;
-	
-	// We use a sequential scan for now, slow but secure;
-	// an improved search (based on clusters) will follow
-	for (MLWordVector *otherVector in [_vectors allValues]) {
-		MLReal similarity= [vector similarityToVector:otherVector];
+- (NSArray *) mostSimilarWordsToVector:(MLWordVector *)vector {
+	NSArray *sortedKeys= [[_vectors allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		MLWordVector *otherVector1= [_vectors objectForKey:obj1];
+		MLWordVector *otherVector2= [_vectors objectForKey:obj2];
 		
-		if (similarity > bestSimilarity) {
-			bestSimilarity= similarity;
-			mostSimilarVector= otherVector;
-		}
-	}
+		MLReal similarity1= [vector similarityToVector:otherVector1];
+		MLReal similarity2= [vector similarityToVector:otherVector2];
+		
+		if (similarity1 < similarity2)
+			return NSOrderedDescending;
+		else if (similarity1 > similarity2)
+			return NSOrderedAscending;
+		else
+			return NSOrderedSame;
+	}];
 	
-	return mostSimilarVector.wordInfo.word;
+	return sortedKeys;
+}
+
+- (NSArray *) nearestWordsToVector:(MLWordVector *)vector {
+	NSArray *sortedKeys= [[_vectors allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		MLWordVector *otherVector1= [_vectors objectForKey:obj1];
+		MLWordVector *otherVector2= [_vectors objectForKey:obj2];
+		
+		MLReal distance1= [vector distanceToVector:otherVector1];
+		MLReal distance2= [vector distanceToVector:otherVector2];
+		
+		if (distance1 < distance2)
+			return NSOrderedAscending;
+		else if (distance1 > distance2)
+			return NSOrderedDescending;
+		else
+			return NSOrderedSame;
+	}];
+	
+	return sortedKeys;
 }
 
 
