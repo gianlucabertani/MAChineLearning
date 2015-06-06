@@ -144,6 +144,44 @@
 	return [_vectors objectForKey:lowercaseWord];
 }
 
+- (NSString *) mostSimilarWordToVector:(MLWordVector *)vector {
+	NSString *mostSimilarWord= nil;
+	MLReal bestSimilarity= -INFINITY;
+	
+	// We use a sequential scan for now, slow but secure;
+	// an improved search (based on clusters) will follow
+	for (NSString *word in [_vectors allKeys]) {
+		MLWordVector *otherVector= [_vectors objectForKey:word];
+		MLReal similarity= [vector similarityToVector:otherVector];
+		
+		if (similarity > bestSimilarity) {
+			bestSimilarity= similarity;
+			mostSimilarWord= word;
+		}
+	}
+	
+	return mostSimilarWord;
+}
+
+- (NSString *) nearestWordToVector:(MLWordVector *)vector {
+	NSString *nearestWord= nil;
+	MLReal minorDistance= INFINITY;
+	
+	// We use a sequential scan for now, slow but secure;
+	// an improved search (based on clusters) will follow
+	for (NSString *word in [_vectors allKeys]) {
+		MLWordVector *otherVector= [_vectors objectForKey:word];
+		MLReal distance= [vector distanceToVector:otherVector];
+		
+		if (distance < minorDistance) {
+			minorDistance= distance;
+			nearestWord= word;
+		}
+	}
+	
+	return nearestWord;
+}
+
 - (NSArray *) mostSimilarWordsToVector:(MLWordVector *)vector {
 	NSArray *sortedKeys= [[_vectors allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		MLWordVector *otherVector1= [_vectors objectForKey:obj1];

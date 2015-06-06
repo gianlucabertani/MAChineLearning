@@ -189,7 +189,7 @@ static NSDictionary *__stopWords= nil;
 		}
 		
 		// Initialization
-		_documentID= documentID;
+		_documentID= [documentID copy];
 		
 		// Run the appropriate extractor
 		switch (extractorType) {
@@ -240,8 +240,8 @@ static NSDictionary *__stopWords= nil;
 		}
 	
 		// Initialization
-		_documentID= documentID;
-		_words= words;
+		_words= [NSArray arrayWithArray:words];
+		_documentID= [documentID copy];
 
 		_outputSize= (buildDictionary ? [(MLMutableWordDictionary *) dictionary maxSize] : [dictionary size]);
 
@@ -322,7 +322,7 @@ static NSDictionary *__stopWords= nil;
 		case MLFeatureNormalizationTypeL2TFiDF: {
 			
 			// Multiply by IDF weights (the dictionary computes
-			// them on demand, then keeps them caches)
+			// them on demand, then keeps them cached)
 			ML_VDSP_VMUL(_outputBuffer, 1, dictionary.idfWeights, 1, _outputBuffer, 1, _outputSize);
 			
 			// NOTE: No "break" intended here
@@ -330,13 +330,9 @@ static NSDictionary *__stopWords= nil;
 			
 		case MLFeatureNormalizationTypeL2: {
 			MLReal normL2= 0.0;
-			
-			for (NSString *word in _words) {
-				MLWordInfo *wordInfo= [dictionary infoForWord:word];
-				normL2 += _outputBuffer[wordInfo.position] * _outputBuffer[wordInfo.position];
-			}
-			
-			normL2= sqrt(normL2);
+			ML_VDSP_SVESQ(_outputBuffer, 1, &normL2, _outputSize);
+			normL2= ML_SQRT(normL2);
+
 			ML_VDSP_VSDIV(_outputBuffer, 1, &normL2, _outputBuffer, 1, _outputSize);
 			break;
 		}
