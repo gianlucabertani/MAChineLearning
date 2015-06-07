@@ -302,7 +302,9 @@ static NSDictionary *__stopWords= nil;
 		if (wordInfo) {
 			switch (normalizationType) {
 				case MLFeatureNormalizationTypeNone:
+				case MLFeatureNormalizationTypeL1:
 				case MLFeatureNormalizationTypeL2:
+				case MLFeatureNormalizationTypeL1TFiDF:
 				case MLFeatureNormalizationTypeL2TFiDF:
 					_outputBuffer[wordInfo.position] += 1.0;
 					break;
@@ -319,6 +321,26 @@ static NSDictionary *__stopWords= nil;
 	
 	// Apply vector-wide normalization
 	switch (normalizationType) {
+		case MLFeatureNormalizationTypeL1TFiDF: {
+			
+			// Multiply by IDF weights (the dictionary computes
+			// them on demand, then keeps them cached)
+			ML_VDSP_VMUL(_outputBuffer, 1, dictionary.idfWeights, 1, _outputBuffer, 1, _outputSize);
+			
+			// NOTE: No "break" intended here
+		}
+
+		case MLFeatureNormalizationTypeL1: {
+			
+			// Compute L1 norm
+			MLReal normL1= 0.0;
+			ML_VDSP_SVE(_outputBuffer, 1, &normL1, _outputSize);
+			
+			// Divide by L1 norm
+			ML_VDSP_VSDIV(_outputBuffer, 1, &normL1, _outputBuffer, 1, _outputSize);
+			break;
+		}
+
 		case MLFeatureNormalizationTypeL2TFiDF: {
 			
 			// Multiply by IDF weights (the dictionary computes
@@ -329,10 +351,13 @@ static NSDictionary *__stopWords= nil;
 		}
 			
 		case MLFeatureNormalizationTypeL2: {
+			
+			// Compute L2 norm
 			MLReal normL2= 0.0;
 			ML_VDSP_SVESQ(_outputBuffer, 1, &normL2, _outputSize);
 			normL2= ML_SQRT(normL2);
 
+			// Divide by L2 norm
 			ML_VDSP_VSDIV(_outputBuffer, 1, &normL2, _outputBuffer, 1, _outputSize);
 			break;
 		}
