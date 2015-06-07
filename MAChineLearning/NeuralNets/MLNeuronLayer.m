@@ -60,16 +60,20 @@
 	MLReal *_nextLayerWeightsDeltaBuffer;
 
 	NSMutableArray *_neurons;
-	
-	MLReal *_minusTwo;
-	MLReal *_minusOne;
-	MLReal *_zero;
-	MLReal *_half;
-	MLReal *_one;
 }
 
 
 @end
+
+
+#pragma mark -
+#pragma mark Static constants
+
+static MLReal __minusTwo= -2.0;
+static MLReal __minusOne= -1.0;
+static MLReal __zero=      0.0;
+static MLReal __half=      0.5;
+static MLReal __one=       1.0;
 
 
 #pragma mark -
@@ -143,55 +147,6 @@
 		ML_VDSP_VCLR(_deltaBuffer, 1, size);
 		ML_VDSP_VCLR(_errorBuffer, 1, size);
 		ML_VDSP_VCLR(_tempBuffer, 1, size);
-		
-		// Allocate constants
-		err= posix_memalign((void **) &_minusTwo,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal));
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating constant"
-																   userInfo:@{@"constant": @"minusTwo",
-																			  @"error": [NSNumber numberWithInt:err]}];
-
-		err= posix_memalign((void **) &_minusOne,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal));
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating constant"
-																   userInfo:@{@"constant": @"minusOne",
-																			  @"error": [NSNumber numberWithInt:err]}];
-		
-		err= posix_memalign((void **) &_zero,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal));
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating constant"
-																   userInfo:@{@"constant": @"zero",
-																			  @"error": [NSNumber numberWithInt:err]}];
-
-		err= posix_memalign((void **) &_half,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal));
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating constant"
-																   userInfo:@{@"constant": @"half",
-																			  @"error": [NSNumber numberWithInt:err]}];
-
-		err= posix_memalign((void **) &_one,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal));
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating constant"
-																   userInfo:@{@"constant": @"one",
-																			  @"error": [NSNumber numberWithInt:err]}];
-
-		
-		// Initialize constants
-		*_minusTwo= -2.0;
-		*_minusOne= -1.0;
-		*_zero= 0.0;
-		*_half= 0.5;
-		*_one= 1.0;
 	}
 	
 	return self;
@@ -227,21 +182,6 @@
 		free(_nextLayerWeightsDeltaBuffer);
 		_nextLayerWeightsDeltaBuffer= NULL;
 	}
-	
-	free(_minusTwo);
-	_minusTwo= NULL;
-	
-	free(_minusOne);
-	_minusOne= NULL;
-	
-	free(_zero);
-	_zero= NULL;
-	
-	free(_half);
-	_half= NULL;
-	
-	free(_one);
-	_one= NULL;
 }
 
 
@@ -331,8 +271,8 @@
 		case MLActivationFunctionTypeStep:
 
 			// Apply formula: output[i] = (output[i] < 0.5 ? 0.0 : 1.0)
-			ML_VDSP_VTHRSC(_outputBuffer, 1, _half, _one, _tempBuffer, 1, _size);
-			ML_VDSP_VTHRES(_tempBuffer, 1, _zero, _outputBuffer, 1, _size);
+			ML_VDSP_VTHRSC(_outputBuffer, 1, &__half, &__one, _tempBuffer, 1, _size);
+			ML_VDSP_VTHRES(_tempBuffer, 1, &__zero, _outputBuffer, 1, _size);
 			break;
 			
 		case MLActivationFunctionTypeLogistic: {
@@ -342,10 +282,10 @@
 			int size= (int) _size;
 			
 			// Apply formula: output[i] = 1 / (1 + exp(-output[i])
-			ML_VDSP_VSMUL(_outputBuffer, 1, _minusOne, _tempBuffer, 1, _size);
+			ML_VDSP_VSMUL(_outputBuffer, 1, &__minusOne, _tempBuffer, 1, _size);
 			ML_VVEXP(_tempBuffer, _tempBuffer, &size);
-			ML_VDSP_VSADD(_tempBuffer, 1, _one, _tempBuffer, 1, _size);
-			ML_VDSP_SVDIV(_one, _tempBuffer, 1, _outputBuffer, 1, _size);
+			ML_VDSP_VSADD(_tempBuffer, 1, &__one, _tempBuffer, 1, _size);
+			ML_VDSP_SVDIV(&__one, _tempBuffer, 1, _outputBuffer, 1, _size);
 			break;
 		}
 			
@@ -359,11 +299,11 @@
 			// Equivalent to: output[i] = tanh(output[i])
 			// NOTE: VDIV operands are inverted compared to documentation (see function
 			// definition for operand order)
-			ML_VDSP_VSMUL(_outputBuffer, 1, _minusTwo, _tempBuffer, 1, _size);
+			ML_VDSP_VSMUL(_outputBuffer, 1, &__minusTwo, _tempBuffer, 1, _size);
 			ML_VVEXP(_tempBuffer, _tempBuffer, &size);
-			ML_VDSP_VSADD(_tempBuffer, 1, _one, _outputBuffer, 1, _size);
-			ML_VDSP_VSMUL(_tempBuffer, 1, _minusOne, _tempBuffer, 1, _size);
-			ML_VDSP_VSADD(_tempBuffer, 1, _one, _tempBuffer, 1, _size);
+			ML_VDSP_VSADD(_tempBuffer, 1, &__one, _outputBuffer, 1, _size);
+			ML_VDSP_VSMUL(_tempBuffer, 1, &__minusOne, _tempBuffer, 1, _size);
+			ML_VDSP_VSADD(_tempBuffer, 1, &__one, _tempBuffer, 1, _size);
 			ML_VDSP_VDIV(_outputBuffer, 1, _tempBuffer, 1, _outputBuffer, 1, _size);
 			break;
 		}
@@ -409,7 +349,7 @@
 		case MLActivationFunctionTypeLinear:
 			
 			// Apply formula: delta[i] = error[i]
-			ML_VDSP_VSMUL(_errorBuffer, 1, _one, _deltaBuffer, 1, _size);
+			ML_VDSP_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
 			break;
 			
 		case MLActivationFunctionTypeStep:
@@ -418,14 +358,14 @@
 																		 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 
 			// Apply formula: delta[i] = error[i]
-			ML_VDSP_VSMUL(_errorBuffer, 1, _one, _deltaBuffer, 1, _size);
+			ML_VDSP_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
 			break;
 			
 		case MLActivationFunctionTypeLogistic:
 			
 			// Apply formula: delta[i] = output[i] * (1 - output[i]) * error[i]
-			ML_VDSP_VSMUL(_outputBuffer, 1, _minusOne, _tempBuffer, 1, _size);
-			ML_VDSP_VSADD(_tempBuffer, 1, _one, _tempBuffer, 1, _size);
+			ML_VDSP_VSMUL(_outputBuffer, 1, &__minusOne, _tempBuffer, 1, _size);
+			ML_VDSP_VSADD(_tempBuffer, 1, &__one, _tempBuffer, 1, _size);
 			ML_VDSP_VMUL(_tempBuffer, 1, _outputBuffer, 1, _tempBuffer, 1, _size);
 			ML_VDSP_VMUL(_tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
 			break;
@@ -434,8 +374,8 @@
 			
 			// Apply formula: delta[i] = (1 - (output[i] * output[i])) * error[i]
 			ML_VDSP_VSQ(_outputBuffer, 1, _tempBuffer, 1, _size);
-			ML_VDSP_VSMUL(_tempBuffer, 1, _minusOne, _tempBuffer, 1, _size);
-			ML_VDSP_VSADD(_tempBuffer, 1, _one, _tempBuffer, 1, _size);
+			ML_VDSP_VSMUL(_tempBuffer, 1, &__minusOne, _tempBuffer, 1, _size);
+			ML_VDSP_VSADD(_tempBuffer, 1, &__one, _tempBuffer, 1, _size);
 			ML_VDSP_VMUL(_tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
 			break;
 	}
