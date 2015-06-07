@@ -36,6 +36,15 @@
 #define DOUBLE_LIMIT          (((double) NSUIntegerMax) + 1.0)
 
 
+#pragma mark -
+#pragma mark Static fast random
+
+static double __fastRandom= 0;
+
+
+#pragma mark -
+#pragma mark MLRandom implementation
+
 @implementation MLRandom
 
 
@@ -63,6 +72,16 @@
 	double random= [MLRandom nextDouble];
 	
 	return ((random * (max - min)) + min);
+}
+
++ (double) fastNextDouble {
+	if (!__fastRandom)
+		__fastRandom= [MLRandom nextDouble];
+	
+	double dummy= 0.0;
+	__fastRandom= modf(3.995 * (1.0 - __fastRandom), &dummy);
+	
+	return __fastRandom;
 }
 
 

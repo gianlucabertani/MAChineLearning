@@ -43,5 +43,7 @@
 + (double) nextDouble;
 + (double) nextDoubleWithMin:(double)min max:(double)max;
 
++ (double) fastNextDouble;
+
 
 @end

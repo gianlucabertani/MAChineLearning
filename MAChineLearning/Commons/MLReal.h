@@ -63,6 +63,7 @@ typedef double          MLReal;
 #define ML_VVEXP        vvexp
  
 #define ML_SQRT         sqrt
+#define ML_MODF         modf
  
  */
 
@@ -92,6 +93,7 @@ typedef float           MLReal;
 #define ML_VVEXP        vvexpf
 
 #define ML_SQRT         sqrtf
+#define ML_MODF         modff
 
 
 #endif
