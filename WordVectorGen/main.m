@@ -35,8 +35,8 @@
 #import <MAChineLearning/MAChineLearning.h>
 #import <Accelerate/Accelerate.h>
 
-#define DICTIONARY_SIZE                 (5000)
-#define VECTOR_SIZE                      (100)
+#define DICTIONARY_SIZE                 (1000)
+#define VECTOR_SIZE                       (10)
 #define CONTEXT_WINDOW                     (6)
 #define LEARNING_RATE                      (0.05)
 #define MIN_LEARNING_RATE                  (0.00005)
@@ -46,15 +46,12 @@
 #define RETVAL_BUFFER_ALLOCATION_ERROR    (17)
 #define RETVAL_OK                          (0)
 
-// Uncomment to dump dictionary
-//#define DUMP_DICTIONARY
-
 
 // Forwards
-MLWordDictionary *buildDictionary(NSString *textPath);
+MLWordDictionary *buildDictionary(NSString *textPath, void(^)(NSUInteger line, MLWordDictionary *dictionary));
 NSArray *buildEquivalenceList(NSString *equivalenceListPath, MLWordDictionary *dictionary);
 BOOL extractContext(MLWordDictionary *dictionary, NSArray *words, NSUInteger offset, NSMutableArray *context, NSMutableString *centralWord);
-NSUInteger testModel(MLWordVectorMap *map, NSArray *equivalenceList);
+MLReal testModel(MLWordVectorMap *map, NSArray *equivalenceList);
 
 
 /**
@@ -79,22 +76,36 @@ int main(int argc, const char * argv[]) {
 		NSString *comparisonModelPath= [[NSString alloc] initWithCString:argv[3] encoding:NSUTF8StringEncoding];
 		
 		// Build the dictionary
-		MLWordDictionary *dictionary= buildDictionary(textPath);
+		NSLog(@"Building dictionary with file: %@", textPath);
 		
+		__block NSUInteger totLines= 0;
+		MLWordDictionary *fullDictionary= buildDictionary(textPath, ^(NSUInteger linesRead, MLWordDictionary *dictionary) {
+			totLines= linesRead;
+
+			if (linesRead % 1000 == 0)
+				NSLog(@"- Lines read: %8lu, words: %7luK", linesRead, dictionary.totalWords / 1000);
+		});
+		
+		NSLog(@"Total number of lines:         %10lu", totLines);
+		NSLog(@"Total number of words:         %10lu", fullDictionary.totalWords);
+		NSLog(@"Pre-filtering unique words:    %10lu", fullDictionary.size);
+		
+		// Filter dictionary and keep only most frequent words
+		MLWordDictionary *dictionary= [fullDictionary keepWordsWithHighestOccurrenciesUpToSize:DICTIONARY_SIZE];
+
 		NSLog(@"Final unique words:            %10lu", dictionary.size);
-		
-#ifdef DUMP_DICTIONARY
-		NSLog(@"Dictionary:\n%@", dictionary);
-#endif // DUMP_DICTIONARY
+		NSLog(@"Final dictionary: %@", dictionary);
 
 		// Build equivalence list
+		NSLog(@"Building equivalence list with file: %@", equivalenceListPath);
+
 		NSArray *equivalenceList= buildEquivalenceList(equivalenceListPath, dictionary);
 		
-		// Load an test the comparison model
+		// Test the comparison model
 		MLWordVectorMap *compMap= [MLWordVectorMap createFromWord2vecFile:comparisonModelPath binary:YES];
-		NSUInteger compMatchedEquivalences= testModel(compMap, equivalenceList);
+		MLReal compEquivalenceScore= testModel(compMap, equivalenceList);
 		
-		NSLog(@"Testing comparison model: matched %lu/%lu equivalences (%.2f%%)", compMatchedEquivalences, equivalenceList.count, 100.0 * ((float) compMatchedEquivalences) / ((float) equivalenceList.count));
+		NSLog(@"Comparison model: score of %5.2f on %5lu equivalences or %5.2f%%", compEquivalenceScore, equivalenceList.count, 100.0 * (compEquivalenceScore / ((float) equivalenceList.count)));
 		
 		// Prepare the neural network:
 		// - input and output sizes are set to the dictionary (bag of words) size
@@ -104,6 +115,12 @@ int main(int argc, const char * argv[]) {
 																			@VECTOR_SIZE,
 																			[NSNumber numberWithUnsignedInteger:dictionary.size]]
 													   outputFunctionType:MLActivationFunctionTypeLogistic];
+		
+		// Randomization of network weights (i.e. initial vectors)
+		for (MLNeuron *neuron in [[net.layers objectAtIndex:1] neurons]) {
+			for (NSUInteger i= 0; i < dictionary.size; i++)
+				neuron.weights[i]= ([MLRandom fastNextDouble] - 0.5) / ML_SQRT(VECTOR_SIZE);
+		}
 		
 		// Prepare the buffer for computing the error
 		MLReal *errorBuffer= NULL;
@@ -117,12 +134,12 @@ int main(int argc, const char * argv[]) {
 
 		// Loop for train cicles
 		NSUInteger trainingCycles= 0;
-		NSUInteger totalWords= 0;
+		NSUInteger linesRead= 0;
 		MLReal progress= 0.0;
 		do {
 		
 			// Stat counters
-			NSUInteger partialWords= 0;
+			NSUInteger scannedContexts= 0;
 			MLReal avgError= 0.0;
 			NSDate *begin= nil;
 			
@@ -149,69 +166,78 @@ int main(int argc, const char * argv[]) {
 					// Extract words from line
 					NSArray *words= [MLBagOfWords extractWordsWithSimpleTokenizerFromText:line
 																			 withLanguage:@"en"
-																		 extractorOptions:MLWordExtractorOptionOmitStopWords | MLWordExtractorOptionOmitNumbers];
+																		 extractorOptions:MLWordExtractorOptionOmitNumbers];
 					
 					// Extract the context, and skip the line if
 					// the context is incomplete
 					NSMutableArray *context= [[NSMutableArray alloc] initWithCapacity:CONTEXT_WINDOW * 2];
 					NSMutableString *centralWord= [[NSMutableString alloc] init];
-					
-					BOOL complete= extractContext(dictionary, words, 0, context, centralWord);
-					if (!complete)
-						continue;
-					
-					// Use bag of words to load the net's input buffer with
-					// the context
-					[MLBagOfWords bagOfWordsWithWords:context
-										   documentID:nil
-										   dictionary:dictionary
-									  buildDictionary:NO
-								 featureNormalization:MLFeatureNormalizationTypeL2
-										 outputBuffer:net.inputBuffer];
-					
-					// Run the network
-					[net feedForward];
-					
-					// Use bag of words to load the net's expected output buffer
-					// with the central word
-					[MLBagOfWords bagOfWordsWithWords:@[centralWord]
-										   documentID:nil
-										   dictionary:dictionary
-									  buildDictionary:NO
-								 featureNormalization:MLFeatureNormalizationTypeBoolean
-										 outputBuffer:net.expectedOutputBuffer];
-					
-					// Compute the error (for statistics only)
-					ML_VDSP_VSUB(net.expectedOutputBuffer, 1, net.outputBuffer, 1, errorBuffer, 1, dictionary.size);
+					NSUInteger offset= 0;
 
-					MLReal error= 0.0;
-					ML_VDSP_SVESQ(errorBuffer, 1, &error, dictionary.size);
-					avgError += error / 2.0;
+					// Loop for all possible contexts in the line
+					do {
+						BOOL complete= extractContext(dictionary, words, offset, context, centralWord);
+						if (!complete)
+							break;
 					
-					// Compute the current learning rate
-					MLReal learningRate= MAX(LEARNING_RATE * (1.0 - progress), MIN_LEARNING_RATE);
-					
-					// Backpropagate the network
-					[net backPropagateWithLearningRate:learningRate];
-					[net updateWeights];
-
-					// Update statistics
-					totalWords += words.count;
-					partialWords += words.count;
-					progress= ((MLReal) totalWords) / ((MLReal) TRAIN_CYCLES * dictionary.totalWords);
-					
-					if (reader.lineNumber % 100 == 0) {
-						NSTimeInterval elapsed= [[NSDate date] timeIntervalSinceDate:begin];
-						avgError /= 100.0;
+						// Use bag of words to load the net's input buffer with
+						// the context
+						[MLBagOfWords bagOfWordsWithWords:context
+											   documentID:nil
+											   dictionary:dictionary
+										  buildDictionary:NO
+									 featureNormalization:MLFeatureNormalizationTypeL2
+											 outputBuffer:net.inputBuffer];
 						
-						NSLog(@"- Lines read: %8lu, words: %7luK, progress: %5.2f%%, speed: %6.2fK w/s, error: %5.2f", reader.lineNumber, totalWords / 1000, 100.0 * progress, (((double) partialWords) / elapsed) / 1000.0, avgError);
+						// Run the network
+						[net feedForward];
+						
+						// Use bag of words to load the net's expected output buffer
+						// with the central word
+						[MLBagOfWords bagOfWordsWithWords:@[centralWord]
+											   documentID:nil
+											   dictionary:dictionary
+										  buildDictionary:NO
+									 featureNormalization:MLFeatureNormalizationTypeBoolean
+											 outputBuffer:net.expectedOutputBuffer];
+						
+						// Compute the error (for statistics only)
+						ML_VDSP_VSUB(net.expectedOutputBuffer, 1, net.outputBuffer, 1, errorBuffer, 1, dictionary.size);
+
+						MLReal error= 0.0;
+						ML_VDSP_SVESQ(errorBuffer, 1, &error, dictionary.size);
+						avgError += error / 2.0;
+						
+						// Compute the current learning rate
+						MLReal learningRate= MAX(LEARNING_RATE * (1.0 - progress), MIN_LEARNING_RATE);
+						
+						// Backpropagate the network
+						[net backPropagateWithLearningRate:learningRate];
+						[net updateWeights];
+						
+						offset++;
+						
+						// Update statistics
+						scannedContexts++;
+					
+					} while (YES);
+
+					// Update and log some statistics
+					linesRead++;
+					progress= ((MLReal) linesRead) / ((MLReal) TRAIN_CYCLES * totLines);
+					
+					if (reader.lineNumber % 10 == 0) {
+						NSTimeInterval elapsed= [[NSDate date] timeIntervalSinceDate:begin];
+						avgError /= (MLReal) scannedContexts;
+						
+						NSLog(@"- Lines read: %8lu, cycle: %lu, progress: %5.2f%%, speed: %7.2f words/s, error: %6.2f", reader.lineNumber, trainingCycles +1, 100.0 * progress, (((double) scannedContexts) / elapsed), avgError);
 
 						avgError= 0.0;
-						partialWords= 0;
+						scannedContexts= 0;
 						begin= nil;
 					}
 					
-					if (reader.lineNumber % 10000 == 0) {
+					if (reader.lineNumber % 1000 == 0) {
 						
 						// Test the model
 						MLWordVectorMap *map= [MLWordVectorMap createFromNeuralNetwork:net dictionary:dictionary];
@@ -229,11 +255,13 @@ int main(int argc, const char * argv[]) {
 			
 		} while (trainingCycles < TRAIN_CYCLES);
 		
-		// Final test of the model
+		// Final test of the model, reporting also again
+		// the results of the comparison model
 		MLWordVectorMap *map= [MLWordVectorMap createFromNeuralNetwork:net dictionary:dictionary];
-		NSUInteger matchedEquivalences= testModel(map, equivalenceList);
+		MLReal equivalenceScore= testModel(map, equivalenceList);
 		
-		NSLog(@"Testing model: matched %lu/%lu equivalences (%.2f%%)", matchedEquivalences, equivalenceList.count, 100.0 * ((float) matchedEquivalences) / ((float) equivalenceList.count));
+		NSLog(@"Testing model:    score of %5.2f on %5lu equivalences or %5.2f%%", equivalenceScore, equivalenceList.count, 100.0 * (equivalenceScore / ((float) equivalenceList.count)));
+		NSLog(@"Comparison model: score of %5.2f on %5lu equivalences or %5.2f%%", compEquivalenceScore, equivalenceList.count, 100.0 * (compEquivalenceScore / ((float) equivalenceList.count)));
 	}
 	
     return RETVAL_OK;
@@ -242,16 +270,14 @@ int main(int argc, const char * argv[]) {
 
 /**
  * This function scans a text file and builds a word dictionary,
- * discarding numbers and stop words and keeping all the rest.
+ * discarding numbers and keeping all the rest.
  */
-MLWordDictionary *buildDictionary(NSString *textPath) {
+MLWordDictionary *buildDictionary(NSString *textPath, void(^lineReadHandler)(NSUInteger linesRead, MLWordDictionary *dictionary)) {
 	
 	// Prepare the dictionary
 	MLMutableWordDictionary *dictionary= [MLMutableWordDictionary dictionaryWithMaxSize:20 * DICTIONARY_SIZE];
 	
 	@autoreleasepool {
-		
-		NSLog(@"Building dictionary with file: %@", textPath);
 		
 		// Use the library's I/O line reader
 		IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:textPath];
@@ -271,23 +297,16 @@ MLWordDictionary *buildDictionary(NSString *textPath) {
 									   dictionary:dictionary
 										 language:@"en"
 									wordExtractor:MLWordExtractorTypeSimpleTokenizer
-								 extractorOptions:MLWordExtractorOptionOmitStopWords | MLWordExtractorOptionOmitNumbers];
+								 extractorOptions:MLWordExtractorOptionOmitNumbers];
 			
-			if (reader.lineNumber % 1000 == 0)
-				NSLog(@"- Lines read: %8lu, words: %7luK", reader.lineNumber, dictionary.totalWords / 1000);
+			lineReadHandler(reader.lineNumber, dictionary);
 			
 		} while (YES);
 		
 		[reader close];
 	}
 	
-	NSLog(@"Total number of words:         %10lu", dictionary.totalWords);
-	NSLog(@"Pre-filtering unique words:    %10lu", dictionary.size);
-	
-	// !! TO DO: filtering does not lower the "totalWords" count, leading to error while calculating the progress
-	
-	// Filter dictionary and keep only most frequent words
-	return [dictionary keepWordsWithHighestOccurrenciesUpToSize:DICTIONARY_SIZE];
+	return dictionary;
 }
 
 
@@ -307,8 +326,6 @@ NSArray *buildEquivalenceList(NSString *equivalenceListPath, MLWordDictionary *d
 	NSMutableArray *equivalenceList= [[NSMutableArray alloc] init];
 	
 	@autoreleasepool {
-		
-		NSLog(@"Building equivalence list with file: %@", equivalenceListPath);
 		
 		// Use the library's I/O line reader
 		IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:equivalenceListPath];
@@ -403,10 +420,10 @@ BOOL extractContext(MLWordDictionary *dictionary, NSArray *words, NSUInteger off
  * Tests the model by subtracting and adding two vectors from a base vector,
  * and checking the distance from the expect resulting word.
  */
-NSUInteger testModel(MLWordVectorMap *map, NSArray *equivalenceList) {
+MLReal testModel(MLWordVectorMap *map, NSArray *equivalenceList) {
 	
 	// Prepare counters
-	NSUInteger matchedEquivalences= 0;
+	MLReal score= 0.0;
 	
 	@autoreleasepool {
 		
@@ -426,13 +443,20 @@ NSUInteger testModel(MLWordVectorMap *map, NSArray *equivalenceList) {
 				continue;
 			
 			MLWordVector *result= [[base subtractVector:minus] addVector:plus];
-			NSString *resultWord= [map nearestWordToVector:result];
+			NSArray *nearestWords= [map nearestWordsToVector:result];
 			
-			if ([expectedWord caseInsensitiveCompare:resultWord] == NSOrderedSame)
-				matchedEquivalences++;
+			if ([[nearestWords objectAtIndex:0] caseInsensitiveCompare:expectedWord] == NSOrderedSame) {
+				score += 1.0;
+				
+			} else if ([[nearestWords objectAtIndex:1] caseInsensitiveCompare:expectedWord] == NSOrderedSame) {
+				score += 0.5;
+			
+			} else if ([[nearestWords objectAtIndex:2] caseInsensitiveCompare:expectedWord] == NSOrderedSame) {
+				score += 0.3;
+			}
 		}
 	}
 	
-	return matchedEquivalences;
+	return score;
 }
 
