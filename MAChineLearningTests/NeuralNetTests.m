@@ -258,19 +258,12 @@
 		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@1, @10, @1] outputFunctionType:MLActivationFunctionTypeLinear];
 		
 		// Randomization of network weights
-		for (int i= 1; i < net.layers.count; i++) {
-			MLNeuronLayer *layer= [net.layers objectAtIndex:i];
-			
-			for (MLNeuron *neuron in layer.neurons) {
-				for (int j= 0; j < neuron.inputSize; j++)
-					neuron.weights[j]= ([MLRandom fastNextDouble] - 0.5) / 10.0;
-			}
-		}
+		[net randomizeWeights];
 
 		// Generate some random numbers between 0 and 100
 		MLReal trainingSet[REGRESSION_TEST_TRAINING_SET];
 		for (int i= 0; i < REGRESSION_TEST_TRAINING_SET; i++)
-			trainingSet[i]= [MLRandom nextUIntWithMax:100];
+			trainingSet[i]= [MLRandom nextUniformUIntWithMax:100];
 		
 		// Train the network to produce the square root of the input,
 		// until the error is within the threshold
@@ -281,11 +274,11 @@
 
 			for (int i= 0; i < REGRESSION_TEST_TRAINING_SET; i++) {
 				net.inputBuffer[0]= trainingSet[i % REGRESSION_TEST_TRAINING_SET];
-				net.expectedOutputBuffer[0]= ML_SQRT(trainingSet[i % REGRESSION_TEST_TRAINING_SET]);
 
 				[net feedForward];
 				
-				avgError += ABS(net.outputBuffer[0] - net.expectedOutputBuffer[0]);
+				net.expectedOutputBuffer[0]= ML_SQRT(trainingSet[i % REGRESSION_TEST_TRAINING_SET]);
+				avgError += 0.5 * (net.outputBuffer[0] - net.expectedOutputBuffer[0]) * (net.outputBuffer[0] - net.expectedOutputBuffer[0]);
 				
 				[net backPropagateWithLearningRate:REGRESSION_TEST_LEARNING_RATE];
 				[net updateWeights];

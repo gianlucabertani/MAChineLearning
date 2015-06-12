@@ -36,6 +36,7 @@
 #import "MLNeuralNetworkException.h"
 
 #import "MLConstants.h"
+#import "MLRandom.h"
 
 #import <Accelerate/Accelerate.h>
 
@@ -131,7 +132,7 @@
 
 
 #pragma mark -
-#pragma mark Operations
+#pragma mark Setup and randomization
 
 - (void) setUp {
 	if (self.layer.nextLayer) {
@@ -163,6 +164,14 @@
 		}
 	}
 }
+
+- (void) randomizeWeights {
+	[MLRandom fillVector:_weights size:_inputSize ofGaussianRealWithMean:0.0 sigma:ML_SQRT(_inputSize)];
+}
+
+
+#pragma mark -
+#pragma mark Operations
 
 - (void) partialFeedForward {
 	

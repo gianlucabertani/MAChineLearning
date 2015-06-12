@@ -119,12 +119,7 @@ int main(int argc, const char * argv[]) {
 													   outputFunctionType:MLActivationFunctionTypeLogistic];
 		
 		// Randomization of network weights (i.e. initial vectors)
-		for (MLNeuron *neuron in [[net.layers objectAtIndex:1] neurons]) {
-			for (NSUInteger i= 0; i < dictionary.size; i++) {
-				MLReal random= ([MLRandom fastNextDouble] - 0.5) / VECTOR_SIZE;
-				neuron.weights[i]= random;
-			}
-		}
+		[net randomizeWeights];
 		
 		// Prepare the buffer for computing the error
 		MLReal *errorBuffer= NULL;

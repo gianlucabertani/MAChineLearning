@@ -186,7 +186,7 @@ static MLReal __one=       1.0;
 
 
 #pragma mark -
-#pragma mark Operations
+#pragma mark Setup and randomization
 
 - (void) setUp {
 	if (_neurons)
@@ -243,6 +243,20 @@ static MLReal __one=       1.0;
 		ML_VDSP_VCLR(_nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
 	}
 }
+
+- (void) randomizeWeights {
+	if (!_neurons)
+		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
+																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
+
+	// Randomize each neuron
+	for (MLNeuron *neuron in _neurons)
+		[neuron randomizeWeights];
+}
+
+
+#pragma mark -
+#pragma mark Operations
 
 - (void) feedForward {
 	if (!_neurons)

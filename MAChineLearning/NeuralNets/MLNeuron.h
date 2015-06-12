@@ -50,9 +50,14 @@
 
 
 #pragma mark -
-#pragma mark Operations
+#pragma mark Setup and randomization
 
 - (void) setUp;
+- (void) randomizeWeights;
+
+
+#pragma mark -
+#pragma mark Operations
 
 - (void) partialFeedForward;
 - (void) partialBackPropagateWithLearningRate:(MLReal)learningRate delta:(MLReal)delta;

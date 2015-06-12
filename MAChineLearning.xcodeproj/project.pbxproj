@@ -23,7 +23,6 @@
 		8C1251E81AE8D38E00FA493E /* MLNeuronLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251D91AE8D38E00FA493E /* MLNeuronLayer.m */; };
 		8C1251EC1AE8D4BE00FA493E /* MLBagOfWords.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1251EA1AE8D4BE00FA493E /* MLBagOfWords.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C1251ED1AE8D4BE00FA493E /* MLBagOfWords.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251EB1AE8D4BE00FA493E /* MLBagOfWords.m */; };
-		8C140FA81B03349B00B6DA60 /* NeuralNetSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4E43A31AE56DCF005FD73D /* NeuralNetSwiftTests.swift */; };
 		8C1FE6651B1ED91300596278 /* MLWordVectorMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1FE6631B1ED91300596278 /* MLWordVectorMap.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C1FE6661B1ED91300596278 /* MLWordVectorMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1FE6641B1ED91300596278 /* MLWordVectorMap.m */; };
 		8C1FE6691B1ED9C400596278 /* MLWordVector.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1FE6671B1ED9C400596278 /* MLWordVector.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -45,6 +44,8 @@
 		8C9A49471B1454FB003E3041 /* MLRandom.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C9A49451B1454FB003E3041 /* MLRandom.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C9A49481B1454FB003E3041 /* MLRandom.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9A49461B1454FB003E3041 /* MLRandom.m */; };
 		8C9C8DBC1B218A18004C0F7B /* WordVectorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9C8DBB1B218A18004C0F7B /* WordVectorTests.m */; };
+		8CA96BDC1B2B84D3007F323B /* RandomTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CA96BDB1B2B84D3007F323B /* RandomTests.m */; };
+		8CA96BDD1B2B8C92007F323B /* NeuralNetSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4E43A31AE56DCF005FD73D /* NeuralNetSwiftTests.swift */; };
 		8CB9AB801B2354F2001E072C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB9AB7E1B2354E3001E072C /* main.m */; };
 		8CC07B501B1E11E8004D804B /* MLMutableWordDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC07B4E1B1E11E8004D804B /* MLMutableWordDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC07B511B1E11E8004D804B /* MLMutableWordDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC07B4F1B1E11E8004D804B /* MLMutableWordDictionary.m */; };
@@ -146,6 +147,7 @@
 		8C9A49461B1454FB003E3041 /* MLRandom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLRandom.m; sourceTree = "<group>"; };
 		8C9C8DBB1B218A18004C0F7B /* WordVectorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordVectorTests.m; sourceTree = "<group>"; };
 		8CA8CE891AF75074006D5351 /* WordVectorGen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WordVectorGen; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CA96BDB1B2B84D3007F323B /* RandomTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RandomTests.m; sourceTree = "<group>"; };
 		8CB9AB7E1B2354E3001E072C /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8CC07B4E1B1E11E8004D804B /* MLMutableWordDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLMutableWordDictionary.h; sourceTree = "<group>"; };
 		8CC07B4F1B1E11E8004D804B /* MLMutableWordDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLMutableWordDictionary.m; sourceTree = "<group>"; };
@@ -305,6 +307,7 @@
 		8C4CEF271ADAC51200F1E139 /* MAChineLearningTests */ = {
 			isa = PBXGroup;
 			children = (
+				8CA96BDB1B2B84D3007F323B /* RandomTests.m */,
 				8C4CEF2A1ADAC51200F1E139 /* NeuralNetTests.m */,
 				8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */,
 				8C9C8DBB1B218A18004C0F7B /* WordVectorTests.m */,
@@ -578,8 +581,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CA96BDC1B2B84D3007F323B /* RandomTests.m in Sources */,
 				8C4CEF2B1ADAC51200F1E139 /* NeuralNetTests.m in Sources */,
-				8C140FA81B03349B00B6DA60 /* NeuralNetSwiftTests.swift in Sources */,
+				8CA96BDD1B2B8C92007F323B /* NeuralNetSwiftTests.swift in Sources */,
 				8C9C8DBC1B218A18004C0F7B /* WordVectorTests.m in Sources */,
 				8C58A31E1AED4DE8006AB74D /* BagOfWordsTests.m in Sources */,
 			);

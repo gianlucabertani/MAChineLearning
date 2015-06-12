@@ -49,16 +49,18 @@
 
 
 #pragma mark -
-#pragma mark Operations
+#pragma mark Setup and randomization
 
 - (void) setUp;
+- (void) randomizeWeights;
+
+
+#pragma mark -
+#pragma mark Operations
 
 - (void) feedForward;
-
 - (void) fetchErrorFromNextLayer;
-
 - (void) backPropagateWithLearningRate:(MLReal)learningRate;
-
 - (void) updateWeights;
 
 

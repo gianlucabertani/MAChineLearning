@@ -33,17 +33,23 @@
 
 #import <Foundation/Foundation.h>
 
+#import "MLReal.h"
+
 
 @interface MLRandom : NSObject
 
 
-+ (NSUInteger) nextUInt;
-+ (NSUInteger) nextUIntWithMax:(NSUInteger)max;
++ (NSUInteger) nextUniformUInt;
++ (NSUInteger) nextUniformUIntWithMax:(NSUInteger)max;
 
-+ (double) nextDouble;
-+ (double) nextDoubleWithMin:(double)min max:(double)max;
++ (MLReal) nextUniformReal;
++ (MLReal) nextUniformRealWithMin:(MLReal)min max:(MLReal)max;
++ (MLReal) nextFastUniformReal;
++ (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofUniformRealWithMin:(MLReal)min max:(MLReal)max;
 
-+ (double) fastNextDouble;
++ (MLReal) nextGaussianRealWithMean:(MLReal)mean sigma:(MLReal)sigma;
++ (MLReal) nextFastGaussianRealWithMean:(MLReal)mean sigma:(MLReal)sigma;
++ (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofGaussianRealWithMean:(MLReal)mean sigma:(MLReal)sigma;
 
 
 @end

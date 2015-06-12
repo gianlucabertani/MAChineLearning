@@ -52,6 +52,12 @@
 
 
 #pragma mark -
+#pragma mark Randomization
+
+- (void) randomizeWeights;
+
+
+#pragma mark -
 #pragma mark Operations
 
 - (void) feedForward;

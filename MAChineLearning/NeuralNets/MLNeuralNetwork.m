@@ -254,6 +254,20 @@
 
 
 #pragma mark -
+#pragma mark Randomization
+
+- (void) randomizeWeights {
+	
+	// Randomize each layer
+	for (int i= 1; i < [_layers count]; i++) {
+		MLNeuronLayer *layer= [_layers objectAtIndex:i];
+		
+		[layer randomizeWeights];
+	}
+}
+
+
+#pragma mark -
 #pragma mark Operations
 
 - (void) feedForward {

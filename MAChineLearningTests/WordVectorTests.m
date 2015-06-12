@@ -71,8 +71,8 @@
 		MLReal vec2[]= { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 		
 		for (int i= 0; i < 10; i++) {
-			vec1[i]= [MLRandom nextDouble];
-			vec2[i]= [MLRandom nextDouble];
+			vec1[i]= [MLRandom nextUniformReal];
+			vec2[i]= [MLRandom nextUniformReal];
 		}
 		
 		MLWordVector *vector1= [[MLWordVector alloc] initWithVector:vec1 size:10 freeVectorOnDealloc:NO];
@@ -94,8 +94,8 @@
 		MLReal vec2[]= { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 		
 		for (int i= 0; i < 10; i++) {
-			vec1[i]= [MLRandom nextDouble];
-			vec2[i]= [MLRandom nextDouble];
+			vec1[i]= [MLRandom nextUniformReal];
+			vec2[i]= [MLRandom nextUniformReal];
 		}
 		
 		MLWordVector *vector1= [[MLWordVector alloc] initWithVector:vec1 size:10 freeVectorOnDealloc:NO];
@@ -119,11 +119,11 @@
 		
 		for (int i= 0; i < 10; i++) {
 			if (i % 2 == 0) {
-				refVec[i]= [MLRandom nextDouble];
+				refVec[i]= [MLRandom nextUniformReal];
 				invVec[i]= -refVec[i];
 			
 			} else
-				ortVec[i]= [MLRandom nextDouble];
+				ortVec[i]= [MLRandom nextUniformReal];
 		}
 		
 		MLWordVector *refVector= [[MLWordVector alloc] initWithVector:refVec size:10 freeVectorOnDealloc:NO];
