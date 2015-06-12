@@ -101,11 +101,13 @@ int main(int argc, const char * argv[]) {
 
 		NSArray *equivalenceList= buildEquivalenceList(equivalenceListPath, dictionary);
 		
+		NSLog(@"Number of equivalences:                %5lu", equivalenceList.count);
+		
 		// Test the comparison model
 		MLWordVectorMap *compMap= [MLWordVectorMap createFromWord2vecFile:comparisonModelPath binary:YES];
 		MLReal compEquivalenceScore= testModel(compMap, equivalenceList);
 		
-		NSLog(@"Comparison model: score of %5.2f on %5lu equivalences or %5.2f%%", compEquivalenceScore, equivalenceList.count, 100.0 * (compEquivalenceScore / ((float) equivalenceList.count)));
+		NSLog(@"Comparison model: score of %8.2f on %5lu equivalences or %5.2f%%", compEquivalenceScore, equivalenceList.count, 100.0 * (compEquivalenceScore / ((float) equivalenceList.count)));
 		
 		// Prepare the neural network:
 		// - input and output sizes are set to the dictionary (bag of words) size
@@ -118,8 +120,10 @@ int main(int argc, const char * argv[]) {
 		
 		// Randomization of network weights (i.e. initial vectors)
 		for (MLNeuron *neuron in [[net.layers objectAtIndex:1] neurons]) {
-			for (NSUInteger i= 0; i < dictionary.size; i++)
-				neuron.weights[i]= ([MLRandom fastNextDouble] - 0.5) / ML_SQRT(VECTOR_SIZE);
+			for (NSUInteger i= 0; i < dictionary.size; i++) {
+				MLReal random= ([MLRandom fastNextDouble] - 0.5) / VECTOR_SIZE;
+				neuron.weights[i]= random;
+			}
 		}
 		
 		// Prepare the buffer for computing the error
@@ -132,13 +136,15 @@ int main(int argc, const char * argv[]) {
 			return RETVAL_BUFFER_ALLOCATION_ERROR;
 		}
 
-		// Loop for train cicles
+		// Global stat counters
 		NSUInteger trainingCycles= 0;
 		NSUInteger linesRead= 0;
 		MLReal progress= 0.0;
+		
+		// Loop for train cicles
 		do {
 		
-			// Stat counters
+			// Partial stat counters (they are reset every X lines)
 			NSUInteger scannedContexts= 0;
 			MLReal avgError= 0.0;
 			NSDate *begin= nil;
@@ -241,9 +247,9 @@ int main(int argc, const char * argv[]) {
 						
 						// Test the model
 						MLWordVectorMap *map= [MLWordVectorMap createFromNeuralNetwork:net dictionary:dictionary];
-						NSUInteger matchedEquivalences= testModel(map, equivalenceList);
+						MLReal equivalenceScore= testModel(map, equivalenceList);
 						
-						NSLog(@"Testing model: matched %lu/%lu equivalences (%.2f%%)", matchedEquivalences, equivalenceList.count, 100.0 * ((float) matchedEquivalences) / ((float) equivalenceList.count));
+						NSLog(@"Testing model:    score of %8.2f on %5lu equivalences or %5.2f%%", equivalenceScore, equivalenceList.count, 100.0 * (equivalenceScore / ((float) equivalenceList.count)));
 					}
 				}
 				
@@ -260,8 +266,8 @@ int main(int argc, const char * argv[]) {
 		MLWordVectorMap *map= [MLWordVectorMap createFromNeuralNetwork:net dictionary:dictionary];
 		MLReal equivalenceScore= testModel(map, equivalenceList);
 		
-		NSLog(@"Testing model:    score of %5.2f on %5lu equivalences or %5.2f%%", equivalenceScore, equivalenceList.count, 100.0 * (equivalenceScore / ((float) equivalenceList.count)));
-		NSLog(@"Comparison model: score of %5.2f on %5lu equivalences or %5.2f%%", compEquivalenceScore, equivalenceList.count, 100.0 * (compEquivalenceScore / ((float) equivalenceList.count)));
+		NSLog(@"Testing model:    score of %8.2f on %5lu equivalences or %5.2f%%", equivalenceScore, equivalenceList.count, 100.0 * (equivalenceScore / ((float) equivalenceList.count)));
+		NSLog(@"Comparison model: score of %8.2f on %5lu equivalences or %5.2f%%", compEquivalenceScore, equivalenceList.count, 100.0 * (compEquivalenceScore / ((float) equivalenceList.count)));
 	}
 	
     return RETVAL_OK;
@@ -369,8 +375,6 @@ NSArray *buildEquivalenceList(NSString *equivalenceListPath, MLWordDictionary *d
 		[reader close];
 	}
 	
-	NSLog(@"Number of equivalences:        %10lu", equivalenceList.count);
-	
 	return equivalenceList;
 }
 
@@ -386,18 +390,15 @@ BOOL extractContext(MLWordDictionary *dictionary, NSArray *words, NSUInteger off
 	[context removeAllObjects];
 	[centralWord setString:@""];
 	
-	// Pick a random starting point for the context
-	NSUInteger start= offset + [MLRandom nextUIntWithMax:CONTEXT_WINDOW];
-	
 	int i= 0, pickedUpWords= 0;
 	for (; pickedUpWords < (CONTEXT_WINDOW * 2) +1; i++) {
 		
 		// Check if we ran out of words for this line
-		if ((start + i) >= words.count)
+		if ((offset + i) >= words.count)
 			break;
 		
 		// Pick the i-th word from the starting point
-		NSString *word= [words objectAtIndex:start + i];
+		NSString *word= [words objectAtIndex:offset + i];
 		
 		// Skip the word if it's not in the dictionary
 		MLWordInfo *wordInfo= [dictionary infoForWord:word];
