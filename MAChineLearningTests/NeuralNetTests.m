@@ -42,6 +42,10 @@
 #define BACKPROPAGATION_TEST_LEARNING_RATE               (0.5)
 #define BACKPROPAGATION_TEST_VERIFICATION_CYCLES        (50)
 
+#define REGRESSION_TEST_TRAINING_SET                    (50)
+#define REGRESSION_TEST_TRAIN_THRESHOLD                  (0.15)
+#define REGRESSION_TEST_LEARNING_RATE                    (0.0000001)
+
 #define LOAD_SAVE_TEST_TRAIN_CYCLES                   (2000)
 #define LOAD_SAVE_TEST_LEARNING_RATE                     (0.8)
 
@@ -243,6 +247,64 @@
 		XCTAssertEqualWithAccuracy(neuron2.bias, -1.05, 0.05);
 		XCTAssertEqualWithAccuracy(neuron2.weights[0], 1.20, 0.05);
 		XCTAssertEqualWithAccuracy(neuron2.weights[1], 1.20, 0.05);
+		
+	} @catch (NSException *e) {
+		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+	}
+}
+
+- (void) testRegression {
+	@try {
+		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@1, @10, @1] outputFunctionType:MLActivationFunctionTypeLinear];
+		
+		// Randomization of network weights
+		for (int i= 1; i < net.layers.count; i++) {
+			MLNeuronLayer *layer= [net.layers objectAtIndex:i];
+			
+			for (MLNeuron *neuron in layer.neurons) {
+				for (int j= 0; j < neuron.inputSize; j++)
+					neuron.weights[j]= ([MLRandom fastNextDouble] - 0.5) / 10.0;
+			}
+		}
+
+		// Generate some random numbers between 0 and 100
+		MLReal trainingSet[REGRESSION_TEST_TRAINING_SET];
+		for (int i= 0; i < REGRESSION_TEST_TRAINING_SET; i++)
+			trainingSet[i]= [MLRandom nextUIntWithMax:100];
+		
+		// Train the network to produce the square root of the input,
+		// until the error is within the threshold
+		MLReal avgError= 0.0;
+		int cycle= 0;
+		do {
+			avgError= 0.0;
+
+			for (int i= 0; i < REGRESSION_TEST_TRAINING_SET; i++) {
+				net.inputBuffer[0]= trainingSet[i % REGRESSION_TEST_TRAINING_SET];
+				net.expectedOutputBuffer[0]= ML_SQRT(trainingSet[i % REGRESSION_TEST_TRAINING_SET]);
+
+				[net feedForward];
+				
+				avgError += ABS(net.outputBuffer[0] - net.expectedOutputBuffer[0]);
+				
+				[net backPropagateWithLearningRate:REGRESSION_TEST_LEARNING_RATE];
+				[net updateWeights];
+			}
+			
+			cycle++;
+			avgError /= (MLReal) REGRESSION_TEST_TRAINING_SET;
+
+			NSLog(@"testRegression: completed training cycle %d, avg. error: %.2f", cycle, avgError);
+			
+		} while (avgError > REGRESSION_TEST_TRAIN_THRESHOLD);
+		
+		// Test the network with numbers from 1 to 10
+		for (int i= 1; i <= 10; i++) {
+			net.inputBuffer[0]= (MLReal) i*i;
+			[net feedForward];
+			
+			XCTAssertEqualWithAccuracy(net.outputBuffer[0], i, REGRESSION_TEST_TRAIN_THRESHOLD);
+		}
 		
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
