@@ -69,7 +69,7 @@
 }
 
 - (instancetype) initWithWordInfos:(NSArray *)wordInfos {
-	if ([self init]) {
+	if ((self = [self init])) {
 		
 		// Initialization
 		for (MLWordInfo *wordInfo in wordInfos) {
