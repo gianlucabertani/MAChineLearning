@@ -175,6 +175,17 @@
 	// We receive the delta from the caller (instead of using self.delta) to avoid
 	// a method call, which wastes lots of time
 	MLReal deltaRate= learningRate * delta;
+	
+	// !! TO DO: implement RPROP:
+	// -> gradient of weight[i] is given by: gradient[i] = delta * input[i]
+	// -> gradient for each weight for previous iteration must be stored
+	// -> learning rate for each weight must be stored
+	// -> check the sign of: gradient[i](t) * gradient[i](t-1)
+	// -> if sign > 0 the gradient trend didn't chage => multiply learningRate[i] by 1.2
+	// -> if sign < 0 the gradient trend did chage => multiply learningRate[i] by 0.5
+	// -> if sign = 0 the gradient is null => learningRate[i] doesn't change
+	// -> apply obtained learningRate[i] as usual
+	// -> initial learningRate[i] is 0.1
 
 	// Compute weights delta using vector multiply & add,
 	// the rest of the back propagation is done in the layer
