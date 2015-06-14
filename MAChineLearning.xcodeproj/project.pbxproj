@@ -45,7 +45,6 @@
 		8C9A49481B1454FB003E3041 /* MLRandom.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9A49461B1454FB003E3041 /* MLRandom.m */; };
 		8C9C8DBC1B218A18004C0F7B /* WordVectorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9C8DBB1B218A18004C0F7B /* WordVectorTests.m */; };
 		8CA96BDC1B2B84D3007F323B /* RandomTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CA96BDB1B2B84D3007F323B /* RandomTests.m */; };
-		8CA96BDD1B2B8C92007F323B /* NeuralNetSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4E43A31AE56DCF005FD73D /* NeuralNetSwiftTests.swift */; };
 		8CB9AB801B2354F2001E072C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB9AB7E1B2354E3001E072C /* main.m */; };
 		8CC07B501B1E11E8004D804B /* MLMutableWordDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC07B4E1B1E11E8004D804B /* MLMutableWordDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC07B511B1E11E8004D804B /* MLMutableWordDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC07B4F1B1E11E8004D804B /* MLMutableWordDictionary.m */; };
@@ -131,8 +130,6 @@
 		8C4CEF591ADACE4500F1E139 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8C4CEF5E1ADAED9300F1E139 /* 3-Input Perceptron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "3-Input Perceptron.png"; sourceTree = "<group>"; };
 		8C4CEF5F1ADAED9300F1E139 /* Network States.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network States.png"; sourceTree = "<group>"; };
-		8C4E43A21AE56DCF005FD73D /* MAChineLearningTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MAChineLearningTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		8C4E43A31AE56DCF005FD73D /* NeuralNetSwiftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeuralNetSwiftTests.swift; sourceTree = "<group>"; };
 		8C58A30C1AECD275006AB74D /* MLTextFragment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLTextFragment.h; sourceTree = "<group>"; };
 		8C58A30D1AECD275006AB74D /* MLTextFragment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLTextFragment.m; sourceTree = "<group>"; };
 		8C58A3141AECDAA3006AB74D /* StopWordsGen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = StopWordsGen; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -311,8 +308,6 @@
 				8C4CEF2A1ADAC51200F1E139 /* NeuralNetTests.m */,
 				8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */,
 				8C9C8DBB1B218A18004C0F7B /* WordVectorTests.m */,
-				8C4E43A21AE56DCF005FD73D /* MAChineLearningTests-Bridging-Header.h */,
-				8C4E43A31AE56DCF005FD73D /* NeuralNetSwiftTests.swift */,
 				8C4CEF281ADAC51200F1E139 /* Supporting Files */,
 			);
 			path = MAChineLearningTests;
@@ -583,7 +578,6 @@
 			files = (
 				8CA96BDC1B2B84D3007F323B /* RandomTests.m in Sources */,
 				8C4CEF2B1ADAC51200F1E139 /* NeuralNetTests.m in Sources */,
-				8CA96BDD1B2B8C92007F323B /* NeuralNetSwiftTests.swift in Sources */,
 				8C9C8DBC1B218A18004C0F7B /* WordVectorTests.m in Sources */,
 				8C58A31E1AED4DE8006AB74D /* BagOfWordsTests.m in Sources */,
 			);

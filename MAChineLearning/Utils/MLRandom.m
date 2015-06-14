@@ -197,7 +197,7 @@ static MLReal __spareGaussian=        0.0;
 									 userInfo:@{@"buffer": @"tempGaussian1",
 												@"error": [NSNumber numberWithInt:err]}];
 
-	[MLRandom fillVector:tempGaussian1 size:size ofUniformRealWithMin:0.0 max:1.0];
+	[MLRandom fillVector:tempGaussian1 size:size ofUniformRealsWithMin:0.0 max:1.0];
 	
 	if (size > 1) {
 		
@@ -221,7 +221,7 @@ static MLReal __spareGaussian=        0.0;
 	
 	// Now fill vector with uniform random numbers, and copy
 	// even elements on odd elements as we have done with temp1
-	[MLRandom fillVector:vector size:size ofUniformRealWithMin:0.0 max:1.0];
+	[MLRandom fillVector:vector size:size ofUniformRealsWithMin:0.0 max:1.0];
 	
 	if (size > 1)
 		ML_VDSP_VSMUL(vector, 2, &__one, &vector[1], 2, oddStridedSize);

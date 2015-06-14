@@ -44,10 +44,10 @@
 
 + (MLReal) nextUniformReal;
 + (MLReal) nextUniformRealWithMin:(MLReal)min max:(MLReal)max;
-+ (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofUniformRealWithMin:(MLReal)min max:(MLReal)max;
++ (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofUniformRealsWithMin:(MLReal)min max:(MLReal)max;
 
 + (MLReal) nextGaussianRealWithMean:(MLReal)mean sigma:(MLReal)sigma;
-+ (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofGaussianRealWithMean:(MLReal)mean sigma:(MLReal)sigma;
++ (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofGaussianRealsWithMean:(MLReal)mean sigma:(MLReal)sigma;
 
 
 @end

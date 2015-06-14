@@ -92,7 +92,7 @@
 		
 		MLReal randomMin= [MLRandom nextUniformReal] * 0.5;
 		MLReal randomMax= 0.5 + [MLRandom nextUniformReal] * 0.5;
-		[MLRandom fillVector:distribution size:UNIFORM_TEST_SIZE ofUniformRealWithMin:randomMin max:randomMax];
+		[MLRandom fillVector:distribution size:UNIFORM_TEST_SIZE ofUniformRealsWithMin:randomMin max:randomMax];
 		
 		MLReal min= 1.0, max= 0.0, sum= 0.0;;
 		for (int i= 0; i < UNIFORM_TEST_SIZE; i++) {
@@ -142,7 +142,7 @@
 		
 		MLReal randomMean= [MLRandom nextUniformReal] - 0.5;
 		MLReal randomSigma= [MLRandom nextUniformReal];
-		[MLRandom fillVector:distribution size:GAUSSIAN_TEST_SIZE ofGaussianRealWithMean:randomMean sigma:randomSigma];
+		[MLRandom fillVector:distribution size:GAUSSIAN_TEST_SIZE ofGaussianRealsWithMean:randomMean sigma:randomSigma];
 		
 		MLReal min= 1.0, max= 0.0, sum= 0.0;;
 		for (int i= 0; i < GAUSSIAN_TEST_SIZE; i++) {

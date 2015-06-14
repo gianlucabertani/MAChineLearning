@@ -166,7 +166,7 @@
 }
 
 - (void) randomizeWeights {
-	[MLRandom fillVector:_weights size:_inputSize ofGaussianRealWithMean:0.0 sigma:ML_SQRT(_inputSize)];
+	[MLRandom fillVector:_weights size:_inputSize ofGaussianRealsWithMean:0.0 sigma:ML_SQRT(_inputSize)];
 }
 
 
