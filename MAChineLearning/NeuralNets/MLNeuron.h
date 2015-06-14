@@ -35,6 +35,7 @@
 
 #import "MLReal.h"
 
+#import "MLBackPropagationType.h"
 #import "MLActivationFunctionType.h"
 
 
@@ -59,9 +60,9 @@
 #pragma mark -
 #pragma mark Operations
 
-- (void) partialFeedForward;
-- (void) partialBackPropagateWithLearningRate:(MLReal)learningRate delta:(MLReal)delta;
-- (void) partialUpdateWeights;
+- (void) feedForward;
+- (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType learningRate:(MLReal)learningRate delta:(MLReal)delta;
+- (void) updateWeights;
 
 
 #pragma mark -

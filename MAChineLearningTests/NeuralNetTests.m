@@ -44,7 +44,6 @@
 
 #define REGRESSION_TEST_TRAINING_SET                    (50)
 #define REGRESSION_TEST_TRAIN_THRESHOLD                  (0.15)
-#define REGRESSION_TEST_LEARNING_RATE                    (0.0000001)
 
 #define LOAD_SAVE_TEST_TRAIN_CYCLES                   (2000)
 #define LOAD_SAVE_TEST_LEARNING_RATE                     (0.8)
@@ -82,7 +81,9 @@
 
 - (void) testNAND {
 	@try {
-		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@3, @1] outputFunctionType:MLActivationFunctionTypeStep];
+		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@3, @1]
+													   backPropagationType:MLBackPropagationTypeStandard
+														outputFunctionType:MLActivationFunctionTypeStep];
 		
 		NSDate *begin= [NSDate date];
 		
@@ -131,8 +132,8 @@
 			/* Uncomment to dump network status
 			 
 			 // Dump network status
-			 NeuronLayer *layer= [net.layers objectAtIndex:1];
-			 Neuron *neuron= [layer.neurons objectAtIndex:0];
+			 MLNeuronLayer *layer= [net.layers objectAtIndex:1];
+			 MLNeuron *neuron= [layer.neurons objectAtIndex:0];
 			 NSLog(@"testNAND: bias: %.2f, weight 1: %.2f, weight 2: %.2f, weight 3: %.2f", neuron.bias, neuron.weights[0], neuron.weights[1], neuron.weights[2]);
 			 
 			 */
@@ -184,7 +185,9 @@
 
 - (void) testBackpropagation {
 	@try {
-		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@2, @2, @1] outputFunctionType:MLActivationFunctionTypeLinear];
+		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@2, @2, @1]
+													   backPropagationType:MLBackPropagationTypeStandard
+														outputFunctionType:MLActivationFunctionTypeLinear];
 		
 		MLNeuronLayer *layer1= [net.layers objectAtIndex:1];
 		MLNeuron *neuron11= [layer1.neurons objectAtIndex:0];
@@ -196,7 +199,7 @@
 		NSDate *begin= [NSDate date];
 		
 		for (int i= 1; i <= BACKPROPAGATION_TEST_TRAIN_CYCLES + BACKPROPAGATION_TEST_VERIFICATION_CYCLES; i++) {
-			double sum= [NeuralNetTests randomDoubleWithMin:0.10 max:0.90];
+			double sum= [MLRandom nextUniformRealWithMin:0.10 max:0.90];
 			
 			net.inputBuffer[0]= 3.0 * sum / 2.0;
 			net.inputBuffer[1]= sum / 3.0;
@@ -255,11 +258,10 @@
 
 - (void) testRegression {
 	@try {
-		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@1, @10, @1] outputFunctionType:MLActivationFunctionTypeLinear];
+		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@1, @10, @1]
+													   backPropagationType:MLBackPropagationTypeRPROP
+														outputFunctionType:MLActivationFunctionTypeLinear];
 		
-		// Randomization of network weights
-		[net randomizeWeights];
-
 		// Generate some random numbers between 0 and 100
 		MLReal trainingSet[REGRESSION_TEST_TRAINING_SET];
 		for (int i= 0; i < REGRESSION_TEST_TRAINING_SET; i++)
@@ -280,7 +282,7 @@
 				net.expectedOutputBuffer[0]= ML_SQRT(trainingSet[i % REGRESSION_TEST_TRAINING_SET]);
 				avgError += 0.5 * (net.outputBuffer[0] - net.expectedOutputBuffer[0]) * (net.outputBuffer[0] - net.expectedOutputBuffer[0]);
 				
-				[net backPropagateWithLearningRate:REGRESSION_TEST_LEARNING_RATE];
+				[net backPropagate];
 				[net updateWeights];
 			}
 			
@@ -306,7 +308,9 @@
 
 - (void) testLoadSave {
 	@try {
-		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@3, @2, @1] outputFunctionType:MLActivationFunctionTypeLogistic];
+		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@3, @2, @1]
+													   backPropagationType:MLBackPropagationTypeStandard
+														outputFunctionType:MLActivationFunctionTypeLogistic];
 		
 		MLNeuronLayer *layer1= [net.layers objectAtIndex:1];
 		MLNeuron *neuron11= [layer1.neurons objectAtIndex:0];
@@ -319,10 +323,10 @@
 		
 		// Train the network with random numbers
 		for (int i= 1; i <= LOAD_SAVE_TEST_TRAIN_CYCLES; i++) {
-			net.inputBuffer[0]= [NeuralNetTests randomDoubleWithMin:0.0 max:5.0];
-			net.inputBuffer[1]= [NeuralNetTests randomDoubleWithMin:-2.5 max:2.5];
-			net.inputBuffer[2]= [NeuralNetTests randomDoubleWithMin:-5.0 max:0.0];
-			net.expectedOutputBuffer[0]= [NeuralNetTests randomDoubleWithMin:0.5 max:1.0];
+			net.inputBuffer[0]= [MLRandom nextUniformRealWithMin:0.0 max:5.0];
+			net.inputBuffer[1]= [MLRandom nextUniformRealWithMin:-2.5 max:2.5];
+			net.inputBuffer[2]= [MLRandom nextUniformRealWithMin:-5.0 max:0.0];
+			net.expectedOutputBuffer[0]= [MLRandom nextUniformRealWithMin:0.5 max:1.0];
 			
 			[net feedForward];
 			[net backPropagateWithLearningRate:LOAD_SAVE_TEST_LEARNING_RATE];
@@ -347,9 +351,9 @@
 		NSLog(@"testLoadSave: average training time: %.2f µs per cycle", (elapsed * 1000000.0) / ((double) LOAD_SAVE_TEST_TRAIN_CYCLES));
 		
 		// Run a simple compute and save inputs and output
-		double input0= [NeuralNetTests randomDoubleWithMin:0.0 max:5.0];
-		double input1= [NeuralNetTests randomDoubleWithMin:-2.5 max:2.5];
-		double input2= [NeuralNetTests randomDoubleWithMin:-5.0 max:0.0];
+		double input0= [MLRandom nextUniformRealWithMin:0.0 max:5.0];
+		double input1= [MLRandom nextUniformRealWithMin:-2.5 max:2.5];
+		double input2= [MLRandom nextUniformRealWithMin:-5.0 max:0.0];
 		
 		net.inputBuffer[0]= input0;
 		net.inputBuffer[1]= input1;
@@ -408,25 +412,6 @@
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
 	}
-}
-
-
-#pragma mark -
-#pragma mark Internals
-
-+ (NSUInteger) randomIntWithMax:(NSUInteger)max {
-	NSUInteger random= 0;
-	SecRandomCopyBytes(kSecRandomDefault, sizeof(random), (uint8_t *) &random);
-	
-	return (random % max);
-}
-
-+ (double) randomDoubleWithMin:(double)min max:(double)max {
-	long long random= 0;
-	SecRandomCopyBytes(kSecRandomDefault, sizeof(random), (uint8_t *) &random);
-	
-	double rnd= ((double) (ABS(random) >> 11)) / POW_2_52;
-	return min + (rnd * (max - min));
 }
 
 

@@ -41,8 +41,13 @@
 typedef double          MLReal;
 
 #define ML_VDSP_VCLR    vDSP_vclrD
+#define ML_VDSP_VFILL   vDSP_vfillD
+#define ML_VDSP_VCLIP   vDSP_vclipD
+#define ML_VDSP_VICLIP  vDSP_viclipD
+#define ML_VDSP_VTHR    vDSP_vthrD
 #define ML_VDSP_VTHRSC  vDSP_vthrscD
 #define ML_VDSP_VTHRES  vDSP_vthresD
+#define ML_VDSP_VABS    vDSP_vabsD
 #define ML_VDSP_VSMUL   vDSP_vsmulD
 #define ML_VDSP_VSDIV   vDSP_vsdivD
 #define ML_VDSP_SVDIV   vDSP_svdivD
@@ -53,6 +58,7 @@ typedef double          MLReal;
 #define ML_VDSP_VADD    vDSP_vaddD
 #define ML_VDSP_VSUB    vDSP_vsubD
 #define ML_VDSP_VDIV    vDSP_vdivD
+#define ML_VDSP_VMA		vDSP_vmaD
 #define ML_VDSP_VSMA    vDSP_vsmaD
 #define ML_VDSP_SVE		vDSP_sveD
 #define ML_VDSP_SVESQ   vDSP_svesqD
@@ -81,8 +87,13 @@ typedef double          MLReal;
 typedef float           MLReal;
 
 #define ML_VDSP_VCLR    vDSP_vclr
+#define ML_VDSP_VFILL   vDSP_vfill
+#define ML_VDSP_VCLIP   vDSP_vclip
+#define ML_VDSP_VICLIP  vDSP_viclip
+#define ML_VDSP_VTHR    vDSP_vthr
 #define ML_VDSP_VTHRSC  vDSP_vthrsc
 #define ML_VDSP_VTHRES  vDSP_vthres
+#define ML_VDSP_VABS    vDSP_vabs
 #define ML_VDSP_VSMUL   vDSP_vsmul
 #define ML_VDSP_VSDIV   vDSP_vsdiv
 #define ML_VDSP_SVDIV   vDSP_svdiv
@@ -93,6 +104,7 @@ typedef float           MLReal;
 #define ML_VDSP_VADD    vDSP_vadd
 #define ML_VDSP_VSUB    vDSP_vsub
 #define ML_VDSP_VDIV    vDSP_vdiv
+#define ML_VDSP_VMA		vDSP_vma
 #define ML_VDSP_VSMA    vDSP_vsma
 #define ML_VDSP_SVE		vDSP_sve
 #define ML_VDSP_SVESQ   vDSP_svesq

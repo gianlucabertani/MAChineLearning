@@ -39,12 +39,16 @@
 
 
 #pragma mark -
-#pragma mark Statics
+#pragma mark Static constants
 
-static MLReal __pi=                   M_PI;
-static MLReal __two=                  2.0;
-static MLReal __one=                  1.0;
-static MLReal __minusTwo=            -2.0;
+static const MLReal __pi=                   M_PI;
+static const MLReal __two=                  2.0;
+static const MLReal __one=                  1.0;
+static const MLReal __minusTwo=            -2.0;
+
+
+#pragma mark -
+#pragma mark Static variables
 
 static MLReal __spareGaussian=        0.0;
 
@@ -82,7 +86,7 @@ static MLReal __spareGaussian=        0.0;
 	return ((random * (max - min)) + min);
 }
 
-+ (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofUniformRealWithMin:(MLReal)min max:(MLReal)max {
++ (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofUniformRealsWithMin:(MLReal)min max:(MLReal)max {
 	
 	// Allocate and fill a temp integer vector
 	int *tempUniform= NULL;
@@ -173,7 +177,7 @@ static MLReal __spareGaussian=        0.0;
 	return gaussian;
 }
 
-+ (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofGaussianRealWithMean:(MLReal)mean sigma:(MLReal)sigma {
++ (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofGaussianRealsWithMean:(MLReal)mean sigma:(MLReal)sigma {
 	
 	// When using strides the size must be scaled, but we have
 	// to consider the last element if the original size is odd:

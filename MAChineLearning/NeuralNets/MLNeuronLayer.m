@@ -40,6 +40,14 @@
 
 #import <Accelerate/Accelerate.h>
 
+#define DUMP_VECTOR(x) \
+	{ \
+		NSMutableString *dump= [[NSMutableString alloc] init]; \
+		for (int i= 0; i < _size; i++) \
+			[dump appendFormat:@" %+8.2f |", x[i]]; \
+		NSLog(@"%20s: %@", #x, dump); \
+	}
+
 
 #pragma mark -
 #pragma mark NeuronLayer extension
@@ -69,11 +77,13 @@
 #pragma mark -
 #pragma mark Static constants
 
-static MLReal __minusTwo= -2.0;
-static MLReal __minusOne= -1.0;
-static MLReal __zero=      0.0;
-static MLReal __half=      0.5;
-static MLReal __one=       1.0;
+static const MLReal __minusFourty= -40.0;
+static const MLReal __minusTwo=     -2.0;
+static const MLReal __minusOne=     -1.0;
+static const MLReal __zero=          0.0;
+static const MLReal __half=          0.5;
+static const MLReal __one=           1.0;
+static const MLReal __fourty=       40.0;
 
 
 #pragma mark -
@@ -270,7 +280,7 @@ static MLReal __one=       1.0;
 	// First step: compute dot product for each neuron,
 	// will fill the output buffer
 	for (MLNeuron *neuron in _neurons)
-		[neuron partialFeedForward];
+		[neuron feedForward];
 	
 	// Second step: add bias
 	ML_VDSP_VADD(_outputBuffer, 1, _biasBuffer, 1, _outputBuffer, 1, _size);
@@ -291,6 +301,9 @@ static MLReal __one=       1.0;
 			
 		case MLActivationFunctionTypeLogistic: {
 			
+			// Apply a threshold before the function to avoid NaNs
+			ML_VDSP_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
+			
 			// An "int" size is needed by vvexp,
 			// the others still use _size
 			int size= (int) _size;
@@ -305,6 +318,9 @@ static MLReal __one=       1.0;
 			
 		case MLActivationFunctionTypeHyperbolic: {
 			
+			// Apply a threshold before the function to avoid NaNs
+			ML_VDSP_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
+
 			// An "int" size is needed by vvexp,
 			// the others still use _size
 			int size= (int) _size;
@@ -352,7 +368,7 @@ static MLReal __one=       1.0;
 	}
 }
 
-- (void) backPropagateWithLearningRate:(MLReal)learningRate {
+- (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType learningRate:(MLReal)learningRate {
 	if (!_neurons)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
 																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
@@ -370,7 +386,7 @@ static MLReal __one=       1.0;
 			if (self.nextLayer)
 				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Can't backpropagate in a hidden layer with step function"
 																		 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
-
+			
 			// Apply formula: delta[i] = error[i]
 			ML_VDSP_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
 			break;
@@ -393,14 +409,23 @@ static MLReal __one=       1.0;
 			ML_VDSP_VMUL(_tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
 			break;
 	}
-
-	// Second step: compute the bias delta
-	ML_VDSP_VSMA(_deltaBuffer, 1, &learningRate, _biasDeltaBuffer, 1, _biasDeltaBuffer, 1, _size);
+	
+	switch (backPropType) {
+		case MLBackPropagationTypeStandard:
+			
+			// Second step: compute the bias delta,
+			// but only with standard backpropagation
+			ML_VDSP_VSMA(_deltaBuffer, 1, &learningRate, _biasDeltaBuffer, 1, _biasDeltaBuffer, 1, _size);
+			break;
+			
+		default:
+			break;
+	}
 	
 	// Third step: compute new weights for each neuron
 	int i= 0;
 	for (MLNeuron *neuron in _neurons) {
-		[neuron partialBackPropagateWithLearningRate:learningRate delta:_deltaBuffer[i]];
+		[neuron backPropagateWithAlgorithm:backPropType learningRate:learningRate delta:_deltaBuffer[i]];
 		i++;
 	}
 }
@@ -415,7 +440,7 @@ static MLReal __one=       1.0;
 	
 	// Second step: update weights for each neuron
 	for (MLNeuron *neuron in _neurons)
-		[neuron partialUpdateWeights];
+		[neuron updateWeights];
 
 	// Clear the bias delta buffer
 	ML_VDSP_VCLR(_biasDeltaBuffer, 1, _size);

@@ -1,8 +1,8 @@
 //
-//  MLNeuronLayer.h
+//  MLBackPropagationType.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
+//  Created by Gianluca Bertani on 14/06/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,14 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <Foundation/Foundation.h>
-
-#import "MLReal.h"
-
-#import "MLLayer.h"
-#import "MLBackPropagationType.h"
-#import "MLActivationFunctionType.h"
+#ifndef MAChineLearning_MLBackPropagationType_h
+#define MAChineLearning_MLBackPropagationType_h
 
 
-@interface MLNeuronLayer : MLLayer
+typedef enum {
+	MLBackPropagationTypeStandard= 0,
+	MLBackPropagationTypeRPROP
+} MLBackPropagationType;
 
 
-#pragma mark -
-#pragma mark Initialization
-
-- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size activationFunctionType:(MLActivationFunctionType)funcType;
-
-
-#pragma mark -
-#pragma mark Setup and randomization
-
-- (void) setUp;
-- (void) randomizeWeights;
-
-
-#pragma mark -
-#pragma mark Operations
-
-- (void) feedForward;
-- (void) fetchErrorFromNextLayer;
-- (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType learningRate:(MLReal)learningRate;
-- (void) updateWeights;
-
-
-#pragma mark -
-#pragma mark Properties
-
-@property (nonatomic, readonly) MLActivationFunctionType funcType;
-
-@property (nonatomic, readonly) MLReal *biasBuffer;
-@property (nonatomic, readonly) MLReal *biasDeltaBuffer;
-
-@property (nonatomic, readonly) MLReal *errorBuffer;
-@property (nonatomic, readonly) MLReal *deltaBuffer;
-
-@property (nonatomic, readonly) MLReal *outputBuffer;
-
-@property (nonatomic, readonly) NSArray *neurons;
-
-
-@end
+#endif

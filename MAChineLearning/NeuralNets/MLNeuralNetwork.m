@@ -43,10 +43,13 @@
 
 
 #define CONFIG_PARAM_LAYER_SIZES             (@"layerSizes")
+#define CONFIG_PARAM_BACK_PROPAGATION_TYPE   (@"backPropagationType")
 #define CONFIG_PARAM_OUTPUT_FUNCTION_TYPE    (@"outputFunctionType")
 #define CONFIG_PARAM_LAYER                   (@"layer%d")
 #define CONFIG_PARAM_WEIGHTS                 (@"weights")
 #define CONFIG_PARAM_BIAS                    (@"bias")
+
+#define DEFAULT_LEARNING_RATE                (0.1)
 
 
 #pragma mark -
@@ -54,6 +57,7 @@
 
 @interface MLNeuralNetwork () {
 	NSMutableArray *_layers;
+	MLBackPropagationType _backPropType;
 	MLActivationFunctionType _funcType;
 	
 	NSUInteger _inputSize;
@@ -92,9 +96,13 @@
 	if (!funcType)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing output function type)"
 																 userInfo:@{@"config": config}];
+	
+	// Get backpropagation type from configuration: if it's missing
+	// it's not an error, we consider standard backprop (which is 0)
+	NSNumber *backPropType= [config objectForKey:CONFIG_PARAM_BACK_PROPAGATION_TYPE];
 
 	// Create the network
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes outputFunctionType:[funcType intValue]];
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes backPropagationType:[backPropType intValue] outputFunctionType:[funcType intValue]];
 	
 	// Get weights from configuration
 	for (int i= 1; i < [network.layers count]; i++) {
@@ -151,18 +159,19 @@
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType {
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes outputFunctionType:funcType];
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType {
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes backPropagationType:backPropType outputFunctionType:funcType];
 	
 	return network;
 }
 
-- (instancetype) initWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType {
+- (instancetype) initWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType {
 	if ((self = [super init])) {
 		
 		// Initialize the layers: layer 0 is the input layer,
 		// while the last layer is the output layer
 		_layers= [NSMutableArray array];
+		_backPropType= backPropType;
 		_funcType= funcType;
 
 		int i= 0;
@@ -281,6 +290,10 @@
 	}
 }
 
+- (void) backPropagate {
+	[self backPropagateWithLearningRate:DEFAULT_LEARNING_RATE];
+}
+
 - (void) backPropagateWithLearningRate:(MLReal)learningRate {
 	
 	// Check call sequence
@@ -309,7 +322,7 @@
 		} else
 			[layer fetchErrorFromNextLayer];
 		
-		[layer backPropagateWithLearningRate:learningRate];
+		[layer backPropagateWithAlgorithm:_backPropType learningRate:learningRate];
 	}
 }
 

@@ -36,6 +36,7 @@
 #import "MLReal.h"
 
 #import "MLNeuralNetworkStatus.h"
+#import "MLBackPropagationType.h"
 #import "MLActivationFunctionType.h"
 
 
@@ -46,9 +47,9 @@
 #pragma mark Initialization
 
 + (MLNeuralNetwork *) createNetworkFromConfigurationDictionary:(NSDictionary *)config;
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType;
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType;
 
-- (instancetype) initWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType;
+- (instancetype) initWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType;
 
 
 #pragma mark -
@@ -61,6 +62,7 @@
 #pragma mark Operations
 
 - (void) feedForward;
+- (void) backPropagate;
 - (void) backPropagateWithLearningRate:(MLReal)learningRate;
 - (void) updateWeights;
 
