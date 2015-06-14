@@ -61,10 +61,13 @@ typedef double          MLReal;
 #define ML_VDSP_DIST    vDSP_vdistD
 #define ML_VDSP_VGEN    vDSP_vgenD
 #define ML_VDSP_VFRAC   vDSP_vfracD
+#define ML_VDSP_VFLT32  vDSP_vflt32D
  
 #define ML_VVEXP        vvexp
 #define ML_VVLOG        vvlog
 #define ML_VVSQRT       vvsqrt
+#define ML_VVSIN        vvsin
+#define ML_VVCOS        vvcos
  
 #define ML_SQRT         sqrt
 #define ML_LOG          log
@@ -98,10 +101,13 @@ typedef float           MLReal;
 #define ML_VDSP_DIST    vDSP_vdist
 #define ML_VDSP_VGEN    vDSP_vgen
 #define ML_VDSP_VFRAC   vDSP_vfrac
+#define ML_VDSP_VFLT32  vDSP_vflt32
 
 #define ML_VVEXP        vvexpf
 #define ML_VVLOG        vvlogf
 #define ML_VVSQRT       vvsqrtf
+#define ML_VVSIN        vvsinf
+#define ML_VVCOS        vvcosf
 
 #define ML_SQRT         sqrtf
 #define ML_LOG          logf

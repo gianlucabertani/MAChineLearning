@@ -33,18 +33,19 @@
 
 #import "MLRandom.h"
 
+#import "MLConstants.h"
+
 #import <Accelerate/Accelerate.h>
 
 
 #pragma mark -
 #pragma mark Statics
 
-static MLReal __bifurcationFactor=    3.995;
+static MLReal __pi=                   M_PI;
+static MLReal __two=                  2.0;
 static MLReal __one=                  1.0;
-static MLReal __minusOne=            -1.0;
 static MLReal __minusTwo=            -2.0;
 
-static MLReal __lastFastUniformReal=  0.0;
 static MLReal __spareGaussian=        0.0;
 
 
@@ -69,68 +70,59 @@ static MLReal __spareGaussian=        0.0;
 }
 
 + (MLReal) nextUniformReal {
-	if (sizeof(MLReal) == sizeof(float)) {
-		
-		// Use 23 bits to take maximum advtange of the float's mantissa
-		MLReal random= (double) [MLRandom nextUniformUIntWithMax:(1 << 23)];
-		return (random * (1.0 / ((MLReal) ((1 << 23) - 1))));
-		
-	} else if (sizeof(MLReal) == sizeof(double)) {
-		
-		// Use 52 bits to take maximum advtange of the double's mantissa
-		MLReal random= (double) [MLRandom nextUniformUIntWithMax:(1L << 52L)];
-		return (random * (1.0 / ((MLReal) ((1L << 52) - 1L))));
 	
-	} else
-		@throw [NSException exceptionWithName:@"MLRandomException"
-									   reason:@"Unknown size of MLReal type"
-									 userInfo:@{@"sizeOfMLReal": [NSNumber numberWithInt:sizeof(MLReal)]}];
+	// Use 23 bits to take maximum advatange of the float's mantissa,
+	// in case MLReal is double we waste some bits of its 52 bit mantissa
+	MLReal random= (MLReal) [MLRandom nextUniformUIntWithMax:(1 << 23)];
+	return (random * (1.0 / ((MLReal) ((1 << 23) - 1))));
 }
 
 + (MLReal) nextUniformRealWithMin:(MLReal)min max:(MLReal)max {
 	MLReal random= [MLRandom nextUniformReal];
-	
 	return ((random * (max - min)) + min);
-}
-
-+ (MLReal) nextFastUniformReal {
-	if (__lastFastUniformReal == 0.0) {
-		
-		// Use Secure Random for the seed
-		__lastFastUniformReal= [MLRandom nextUniformReal];
-		
-	} else {
-		
-		// Use the bifurcation function for subsequent iteratios
-		MLReal dummy= 0.0;
-		__lastFastUniformReal= ML_MODF(__bifurcationFactor * (1.0 - __lastFastUniformReal), &dummy);
-	}
-	
-	return __lastFastUniformReal;
 }
 
 + (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofUniformRealWithMin:(MLReal)min max:(MLReal)max {
 	
-	// First fill the vector with a ramp between a random min
-	// and max (may be inverted, it's fine)
-	if (size > 1) {
-		MLReal randomMin= [MLRandom nextFastUniformReal];
-		MLReal randomMax= [MLRandom nextFastUniformReal];
-		ML_VDSP_VGEN(&randomMin, &randomMax, vector, 1, size);
-
-	} else
-		vector[0]= [MLRandom nextFastUniformReal];
+	// Allocate and fill a temp integer vector
+	int *tempUniform= NULL;
+	int err= posix_memalign((void **) &tempUniform,
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(int) * size);
+	if (err)
+		@throw [NSException exceptionWithName:@"MLRandomException"
+									   reason:@"Error while allocating buffer"
+									 userInfo:@{@"buffer": @"tempUniform",
+												@"error": [NSNumber numberWithInt:err]}];
 	
-	// Apply the bifurcation function
-	ML_VDSP_VSMUL(vector, 1, &__minusOne, vector, 1, size);
-	ML_VDSP_VSADD(vector, 1, &__one, vector, 1, size);
-	ML_VDSP_VSMUL(vector, 1, &__bifurcationFactor, vector, 1, size);
-	ML_VDSP_VFRAC(vector, 1, vector, 1, size);
+	SecRandomCopyBytes(kSecRandomDefault, sizeof(int) * size, (uint8_t *) tempUniform);
+	
+	// Use vector absolute value to avoid signed randoms
+	vDSP_vabsi(tempUniform, 1, tempUniform, 1, size);
+	
+	// Get the division factor to reduce significant digits
+	// to the same size of float's mantissa (23 bits)
+	int intBits= (sizeof(int) * 8) -1;
+	int intDivisor= 1 << (intBits - 23);
+
+	// Use vector integer division
+	vDSP_vsdivi(tempUniform, 1, &intDivisor, tempUniform, 1, size);
+	
+	// Convert the vector to floating point
+	ML_VDSP_VFLT32(tempUniform, 1, vector, 1, size);
+	
+	// Scale randoms in range 0..1
+	MLReal factor= 1.0 / ((MLReal) ((1 << 23) - 1));
+	ML_VDSP_VSMUL(vector, 1, &factor, vector, 1, size);
 	
 	// Finally apply limits
 	MLReal delta= max - min;
 	ML_VDSP_VSMUL(vector, 1, &delta, vector, 1, size);
 	ML_VDSP_VSADD(vector, 1, &min, vector, 1, size);
+	
+	// Free the temp vector
+	free(tempUniform);
+	tempUniform= NULL;
 }
 
 + (MLReal) nextGaussianRealWithMean:(MLReal)mean sigma:(MLReal)sigma {
@@ -163,8 +155,8 @@ static MLReal __spareGaussian=        0.0;
 	if (__spareGaussian == 0.0) {
 		
 		// Get a pair of (fast) random numbers
-		MLReal random1= [MLRandom nextFastUniformReal];
-		MLReal random2= [MLRandom nextFastUniformReal];
+		MLReal random1= [MLRandom nextUniformReal];
+		MLReal random2= [MLRandom nextUniformReal];
 		
 		// Apple Box–Muller transform
 		MLReal r= ML_SQRT(-2.0 * ML_LOG(random1));
@@ -183,27 +175,95 @@ static MLReal __spareGaussian=        0.0;
 
 + (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofGaussianRealWithMean:(MLReal)mean sigma:(MLReal)sigma {
 	
-	// First fill the vector with uniform randoms
+	// When using strides the size must be scaled, but we have
+	// to consider the last element if the original size is odd:
+	// - if we have e.g. 3 elements and want to use a stride of 2,
+	//   we need a size of 2 (not 1), or the element at [2] will
+	//   not be considered
+	// - but if we want to use a stride of 2 on odd elements
+	//   (i.e. starting with &vector[1]), we need a size of 1,
+	//   or it tries to consider element [3], which does not exist
+	NSUInteger evenStridedSize= (size % 2 == 0) ? (size / 2) : ((size / 2) +1);
+	NSUInteger oddStridedSize= (size % 2 == 0) ? evenStridedSize : (evenStridedSize -1);
+	
+	// Allocate and fill a temp vectors with uniform randoms
+	MLReal *tempGaussian1= NULL;
+	int err= posix_memalign((void **) &tempGaussian1,
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(MLReal) * size);
+	if (err)
+		@throw [NSException exceptionWithName:@"MLRandomException"
+									   reason:@"Error while allocating buffer"
+									 userInfo:@{@"buffer": @"tempGaussian1",
+												@"error": [NSNumber numberWithInt:err]}];
+
+	[MLRandom fillVector:tempGaussian1 size:size ofUniformRealWithMin:0.0 max:1.0];
+	
+	if (size > 1) {
+		
+		// Copy even elements on odd elements, so that
+		// we have pairs of identical random numbers
+		ML_VDSP_VSMUL(tempGaussian1, 2, &__one, &tempGaussian1[1], 2, oddStridedSize);
+	}
+	
+	MLReal *tempGaussian2= NULL;
+	err= posix_memalign((void **) &tempGaussian2,
+						BUFFER_MEMORY_ALIGNMENT,
+						sizeof(MLReal) * size);
+	if (err)
+		@throw [NSException exceptionWithName:@"MLRandomException"
+									   reason:@"Error while allocating buffer"
+									 userInfo:@{@"buffer": @"tempGaussian2",
+												@"error": [NSNumber numberWithInt:err]}];
+	
+	// Duplicate temp1 on temp2
+	ML_VDSP_VSMUL(tempGaussian1, 1, &__one, tempGaussian2, 1, size);
+	
+	// Now fill vector with uniform random numbers, and copy
+	// even elements on odd elements as we have done with temp1
 	[MLRandom fillVector:vector size:size ofUniformRealWithMin:0.0 max:1.0];
+	
+	if (size > 1)
+		ML_VDSP_VSMUL(vector, 2, &__one, &vector[1], 2, oddStridedSize);
+	
+	// Now we jave two sets of random numbers, with one set duplicated on
+	// two separate temp vectors, and both sets have numbers duplicated
+	// on even and odd elements: we can proceed with Box-Muller transform
 	
 	// An "int" size is needed by vvlog and vvsqrt
 	int intSize= (int) size;
 
 	// Compute first term of Box-Muller transform
-	// directly in the vector
+	// directly on the vector
 	ML_VVLOG(vector, vector, &intSize);
 	ML_VDSP_VSMUL(vector, 1, &__minusTwo, vector, 1, size);
 	ML_VVSQRT(vector, vector, &intSize);
 	
-	// Get a new uniform random number to be used
-	// as a second term of Box–Muller transform
-	MLReal random= [MLRandom nextFastUniformReal];
-	MLReal cosPhi= ML_COS(2.0 * M_PI * random);
-	ML_VDSP_VSMUL(vector, 1, &cosPhi, vector, 1, size);
+	// Compute the second term of Box-Muller transform
+	// on temp vectors, cosine for temp1 and sine for temp2
+	ML_VDSP_VSMUL(tempGaussian1, 1, &__pi, tempGaussian1, 1, size);
+	ML_VDSP_VSMUL(tempGaussian1, 1, &__two, tempGaussian1, 1, size);
+	ML_VVCOS(tempGaussian1, tempGaussian1, &intSize);
+	
+	ML_VDSP_VSMUL(tempGaussian2, 1, &__pi, tempGaussian2, 1, size);
+	ML_VDSP_VSMUL(tempGaussian2, 1, &__two, tempGaussian2, 1, size);
+	ML_VVSIN(tempGaussian2, tempGaussian2, &intSize);
+	
+	// Now form gaussian random numbers by multipling vector by temp1
+	// on even indexes and vector by temp2 on odd indexes
+	ML_VDSP_VMUL(vector, 2, tempGaussian1, 2, vector, 2, evenStridedSize);
+	ML_VDSP_VMUL(&vector[1], 2, tempGaussian2, 2, &vector[1], 2, oddStridedSize);
 	
 	// Finally apply limits
 	ML_VDSP_VSMUL(vector, 1, &sigma, vector, 1, size);
 	ML_VDSP_VSADD(vector, 1, &mean, vector, 1, size);
+	
+	// Free the temp vectors
+	free(tempGaussian1);
+	tempGaussian1= NULL;
+	
+	free(tempGaussian2);
+	tempGaussian2= NULL;
 }
 
 

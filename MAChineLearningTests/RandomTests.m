@@ -35,14 +35,24 @@
 #import <XCTest/XCTest.h>
 #import <MAChineLearning/MAChineLearning.h>
 
-#define UNIFORM_TEST_SIZE              (10000)
-#define GAUSSIAN_TEST_SIZE             (10000)
+#define UNIFORM_TEST_SIZE              (1000)
+#define GAUSSIAN_TEST_SIZE             (1000)
+
+#define DUMP_INTERVALS                  (100)
 
 
 #pragma mark -
 #pragma mark RandomTests declaration
 
 @interface RandomTests : XCTestCase
+
+
+#pragma mark -
+#pragma mark Utility methods
+
++ (void) dumpDistribution:(MLReal *)distribution size:(NSUInteger)size;
+
+
 @end
 
 
@@ -80,8 +90,8 @@
 										 userInfo:@{@"buffer": @"distribution",
 													@"error": [NSNumber numberWithInt:err]}];
 		
-		MLReal randomMin= [MLRandom nextUniformReal] / 2.0;
-		MLReal randomMax= 0.5 + [MLRandom nextUniformReal] / 2.0;
+		MLReal randomMin= [MLRandom nextUniformReal] * 0.5;
+		MLReal randomMax= 0.5 + [MLRandom nextUniformReal] * 0.5;
 		[MLRandom fillVector:distribution size:UNIFORM_TEST_SIZE ofUniformRealWithMin:randomMin max:randomMax];
 		
 		MLReal min= 1.0, max= 0.0, sum= 0.0;;
@@ -104,10 +114,13 @@
 		variance /= ((MLReal) UNIFORM_TEST_SIZE);
 		MLReal sigma= ML_SQRT(variance);
 		
-		XCTAssertEqualWithAccuracy(min, randomMin, 0.02);
-		XCTAssertEqualWithAccuracy(max, randomMax, 0.02);
-		XCTAssertEqualWithAccuracy(mean, (randomMin + randomMax) / 2.0, 0.02);
-		XCTAssertEqualWithAccuracy(sigma, (randomMax - randomMin) / ML_SQRT(12.0), 0.02);
+		XCTAssertEqualWithAccuracy(min, randomMin, 0.05);
+		XCTAssertEqualWithAccuracy(max, randomMax, 0.05);
+		XCTAssertEqualWithAccuracy(mean, (randomMin + randomMax) / 2.0, 0.05);
+		XCTAssertEqualWithAccuracy(sigma, (randomMax - randomMin) / ML_SQRT(12.0), 0.05);
+		
+		// Uncomment to dump the distribution
+//		[RandomTests dumpDistribution:distribution size:UNIFORM_TEST_SIZE];
 	
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
@@ -131,9 +144,16 @@
 		MLReal randomSigma= [MLRandom nextUniformReal];
 		[MLRandom fillVector:distribution size:GAUSSIAN_TEST_SIZE ofGaussianRealWithMean:randomMean sigma:randomSigma];
 		
-		MLReal sum= 0.0;;
-		for (int i= 0; i < GAUSSIAN_TEST_SIZE; i++)
+		MLReal min= 1.0, max= 0.0, sum= 0.0;;
+		for (int i= 0; i < GAUSSIAN_TEST_SIZE; i++) {
+			if (distribution[i] < min)
+				min= distribution[i];
+			
+			if (distribution[i] > max)
+				max= distribution[i];
+
 			sum += distribution[i];
+		}
 		
 		MLReal mean= sum / ((MLReal) GAUSSIAN_TEST_SIZE);
 		
@@ -144,11 +164,56 @@
 		variance /= ((MLReal) GAUSSIAN_TEST_SIZE);
 		MLReal sigma= ML_SQRT(variance);
 		
-		XCTAssertEqualWithAccuracy(mean, randomMean, 0.01);
-		XCTAssertEqualWithAccuracy(sigma, randomSigma, 0.01);
+		XCTAssertLessThan(min, randomMean - randomSigma);
+		XCTAssertGreaterThan(max, randomMean + randomSigma);
+		XCTAssertEqualWithAccuracy(mean, randomMean, 0.05);
+		XCTAssertEqualWithAccuracy(sigma, randomSigma, 0.05);
+		
+		// Uncomment to dump the distribution
+//		[RandomTests dumpDistribution:distribution size:GAUSSIAN_TEST_SIZE];
 		
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+	}
+}
+
+
+#pragma mark -
+#pragma mark Utility methods
+
++ (void) dumpDistribution:(MLReal *)distribution size:(NSUInteger)size {
+	MLReal min= 1.0, max= 0.0;
+	for (int i= 0; i < size; i++) {
+		if (distribution[i] < min)
+			min= distribution[i];
+		
+		if (distribution[i] > max)
+			max= distribution[i];
+	}
+	
+	int occurrencies[DUMP_INTERVALS], maxOccurrencies= 0;
+	for (int j= 0; j < DUMP_INTERVALS; j++)
+		occurrencies[j]= 0;
+	
+	for (int i= 0; i < UNIFORM_TEST_SIZE; i++) {
+		int j= DUMP_INTERVALS * (distribution[i] - min) / (max - min);
+		if ((j < 0) || (j >= DUMP_INTERVALS))
+			continue;
+		
+		occurrencies[j]++;
+		
+		if (occurrencies[j] > maxOccurrencies)
+			maxOccurrencies= occurrencies[j];
+	}
+	
+	NSMutableString *line= [[NSMutableString alloc] init];
+	for (int i= maxOccurrencies; i >= 0; i--) {
+		[line setString:@""];
+		
+		for (int j= 0; j < DUMP_INTERVALS; j++)
+			[line appendString:(occurrencies[j] >= i) ? @"#" : @" "];
+		
+		NSLog(@"%@", line);
 	}
 }
 
