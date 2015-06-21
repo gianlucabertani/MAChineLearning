@@ -131,27 +131,6 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 		
 		_inputSize= inputSize;
 		_inputBuffer= inputBuffer;
-		
-		// Allocate buffers
-		int err= posix_memalign((void **) &_weights,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * _inputSize);
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"weights",
-																			  @"error": [NSNumber numberWithInt:err]}];
-
-		err= posix_memalign((void **) &_weightsDelta,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * _inputSize);
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"weightsDelta",
-																			  @"error": [NSNumber numberWithInt:err]}];
-		
-		// Clear and fill buffers as needed
-		ML_VDSP_VCLR(_weights, 1, _inputSize);
-		ML_VDSP_VCLR(_weightsDelta, 1, _inputSize);
 	}
 	
 	return self;
@@ -159,12 +138,16 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 
 - (void) dealloc {
 
-	// Deallocate weights and gradients
-	free(_weights);
-	_weights= NULL;
+	// Deallocate common buffers
+	if (_weights) {
+		free(_weights);
+		_weights= NULL;
+	}
 	
-	free(_weightsDelta);
-	_weightsDelta= NULL;
+	if (_weightsDelta) {
+		free(_weightsDelta);
+		_weightsDelta= NULL;
+	}
 
 	// Deallocate pointes for weight gathering
 	if (_nextLayerWeightPtrs) {
@@ -228,6 +211,28 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron already set up"
 																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.layer.index],
 																			@"neuron": [NSNumber numberWithUnsignedInteger:self.index]}];
+	
+	
+	// Allocate common buffers
+	int err= posix_memalign((void **) &_weights,
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(MLReal) * _inputSize);
+	if (err)
+		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
+																 userInfo:@{@"buffer": @"weights",
+																			@"error": [NSNumber numberWithInt:err]}];
+	
+	err= posix_memalign((void **) &_weightsDelta,
+						BUFFER_MEMORY_ALIGNMENT,
+						sizeof(MLReal) * _inputSize);
+	if (err)
+		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
+																 userInfo:@{@"buffer": @"weightsDelta",
+																			@"error": [NSNumber numberWithInt:err]}];
+	
+	// Clear and fill common buffers as needed
+	ML_VDSP_VCLR(_weights, 1, _inputSize);
+	ML_VDSP_VCLR(_weightsDelta, 1, _inputSize);
 	
 	if (self.layer.nextLayer) {
 		MLNeuronLayer *nextLayer= (MLNeuronLayer *) self.layer.nextLayer;
@@ -458,16 +463,6 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 
 @synthesize inputSize= _inputSize;
 @synthesize inputBuffer= _inputBuffer;
-
-@dynamic bias;
-
-- (MLReal) bias {
-	return _layer.biasBuffer[_index];
-}
-
-- (void) setBias:(MLReal)bias {
-	_layer.biasBuffer[_index]= bias;
-}
 
 @synthesize weights= _weights;
 @synthesize weightsDelta= _weightsDelta;

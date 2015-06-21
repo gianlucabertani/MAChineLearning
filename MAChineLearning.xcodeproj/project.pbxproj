@@ -37,6 +37,8 @@
 		8C58A3171AECDAA3006AB74D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C58A3161AECDAA3006AB74D /* main.m */; };
 		8C58A31C1AECECC5006AB74D /* MLStopWords.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C58A31B1AECDF9D006AB74D /* MLStopWords.h */; };
 		8C58A31E1AED4DE8006AB74D /* BagOfWordsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */; };
+		8C78C6E11B371F3A00245298 /* MLBiasNeuron.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C78C6DF1B371F3A00245298 /* MLBiasNeuron.h */; };
+		8C78C6E21B371F3A00245298 /* MLBiasNeuron.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C78C6E01B371F3A00245298 /* MLBiasNeuron.m */; };
 		8C8437781B20E8F200ED0B92 /* MLWordVectorException.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C8437761B20E8F200ED0B92 /* MLWordVectorException.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C8437791B20E8F200ED0B92 /* MLWordVectorException.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8437771B20E8F200ED0B92 /* MLWordVectorException.m */; };
 		8C94CBFF1AE91C0800A0A328 /* MLFeatureNormalizationType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C94CBFE1AE91C0800A0A328 /* MLFeatureNormalizationType.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -137,6 +139,8 @@
 		8C58A3161AECDAA3006AB74D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8C58A31B1AECDF9D006AB74D /* MLStopWords.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MLStopWords.h; sourceTree = "<group>"; };
 		8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BagOfWordsTests.m; sourceTree = "<group>"; };
+		8C78C6DF1B371F3A00245298 /* MLBiasNeuron.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLBiasNeuron.h; sourceTree = "<group>"; };
+		8C78C6E01B371F3A00245298 /* MLBiasNeuron.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLBiasNeuron.m; sourceTree = "<group>"; };
 		8C8437761B20E8F200ED0B92 /* MLWordVectorException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLWordVectorException.h; sourceTree = "<group>"; };
 		8C8437771B20E8F200ED0B92 /* MLWordVectorException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLWordVectorException.m; sourceTree = "<group>"; };
 		8C94CBFE1AE91C0800A0A328 /* MLFeatureNormalizationType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLFeatureNormalizationType.h; sourceTree = "<group>"; };
@@ -220,6 +224,8 @@
 				8C1251D91AE8D38E00FA493E /* MLNeuronLayer.m */,
 				8C1251D61AE8D38E00FA493E /* MLNeuron.h */,
 				8C1251D71AE8D38E00FA493E /* MLNeuron.m */,
+				8C78C6DF1B371F3A00245298 /* MLBiasNeuron.h */,
+				8C78C6E01B371F3A00245298 /* MLBiasNeuron.m */,
 				8C1251D21AE8D38E00FA493E /* MLNeuralNetworkException.h */,
 				8C1251D31AE8D38E00FA493E /* MLNeuralNetworkException.m */,
 			);
@@ -385,6 +391,7 @@
 				8C4CEF1E1ADAC51200F1E139 /* MAChineLearning.h in Headers */,
 				8CC9E4E31AE988AE002659EA /* MLReal.h in Headers */,
 				8C58A30E1AECD275006AB74D /* MLTextFragment.h in Headers */,
+				8C78C6E11B371F3A00245298 /* MLBiasNeuron.h in Headers */,
 				8CC9E4EB1AE9981D002659EA /* MLConstants.h in Headers */,
 				8C1251DF1AE8D38E00FA493E /* MLNeuralNetwork.h in Headers */,
 				8C1251E41AE8D38E00FA493E /* MLNeuralNetworkStatus.h in Headers */,
@@ -556,6 +563,7 @@
 				8C9A49481B1454FB003E3041 /* MLRandom.m in Sources */,
 				8C1FE66E1B1EE6F300596278 /* MLMutableWordInfo.m in Sources */,
 				8C1FE66A1B1ED9C400596278 /* MLWordVector.m in Sources */,
+				8C78C6E21B371F3A00245298 /* MLBiasNeuron.m in Sources */,
 				8C1251DC1AE8D38E00FA493E /* MLInputLayer.m in Sources */,
 				8CC9E4E71AE98DAE002659EA /* MLBagOfWordsException.m in Sources */,
 				8C1251DE1AE8D38E00FA493E /* MLLayer.m in Sources */,

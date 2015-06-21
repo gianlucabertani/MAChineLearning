@@ -1,8 +1,8 @@
 //
-//  MLInputLayer.m
+//  MLBiasNeuron.m
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
+//  Created by Gianluca Bertani on 21/06/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,36 +31,26 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "MLInputLayer.h"
-#import "MLNeuralNetworkException.h"
-
-#import "MLConstants.h"
-
-#import <Accelerate/Accelerate.h>
+#import "MLBiasNeuron.h"
 
 
 #pragma mark -
-#pragma mark InputLayer extension
+#pragma mark Static constants
 
-@interface MLInputLayer () {
-	MLReal *_inputBuffer;
-}
-
-
-@end
+static const MLReal __one=                    1.0;
 
 
 #pragma mark -
-#pragma mark InputLayer implementation
+#pragma mark BiasNeuron implementation
 
-@implementation MLInputLayer
+@implementation MLBiasNeuron
 
 
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size {
-	if ((self = [super initWithIndex:index size:size])) {
+- (instancetype) initWithLayer:(MLNeuronLayer *)layer index:(NSUInteger)index outputBuffer:(MLReal *)outputBuffer inputSize:(NSUInteger)inputSize inputBuffer:(MLReal *)inputBuffer {
+	if ((self = [super initWithLayer:layer index:index outputBuffer:outputBuffer inputSize:inputSize inputBuffer:inputBuffer])) {
 		
 		// Nothing to do
 	}
@@ -68,37 +58,40 @@
 	return self;
 }
 
-- (void) dealloc {
+
+#pragma mark -
+#pragma mark Setup and randomization
+
+- (void) setUpForBackpropagationWithAlgorithm:(MLBackPropagationType)backPropType {
 	
-	// Deallocate the input buffer
-	free(_inputBuffer);
-	_inputBuffer= NULL;
+	// Use setup for basic backpropagation, to avoid wasting buffers for RPROP
+	[super setUpForBackpropagationWithAlgorithm:MLBackPropagationTypeStandard];
+}
+
+- (void) randomizeWeights {
+	
+	// Nothing to do, weights remain 0
 }
 
 
 #pragma mark -
-#pragma mark Setup
+#pragma mark Operations
 
-- (void) setUp {
+- (void) feedForward {
 	
-	// Allocate buffers
-	int err= posix_memalign((void **) &_inputBuffer,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * self.size);
-	if (err)
-		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																 userInfo:@{@"buffer": @"inputBuffer",
-																			@"error": [NSNumber numberWithInt:err]}];
-	
-	// Clear and fill buffers as needed
-	ML_VDSP_VCLR(_inputBuffer, 1, self.size);
+	// Output is constantly 1
+	self.outputBuffer[self.index]= __one;
 }
 
+- (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType learningRate:(MLReal)learningRate delta:(MLReal)delta {
+	
+	// Nothing to do, weights remain 0
+}
 
-#pragma mark -
-#pragma mark Properties
-
-@synthesize inputBuffer= _inputBuffer;
+- (void) updateWeights {
+	
+	// Nothing to do, weights remain 0
+}
 
 
 @end

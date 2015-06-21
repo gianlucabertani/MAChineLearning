@@ -239,15 +239,12 @@
 		NSLog(@"testBackpropagation: average training/verification time: %.2f µs per cycle", (elapsed * 1000000.0) / ((double) BACKPROPAGATION_TEST_TRAIN_CYCLES + BACKPROPAGATION_TEST_VERIFICATION_CYCLES));
 		
 		// Check final weights
-		XCTAssertEqualWithAccuracy(neuron11.bias, -0.35, 0.05);
 		XCTAssertEqualWithAccuracy(neuron11.weights[0], 1.15, 0.05);
 		XCTAssertEqualWithAccuracy(neuron11.weights[1], 0.26, 0.05);
 		
-		XCTAssertEqualWithAccuracy(neuron12.bias, -0.35, 0.05);
 		XCTAssertEqualWithAccuracy(neuron12.weights[0], 1.15, 0.05);
 		XCTAssertEqualWithAccuracy(neuron12.weights[1], 0.26, 0.05);
 		
-		XCTAssertEqualWithAccuracy(neuron2.bias, -1.05, 0.05);
 		XCTAssertEqualWithAccuracy(neuron2.weights[0], 1.20, 0.05);
 		XCTAssertEqualWithAccuracy(neuron2.weights[1], 1.20, 0.05);
 		
@@ -291,6 +288,8 @@
 			}
 			
 			cycle++;
+			
+			error /= (MLReal) REGRESSION_TEST_TRAINING_SET;
 
 			NSLog(@"testRegression: completed training cycle %d, error: %.2f", cycle, error);
 			
@@ -391,15 +390,12 @@
 		 */
 		
 		// Check the weights are the same
-		XCTAssertEqualWithAccuracy(neuron11_2.bias, neuron11.bias, 0.0000000001);
 		XCTAssertEqualWithAccuracy(neuron11_2.weights[0], neuron11.weights[0], 0.0000000001);
 		XCTAssertEqualWithAccuracy(neuron11_2.weights[1], neuron11.weights[1], 0.0000000001);
 		
-		XCTAssertEqualWithAccuracy(neuron12_2.bias, neuron12.bias, 0.0000000001);
 		XCTAssertEqualWithAccuracy(neuron12_2.weights[0], neuron12.weights[0], 0.0000000001);
 		XCTAssertEqualWithAccuracy(neuron12_2.weights[1], neuron12.weights[1], 0.0000000001);
 		
-		XCTAssertEqualWithAccuracy(neuron2_2.bias, neuron2.bias, 0.0000000001);
 		XCTAssertEqualWithAccuracy(neuron2_2.weights[0], neuron2.weights[0], 0.0000000001);
 		XCTAssertEqualWithAccuracy(neuron2_2.weights[1], neuron2.weights[1], 0.0000000001);
 		

@@ -1,8 +1,8 @@
 //
-//  MLInputLayer.m
+//  MLBiasNeuron.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
+//  Created by Gianluca Bertani on 21/06/15.
 //  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -31,74 +31,17 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "MLInputLayer.h"
-#import "MLNeuralNetworkException.h"
+#import <Foundation/Foundation.h>
 
-#import "MLConstants.h"
+#import "MLNeuron.h"
 
-#import <Accelerate/Accelerate.h>
-
-
-#pragma mark -
-#pragma mark InputLayer extension
-
-@interface MLInputLayer () {
-	MLReal *_inputBuffer;
-}
-
-
-@end
-
-
-#pragma mark -
-#pragma mark InputLayer implementation
-
-@implementation MLInputLayer
+@interface MLBiasNeuron : MLNeuron
 
 
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size {
-	if ((self = [super initWithIndex:index size:size])) {
-		
-		// Nothing to do
-	}
-	
-	return self;
-}
-
-- (void) dealloc {
-	
-	// Deallocate the input buffer
-	free(_inputBuffer);
-	_inputBuffer= NULL;
-}
-
-
-#pragma mark -
-#pragma mark Setup
-
-- (void) setUp {
-	
-	// Allocate buffers
-	int err= posix_memalign((void **) &_inputBuffer,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * self.size);
-	if (err)
-		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																 userInfo:@{@"buffer": @"inputBuffer",
-																			@"error": [NSNumber numberWithInt:err]}];
-	
-	// Clear and fill buffers as needed
-	ML_VDSP_VCLR(_inputBuffer, 1, self.size);
-}
-
-
-#pragma mark -
-#pragma mark Properties
-
-@synthesize inputBuffer= _inputBuffer;
+- (instancetype) initWithLayer:(MLNeuronLayer *)layer index:(NSUInteger)index outputBuffer:(MLReal *)outputBuffer inputSize:(NSUInteger)inputSize inputBuffer:(MLReal *)inputBuffer;
 
 
 @end

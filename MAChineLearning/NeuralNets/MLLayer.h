@@ -49,6 +49,12 @@
 
 
 #pragma mark -
+#pragma mark Setup
+
+- (void) setUp;
+
+
+#pragma mark -
 #pragma mark Properties
 
 @property (nonatomic, readonly) NSUInteger index;

@@ -68,6 +68,15 @@
 
 
 #pragma mark -
+#pragma mark Setup
+
+- (void) setUp {
+	
+	// Nothing to do
+}
+
+
+#pragma mark -
 #pragma mark Properties
 
 @synthesize index= _index;

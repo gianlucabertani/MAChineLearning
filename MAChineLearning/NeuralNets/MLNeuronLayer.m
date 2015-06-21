@@ -34,6 +34,7 @@
 #import "MLNeuronLayer.h"
 #import "MLInputLayer.h"
 #import "MLNeuron.h"
+#import "MLBiasNeuron.h"
 #import "MLNeuralNetworkException.h"
 
 #import "MLConstants.h"
@@ -57,9 +58,6 @@
 
 	MLReal *_outputBuffer;
 	
-	MLReal *_biasBuffer;
-	MLReal *_biasDeltaBuffer;
-
 	MLReal *_deltaBuffer;
 	MLReal *_errorBuffer;
 	
@@ -67,6 +65,7 @@
 	MLReal *_nextLayerWeightsBuffer;
 	MLReal *_nextLayerWeightsDeltaBuffer;
 
+	BOOL _usingBias;
 	NSMutableArray *_neurons;
 }
 
@@ -95,68 +94,12 @@ static const MLReal __fourty=       40.0;
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size activationFunctionType:(MLActivationFunctionType)funcType {
-	if ((self = [super initWithIndex:index size:size])) {
+- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size useBias:(BOOL)useBias activationFunctionType:(MLActivationFunctionType)funcType {
+	if ((self = [super initWithIndex:index size:(useBias ? (size +1) : size)])) {
 		
 		// Initialization
 		_funcType= funcType;
-
-		// Allocate buffers
-		int err= posix_memalign((void **) &_outputBuffer,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * size);
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"outputBuffer",
-																			  @"error": [NSNumber numberWithInt:err]}];
-		
-		err= posix_memalign((void **) &_biasBuffer,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * size);
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"biasBuffer",
-																			  @"error": [NSNumber numberWithInt:err]}];
-
-		err= posix_memalign((void **) &_biasDeltaBuffer,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * size);
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"biasDeltaBuffer",
-																			  @"error": [NSNumber numberWithInt:err]}];
-
-		err= posix_memalign((void **) &_deltaBuffer,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * size);
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"deltaBuffer",
-																			  @"error": [NSNumber numberWithInt:err]}];
-		
-		err= posix_memalign((void **) &_errorBuffer,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * size);
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"errorBuffer",
-																			  @"error": [NSNumber numberWithInt:err]}];
-		
-		err= posix_memalign((void **) &_tempBuffer,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * size);
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"tempBuffer",
-																			  @"error": [NSNumber numberWithInt:err]}];
-		
-		// Clear and fill buffers as needed
-		ML_VDSP_VCLR(_outputBuffer, 1, size);
-		ML_VDSP_VCLR(_biasBuffer, 1, size);
-		ML_VDSP_VCLR(_biasDeltaBuffer, 1, size);
-		ML_VDSP_VCLR(_deltaBuffer, 1, size);
-		ML_VDSP_VCLR(_errorBuffer, 1, size);
-		ML_VDSP_VCLR(_tempBuffer, 1, size);
+		_usingBias= useBias;
 	}
 	
 	return self;
@@ -168,12 +111,6 @@ static const MLReal __fourty=       40.0;
 	free(_outputBuffer);
 	_outputBuffer= NULL;
 	
-	free(_biasBuffer);
-	_biasBuffer= NULL;
-
-	free(_biasDeltaBuffer);
-	_biasDeltaBuffer= NULL;
-
 	free(_deltaBuffer);
 	_deltaBuffer= NULL;
 
@@ -203,6 +140,45 @@ static const MLReal __fourty=       40.0;
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer already set up"
 																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 	
+	// Allocate buffers
+	int err= posix_memalign((void **) &_outputBuffer,
+							BUFFER_MEMORY_ALIGNMENT,
+							sizeof(MLReal) * self.size);
+	if (err)
+		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
+																 userInfo:@{@"buffer": @"outputBuffer",
+																			@"error": [NSNumber numberWithInt:err]}];
+	
+	err= posix_memalign((void **) &_deltaBuffer,
+						BUFFER_MEMORY_ALIGNMENT,
+						sizeof(MLReal) * self.size);
+	if (err)
+		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
+																 userInfo:@{@"buffer": @"deltaBuffer",
+																			@"error": [NSNumber numberWithInt:err]}];
+	
+	err= posix_memalign((void **) &_errorBuffer,
+						BUFFER_MEMORY_ALIGNMENT,
+						sizeof(MLReal) * self.size);
+	if (err)
+		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
+																 userInfo:@{@"buffer": @"errorBuffer",
+																			@"error": [NSNumber numberWithInt:err]}];
+	
+	err= posix_memalign((void **) &_tempBuffer,
+						BUFFER_MEMORY_ALIGNMENT,
+						sizeof(MLReal) * self.size);
+	if (err)
+		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
+																 userInfo:@{@"buffer": @"tempBuffer",
+																			@"error": [NSNumber numberWithInt:err]}];
+	
+	// Clear and fill buffers as needed
+	ML_VDSP_VCLR(_outputBuffer, 1, self.size);
+	ML_VDSP_VCLR(_deltaBuffer, 1, self.size);
+	ML_VDSP_VCLR(_errorBuffer, 1, self.size);
+	ML_VDSP_VCLR(_tempBuffer, 1, self.size);
+
 	_neurons= [[NSMutableArray alloc] initWithCapacity:self.size];
 	
 	for (int i= 0; i < self.size; i++) {
@@ -219,11 +195,25 @@ static const MLReal __fourty=       40.0;
 																	 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index],
 																				@"previousLayer": [NSNumber numberWithUnsignedInteger:self.previousLayer.index]}];
 
-		MLNeuron *neuron= [[MLNeuron alloc] initWithLayer:self
-												index:i
-										 outputBuffer:self.outputBuffer
-											inputSize:self.previousLayer.size
-										  inputBuffer:inputBuffer];
+		MLNeuron *neuron= nil;
+		if (_usingBias && (i == (self.size -1))) {
+			
+			// Create a bias neurson
+			neuron= [[MLBiasNeuron alloc] initWithLayer:self
+												  index:i
+										   outputBuffer:self.outputBuffer
+											  inputSize:self.previousLayer.size
+											inputBuffer:inputBuffer];
+			
+		} else {
+			
+			// Create standard neuron
+			neuron= [[MLNeuron alloc] initWithLayer:self
+											  index:i
+									   outputBuffer:self.outputBuffer
+										  inputSize:self.previousLayer.size
+										inputBuffer:inputBuffer];
+		}
 		
 		[_neurons addObject:neuron];
 	}
@@ -282,10 +272,7 @@ static const MLReal __fourty=       40.0;
 	for (MLNeuron *neuron in _neurons)
 		[neuron feedForward];
 	
-	// Second step: add bias
-	ML_VDSP_VADD(_outputBuffer, 1, _biasBuffer, 1, _outputBuffer, 1, _size);
-	
-	// Third step: apply activation function
+	// Second step: apply activation function
 	switch (_funcType) {
 		case MLActivationFunctionTypeLinear:
 			
@@ -349,20 +336,27 @@ static const MLReal __fourty=       40.0;
 	
 	int i= 0;
 	for (MLNeuron *neuron in _neurons) {
-		if ((!neuron.nextLayerWeightPtrs) || (!neuron.nextLayerWeightDeltaPtrs))
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron not yet set up"
-																	 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index],
-																				@"neuron": [NSNumber numberWithUnsignedInteger:neuron.index]}];
-		
-		// Gather next layer weights using vector gathering
-		ML_VDSP_VGATHRA((const MLReal **) neuron.nextLayerWeightPtrs, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
-		ML_VDSP_VGATHRA((const MLReal **) neuron.nextLayerWeightDeltaPtrs, 1, _nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
-		
-		// Sum the delta
-		ML_VDSP_VADD(_nextLayerWeightsBuffer, 1, _nextLayerWeightsDeltaBuffer, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
-		
-		// Compute the dot product
-		ML_VDSP_DOTPR(nextLayer.deltaBuffer, 1, _nextLayerWeightsBuffer, 1, &_errorBuffer[i], nextLayer.size);
+		if ([neuron isKindOfClass:[MLBiasNeuron class]]) {
+			
+			// Bias neurons have constant output and don't backpropagate
+			_errorBuffer[i]= __zero;
+			
+		} else {
+			if ((!neuron.nextLayerWeightPtrs) || (!neuron.nextLayerWeightDeltaPtrs))
+				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron not yet set up"
+																		 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index],
+																					@"neuron": [NSNumber numberWithUnsignedInteger:neuron.index]}];
+			
+			// Gather next layer weights using vector gathering
+			ML_VDSP_VGATHRA((const MLReal **) neuron.nextLayerWeightPtrs, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
+			ML_VDSP_VGATHRA((const MLReal **) neuron.nextLayerWeightDeltaPtrs, 1, _nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
+			
+			// Sum the delta
+			ML_VDSP_VADD(_nextLayerWeightsBuffer, 1, _nextLayerWeightsDeltaBuffer, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
+			
+			// Compute the dot product
+			ML_VDSP_DOTPR(nextLayer.deltaBuffer, 1, _nextLayerWeightsBuffer, 1, &_errorBuffer[i], nextLayer.size);
+		}
 		
 		i++;
 	}
@@ -410,18 +404,7 @@ static const MLReal __fourty=       40.0;
 			break;
 	}
 	
-	// Second step: compute the bias delta, but
-	// only for certain backpropagation algorithms
-	switch (backPropType) {
-		case MLBackPropagationTypeStandard:
-			ML_VDSP_VSMA(_deltaBuffer, 1, &learningRate, _biasDeltaBuffer, 1, _biasDeltaBuffer, 1, _size);
-			break;
-			
-		default:
-			break;
-	}
-	
-	// Third step: compute new weights for each neuron
+	// Second step: compute new weights for each neuron
 	int i= 0;
 	for (MLNeuron *neuron in _neurons) {
 		[neuron backPropagateWithAlgorithm:backPropType learningRate:learningRate delta:_deltaBuffer[i]];
@@ -434,15 +417,9 @@ static const MLReal __fourty=       40.0;
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
 																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 	
-	// First step: update the bias with the bias delta
-	ML_VDSP_VADD(_biasBuffer, 1, _biasDeltaBuffer, 1, _biasBuffer, 1, _size);
-	
 	// Second step: update weights for each neuron
 	for (MLNeuron *neuron in _neurons)
 		[neuron updateWeights];
-
-	// Clear the bias delta buffer
-	ML_VDSP_VCLR(_biasDeltaBuffer, 1, _size);
 }
 
 
@@ -451,14 +428,12 @@ static const MLReal __fourty=       40.0;
 
 @synthesize funcType= _funcType;
 
-@synthesize biasBuffer= _biasBuffer;
-@synthesize biasDeltaBuffer= _biasDeltaBuffer;
-
 @synthesize errorBuffer= _errorBuffer;
 @synthesize deltaBuffer= _deltaBuffer;
 
 @synthesize outputBuffer= _outputBuffer;
 
+@synthesize usingBias= _usingBias;
 @synthesize neurons= _neurons;
 
 

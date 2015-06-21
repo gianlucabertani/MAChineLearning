@@ -76,7 +76,6 @@
 @property (nonatomic, readonly) NSUInteger inputSize;
 @property (nonatomic, readonly) MLReal *inputBuffer;
 
-@property (nonatomic, readonly) MLReal bias;
 @property (nonatomic, readonly) MLReal *weights;
 @property (nonatomic, readonly) MLReal *weightsDelta;
 
@@ -85,7 +84,6 @@
 
 @property (nonatomic, readonly) MLReal error;
 @property (nonatomic, readonly) MLReal delta;
-
 
 
 @end

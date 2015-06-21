@@ -46,13 +46,12 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size activationFunctionType:(MLActivationFunctionType)funcType;
+- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size useBias:(BOOL)useBias activationFunctionType:(MLActivationFunctionType)funcType;
 
 
 #pragma mark -
-#pragma mark Setup and randomization
+#pragma mark Randomization
 
-- (void) setUp;
 - (void) randomizeWeights;
 
 
@@ -70,14 +69,12 @@
 
 @property (nonatomic, readonly) MLActivationFunctionType funcType;
 
-@property (nonatomic, readonly) MLReal *biasBuffer;
-@property (nonatomic, readonly) MLReal *biasDeltaBuffer;
-
 @property (nonatomic, readonly) MLReal *errorBuffer;
 @property (nonatomic, readonly) MLReal *deltaBuffer;
 
 @property (nonatomic, readonly) MLReal *outputBuffer;
 
+@property (nonatomic, readonly) BOOL usingBias;
 @property (nonatomic, readonly) NSArray *neurons;
 
 
