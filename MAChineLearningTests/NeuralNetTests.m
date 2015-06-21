@@ -260,7 +260,11 @@
 	@try {
 		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@1, @10, @1]
 													   backPropagationType:MLBackPropagationTypeRPROP
+														hiddenFunctionType:MLActivationFunctionTypeLinear
 														outputFunctionType:MLActivationFunctionTypeLinear];
+		
+		// Randomize weights
+		[net randomizeWeights];
 		
 		// Generate some random numbers between 0 and 100
 		MLReal trainingSet[REGRESSION_TEST_TRAINING_SET];
@@ -269,10 +273,10 @@
 		
 		// Train the network to produce the square root of the input,
 		// until the error is within the threshold
-		MLReal avgError= 0.0;
+		MLReal error= 0.0;
 		int cycle= 0;
 		do {
-			avgError= 0.0;
+			error= 0.0;
 
 			for (int i= 0; i < REGRESSION_TEST_TRAINING_SET; i++) {
 				net.inputBuffer[0]= trainingSet[i % REGRESSION_TEST_TRAINING_SET];
@@ -280,18 +284,17 @@
 				[net feedForward];
 				
 				net.expectedOutputBuffer[0]= ML_SQRT(trainingSet[i % REGRESSION_TEST_TRAINING_SET]);
-				avgError += 0.5 * (net.outputBuffer[0] - net.expectedOutputBuffer[0]) * (net.outputBuffer[0] - net.expectedOutputBuffer[0]);
+				error += 0.5 * (net.outputBuffer[0] - net.expectedOutputBuffer[0]) * (net.outputBuffer[0] - net.expectedOutputBuffer[0]);
 				
 				[net backPropagate];
 				[net updateWeights];
 			}
 			
 			cycle++;
-			avgError /= (MLReal) REGRESSION_TEST_TRAINING_SET;
 
-			NSLog(@"testRegression: completed training cycle %d, avg. error: %.2f", cycle, avgError);
+			NSLog(@"testRegression: completed training cycle %d, error: %.2f", cycle, error);
 			
-		} while (avgError > REGRESSION_TEST_TRAIN_THRESHOLD);
+		} while (error > REGRESSION_TEST_TRAIN_THRESHOLD);
 		
 		// Test the network with numbers from 1 to 10
 		for (int i= 1; i <= 10; i++) {

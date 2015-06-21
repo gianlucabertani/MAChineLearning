@@ -58,6 +58,7 @@
 @interface MLNeuralNetwork () {
 	NSMutableArray *_layers;
 	MLBackPropagationType _backPropType;
+	MLActivationFunctionType _hiddenFuncType;
 	MLActivationFunctionType _funcType;
 	
 	NSUInteger _inputSize;
@@ -97,12 +98,23 @@
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing output function type)"
 																 userInfo:@{@"config": config}];
 	
-	// Get backpropagation type from configuration: if it's missing
-	// it's not an error, we consider standard backprop (which is 0)
+	// Get hidden activation function type from configuration: if it's
+	// missing it's not an error, we consider logistic
+	NSNumber *hiddenFuncType= [config objectForKey:CONFIG_PARAM_BACK_PROPAGATION_TYPE];
+	if (!hiddenFuncType)
+		hiddenFuncType= [NSNumber numberWithInt:MLActivationFunctionTypeLogistic];
+	
+	// Get backpropagation type from configuration: if it's
+	// missing it's not an error, we consider standard backprop
 	NSNumber *backPropType= [config objectForKey:CONFIG_PARAM_BACK_PROPAGATION_TYPE];
+	if (!backPropType)
+		backPropType= [NSNumber numberWithInt:MLBackPropagationTypeStandard];
 
 	// Create the network
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes backPropagationType:[backPropType intValue] outputFunctionType:[funcType intValue]];
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes
+													  backPropagationType:[backPropType intValue]
+													   hiddenFunctionType:[hiddenFuncType intValue]
+													   outputFunctionType:[funcType intValue]];
 	
 	// Get weights from configuration
 	for (int i= 1; i < [network.layers count]; i++) {
@@ -159,19 +171,32 @@
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType {
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes backPropagationType:backPropType outputFunctionType:funcType];
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType {
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes backPropagationType:MLBackPropagationTypeRPROP hiddenFunctionType:MLActivationFunctionTypeLogistic outputFunctionType:funcType];
 	
 	return network;
 }
 
-- (instancetype) initWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType {
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType {
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes backPropagationType:backPropType hiddenFunctionType:MLActivationFunctionTypeLogistic outputFunctionType:funcType];
+	
+	return network;
+}
+
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType {
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes backPropagationType:backPropType hiddenFunctionType:hiddenFuncType outputFunctionType:funcType];
+	
+	return network;
+}
+
+- (instancetype) initWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType {
 	if ((self = [super init])) {
 		
 		// Initialize the layers: layer 0 is the input layer,
 		// while the last layer is the output layer
 		_layers= [NSMutableArray array];
 		_backPropType= backPropType;
+		_hiddenFuncType= hiddenFuncType;
 		_funcType= funcType;
 
 		int i= 0;
@@ -194,7 +219,7 @@
 			} else {
 				
 				// Create hidden neuron layer
-				MLNeuronLayer *layer= [[MLNeuronLayer alloc] initWithIndex:i size:[size intValue] activationFunctionType:MLActivationFunctionTypeLogistic];
+				MLNeuronLayer *layer= [[MLNeuronLayer alloc] initWithIndex:i size:[size intValue] activationFunctionType:hiddenFuncType];
 				[_layers addObject:layer];
 			}
 			
@@ -234,7 +259,7 @@
 			if (i > 0) {
 				MLNeuronLayer *neuronLayer= (MLNeuronLayer *) layer;
 				for (MLNeuron *neuron in neuronLayer.neurons)
-					[neuron setUp];
+					[neuron setUpForBackpropagationWithAlgorithm:_backPropType];
 			}
 			
 			i++;

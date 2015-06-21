@@ -203,6 +203,8 @@ int main(int argc, const char * argv[]) {
 											 outputBuffer:net.expectedOutputBuffer];
 						
 						// Compute the error (for statistics only)
+						// NOTE: VSUB operands are inverted compared to documentation (see function
+						// definition for operand order)
 						ML_VDSP_VSUB(net.expectedOutputBuffer, 1, net.outputBuffer, 1, errorBuffer, 1, dictionary.size);
 
 						MLReal error= 0.0;

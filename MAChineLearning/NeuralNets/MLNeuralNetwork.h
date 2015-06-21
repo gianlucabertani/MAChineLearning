@@ -47,9 +47,12 @@
 #pragma mark Initialization
 
 + (MLNeuralNetwork *) createNetworkFromConfigurationDictionary:(NSDictionary *)config;
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType;
 
-- (instancetype) initWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType;
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType;
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType;
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType;
+
+- (instancetype) initWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType;
 
 
 #pragma mark -

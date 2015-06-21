@@ -301,7 +301,7 @@ static const MLReal __fourty=       40.0;
 			
 		case MLActivationFunctionTypeLogistic: {
 			
-			// Apply a threshold before the function to avoid NaNs
+			// Apply clipping before the function to avoid NaNs
 			ML_VDSP_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
 			
 			// An "int" size is needed by vvexp,
@@ -318,7 +318,7 @@ static const MLReal __fourty=       40.0;
 			
 		case MLActivationFunctionTypeHyperbolic: {
 			
-			// Apply a threshold before the function to avoid NaNs
+			// Apply clipping before the function to avoid NaNs
 			ML_VDSP_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
 
 			// An "int" size is needed by vvexp,
@@ -410,11 +410,10 @@ static const MLReal __fourty=       40.0;
 			break;
 	}
 	
+	// Second step: compute the bias delta, but
+	// only for certain backpropagation algorithms
 	switch (backPropType) {
 		case MLBackPropagationTypeStandard:
-			
-			// Second step: compute the bias delta,
-			// but only with standard backpropagation
 			ML_VDSP_VSMA(_deltaBuffer, 1, &learningRate, _biasDeltaBuffer, 1, _biasDeltaBuffer, 1, _size);
 			break;
 			
