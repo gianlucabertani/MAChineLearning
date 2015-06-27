@@ -249,9 +249,12 @@ static const MLReal __fourty=       40.0;
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
 																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 
+	// Compute beta for Nguyen-Widrow randomization
+	MLReal beta= 0.7 * ML_POW(((MLReal) self.size), 1.0 / ((MLReal) self.previousLayer.size));
+
 	// Randomize each neuron
 	for (MLNeuron *neuron in _neurons)
-		[neuron randomizeWeights];
+		[neuron randomizeWeightsWithBeta:beta];
 }
 
 

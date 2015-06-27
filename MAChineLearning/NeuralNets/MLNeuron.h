@@ -54,7 +54,7 @@
 #pragma mark Setup and randomization
 
 - (void) setUpForBackpropagationWithAlgorithm:(MLBackPropagationType)backPropType;
-- (void) randomizeWeights;
+- (void) randomizeWeightsWithBeta:(MLReal)beta;
 
 
 #pragma mark -

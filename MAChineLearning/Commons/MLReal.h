@@ -80,6 +80,7 @@ typedef double          MLReal;
 #define ML_COS          cos
 #define ML_SIN          sin
 #define ML_MODF         modf
+#define ML_POW          pow
  
  */
 
@@ -126,6 +127,6 @@ typedef float           MLReal;
 #define ML_COS          cosf
 #define ML_SIN          sinf
 #define ML_MODF         modff
-
+#define ML_POW          powf
 
 #endif

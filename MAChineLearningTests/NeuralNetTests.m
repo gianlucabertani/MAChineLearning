@@ -35,11 +35,10 @@
 #import <XCTest/XCTest.h>
 #import <MAChineLearning/MAChineLearning.h>
 
-#define NAND_TEST_TRAIN_CYCLES                           (3)
+#define NAND_TEST_TRAIN_CYCLES                          (10)
 #define NAND_TEST_LEARNING_RATE                          (0.1)
 
-#define BACKPROPAGATION_TEST_TRAIN_CYCLES             (3000)
-#define BACKPROPAGATION_TEST_LEARNING_RATE               (0.5)
+#define BACKPROPAGATION_TEST_TRAIN_CYCLES              (150)
 #define BACKPROPAGATION_TEST_VERIFICATION_CYCLES        (50)
 
 #define REGRESSION_TEST_TRAINING_SET                    (50)
@@ -82,6 +81,7 @@
 - (void) testNAND {
 	@try {
 		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@3, @1]
+																   useBias:NO
 													   backPropagationType:MLBackPropagationTypeStandard
 														outputFunctionType:MLActivationFunctionTypeStep];
 		
@@ -134,7 +134,7 @@
 			 // Dump network status
 			 MLNeuronLayer *layer= [net.layers objectAtIndex:1];
 			 MLNeuron *neuron= [layer.neurons objectAtIndex:0];
-			 NSLog(@"testNAND: bias: %.2f, weight 1: %.2f, weight 2: %.2f, weight 3: %.2f", neuron.bias, neuron.weights[0], neuron.weights[1], neuron.weights[2]);
+			 NSLog(@"testNAND: weight 1: %.2f, weight 2: %.2f, weight 3: %.2f", neuron.weights[0], neuron.weights[1], neuron.weights[2]);
 			 
 			 */
 		}
@@ -186,7 +186,9 @@
 - (void) testBackpropagation {
 	@try {
 		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@2, @2, @1]
-													   backPropagationType:MLBackPropagationTypeStandard
+																   useBias:NO
+													   backPropagationType:MLBackPropagationTypeRPROP
+														hiddenFunctionType:MLActivationFunctionTypeLinear
 														outputFunctionType:MLActivationFunctionTypeLinear];
 		
 		MLNeuronLayer *layer1= [net.layers objectAtIndex:1];
@@ -196,42 +198,52 @@
 		MLNeuronLayer *layer2= [net.layers objectAtIndex:2];
 		MLNeuron *neuron2= [layer2.neurons objectAtIndex:0];
 		
+		// Set initial weights
+		neuron11.weights[0]= 0.1;
+		neuron11.weights[1]= 0.2;
+		
+		neuron12.weights[0]= 0.3;
+		neuron12.weights[1]= 0.4;
+		
+		neuron2.weights[0]= 0.5;
+		neuron2.weights[1]= 0.6;
+		
 		NSDate *begin= [NSDate date];
 		
 		for (int i= 1; i <= BACKPROPAGATION_TEST_TRAIN_CYCLES + BACKPROPAGATION_TEST_VERIFICATION_CYCLES; i++) {
-			double sum= [MLRandom nextUniformRealWithMin:0.10 max:0.90];
+			MLReal sum= i % BACKPROPAGATION_TEST_VERIFICATION_CYCLES;
 			
 			net.inputBuffer[0]= 3.0 * sum / 2.0;
 			net.inputBuffer[1]= sum / 3.0;
 			
 			[net feedForward];
 			
-			double computedOutput= net.outputBuffer[0];
+			MLReal computedOutput= net.outputBuffer[0];
 			net.expectedOutputBuffer[0] = sum;
-			double delta= ABS(sum - computedOutput);
+			MLReal delta= ABS(sum - computedOutput);
 			
 			if (i <= BACKPROPAGATION_TEST_TRAIN_CYCLES) {
-				[net backPropagateWithLearningRate:BACKPROPAGATION_TEST_LEARNING_RATE];
+				[net backPropagate];
 				[net updateWeights];
 				
 				/* Uncomment to dump network status
 				 
 				 // Dump network status
 				 NSLog(@"testBackpropagation: training cycle %d, expected: %.2f, computed: %.2f, delta: %.2f, status:\n" \
-				       @"\t|B:%.2f W01:%.2f W02:%.2f|\n" \
-				       @"\t                           x |B:%.2f W21:%.2f W22:%.2f|\n" \
-				       @"\t|B:%.2f W01:%.2f W02:%.2f|\n\n",
+				       @"\t|W01:%.2f W02:%.2f|\n" \
+				       @"\t                           x |W21:%.2f W22:%.2f|\n" \
+				       @"\t|W01:%.2f W02:%.2f|\n\n",
 				       i, sum, computedOutput, delta,
-				       neuron11.bias, neuron11.weights[0], neuron11.weights[1],
-				       neuron2.bias, neuron2.weights[0], neuron2.weights[1],
-				       neuron12.bias, neuron12.weights[0], neuron12.weights[1]);
+				       neuron11.weights[0], neuron11.weights[1],
+				       neuron2.weights[0], neuron2.weights[1],
+				       neuron12.weights[0], neuron12.weights[1]);
 				 
 				 */
-				
+
 			} else {
 				
 				// Check accuracy in the last cycles
-				XCTAssertEqualWithAccuracy(delta, 0.00, 0.05);
+				XCTAssertLessThan(delta, 0.01);
 			}
 		}
 		
@@ -239,69 +251,14 @@
 		NSLog(@"testBackpropagation: average training/verification time: %.2f µs per cycle", (elapsed * 1000000.0) / ((double) BACKPROPAGATION_TEST_TRAIN_CYCLES + BACKPROPAGATION_TEST_VERIFICATION_CYCLES));
 		
 		// Check final weights
-		XCTAssertEqualWithAccuracy(neuron11.weights[0], 1.15, 0.05);
-		XCTAssertEqualWithAccuracy(neuron11.weights[1], 0.26, 0.05);
+		XCTAssertEqualWithAccuracy(neuron11.weights[0], 0.26, 0.01);
+		XCTAssertEqualWithAccuracy(neuron11.weights[1], 0.36, 0.01);
 		
-		XCTAssertEqualWithAccuracy(neuron12.weights[0], 1.15, 0.05);
-		XCTAssertEqualWithAccuracy(neuron12.weights[1], 0.26, 0.05);
+		XCTAssertEqualWithAccuracy(neuron12.weights[0], 0.46, 0.01);
+		XCTAssertEqualWithAccuracy(neuron12.weights[1], 0.56, 0.1);
 		
-		XCTAssertEqualWithAccuracy(neuron2.weights[0], 1.20, 0.05);
-		XCTAssertEqualWithAccuracy(neuron2.weights[1], 1.20, 0.05);
-		
-	} @catch (NSException *e) {
-		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
-	}
-}
-
-- (void) testRegression {
-	@try {
-		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@1, @10, @1]
-													   backPropagationType:MLBackPropagationTypeRPROP
-														hiddenFunctionType:MLActivationFunctionTypeLinear
-														outputFunctionType:MLActivationFunctionTypeLinear];
-		
-		// Randomize weights
-		[net randomizeWeights];
-		
-		// Generate some random numbers between 0 and 100
-		MLReal trainingSet[REGRESSION_TEST_TRAINING_SET];
-		for (int i= 0; i < REGRESSION_TEST_TRAINING_SET; i++)
-			trainingSet[i]= [MLRandom nextUniformUIntWithMax:100];
-		
-		// Train the network to produce the square root of the input,
-		// until the error is within the threshold
-		MLReal error= 0.0;
-		int cycle= 0;
-		do {
-			error= 0.0;
-
-			for (int i= 0; i < REGRESSION_TEST_TRAINING_SET; i++) {
-				net.inputBuffer[0]= trainingSet[i % REGRESSION_TEST_TRAINING_SET];
-
-				[net feedForward];
-				
-				net.expectedOutputBuffer[0]= ML_SQRT(trainingSet[i % REGRESSION_TEST_TRAINING_SET]);
-				error += 0.5 * (net.outputBuffer[0] - net.expectedOutputBuffer[0]) * (net.outputBuffer[0] - net.expectedOutputBuffer[0]);
-				
-				[net backPropagate];
-				[net updateWeights];
-			}
-			
-			cycle++;
-			
-			error /= (MLReal) REGRESSION_TEST_TRAINING_SET;
-
-			NSLog(@"testRegression: completed training cycle %d, error: %.2f", cycle, error);
-			
-		} while (error > REGRESSION_TEST_TRAIN_THRESHOLD);
-		
-		// Test the network with numbers from 1 to 10
-		for (int i= 1; i <= 10; i++) {
-			net.inputBuffer[0]= (MLReal) i*i;
-			[net feedForward];
-			
-			XCTAssertEqualWithAccuracy(net.outputBuffer[0], i, REGRESSION_TEST_TRAIN_THRESHOLD);
-		}
+		XCTAssertEqualWithAccuracy(neuron2.weights[0], 0.66, 0.01);
+		XCTAssertEqualWithAccuracy(neuron2.weights[1], 0.76, 0.01);
 		
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
@@ -311,6 +268,7 @@
 - (void) testLoadSave {
 	@try {
 		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@3, @2, @1]
+																   useBias:YES
 													   backPropagationType:MLBackPropagationTypeStandard
 														outputFunctionType:MLActivationFunctionTypeLogistic];
 		
@@ -339,13 +297,13 @@
 		 
 		 // Dump network status
 		 NSLog(@"testLoadSave: reference network status after %d training cycles:\n" \
-		       @"\t|B:%.2f W01:%.2f W02:%.2f|\n" \
-		       @"\t                           x |B:%.2f W21:%.2f W22:%.2f|\n" \
-		       @"\t|B:%.2f W01:%.2f W02:%.2f|\n\n",
+		       @"\t|W01:%.2f W02:%.2f|\n" \
+		       @"\t                           x |W21:%.2f W22:%.2f|\n" \
+		       @"\t|W01:%.2f W02:%.2f|\n\n",
 		       LOAD_SAVE_TEST_TRAIN_CYCLES,
-		       neuron11.bias, neuron11.weights[0], neuron11.weights[1],
-		       neuron2.bias, neuron2.weights[0], neuron2.weights[1],
-		       neuron12.bias, neuron12.weights[0], neuron12.weights[1]);
+		       neuron11.weights[0], neuron11.weights[1],
+		       neuron2.weights[0], neuron2.weights[1],
+		       neuron12.weights[0], neuron12.weights[1]);
 		 
 		 */
 		
@@ -353,9 +311,9 @@
 		NSLog(@"testLoadSave: average training time: %.2f µs per cycle", (elapsed * 1000000.0) / ((double) LOAD_SAVE_TEST_TRAIN_CYCLES));
 		
 		// Run a simple compute and save inputs and output
-		double input0= [MLRandom nextUniformRealWithMin:0.0 max:5.0];
-		double input1= [MLRandom nextUniformRealWithMin:-2.5 max:2.5];
-		double input2= [MLRandom nextUniformRealWithMin:-5.0 max:0.0];
+		MLReal input0= [MLRandom nextUniformRealWithMin:0.0 max:5.0];
+		MLReal input1= [MLRandom nextUniformRealWithMin:-2.5 max:2.5];
+		MLReal input2= [MLRandom nextUniformRealWithMin:-5.0 max:0.0];
 		
 		net.inputBuffer[0]= input0;
 		net.inputBuffer[1]= input1;
@@ -363,7 +321,7 @@
 		
 		[net feedForward];
 		
-		double output= net.outputBuffer[0];
+		MLReal output= net.outputBuffer[0];
 		
 		// Save the config and recreate the network
 		NSDictionary *config= [net saveConfigurationToDictionary];
@@ -380,12 +338,12 @@
 		 
 		 // Dump network status
 		 NSLog(@"testLoadSave: recreated network status:\n" \
-			   @"\t|B:%.2f W01:%.2f W02:%.2f|\n" \
-			   @"\t                           x |B:%.2f W21:%.2f W22:%.2f|\n" \
-			   @"\t|B:%.2f W01:%.2f W02:%.2f|\n\n",
-			   neuron11_2.bias, neuron11_2.weights[0], neuron11_2.weights[1],
-			   neuron2_2.bias, neuron2_2.weights[0], neuron2_2.weights[1],
-			   neuron12_2.bias, neuron12_2.weights[0], neuron12_2.weights[1]);
+			   @"\t|W01:%.2f W02:%.2f|\n" \
+			   @"\t                           x |W21:%.2f W22:%.2f|\n" \
+			   @"\t|W01:%.2f W02:%.2f|\n\n",
+			   neuron11_2.weights[0], neuron11_2.weights[1],
+			   neuron2_2.weights[0], neuron2_2.weights[1],
+			   neuron12_2.weights[0], neuron12_2.weights[1]);
 		 
 		 */
 		

@@ -343,8 +343,24 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 	}
 }
 
-- (void) randomizeWeights {
-	[MLRandom fillVector:_weights size:_inputSize ofGaussianRealsWithMean:0.0 sigma:ML_SQRT(_inputSize)];
+- (void) randomizeWeightsWithBeta:(MLReal)beta {
+	if ((beta != 0.0) && (_inputSize > 1)) {
+		
+		// Apply Nguyen-Widrow randomization
+		[MLRandom fillVector:_weights size:_inputSize ofUniformRealsWithMin:-0.7 max:0.7];
+
+		MLReal norm= 0.0;
+		ML_VDSP_SVESQ(_weights, 1, &norm, _inputSize);
+		norm= ML_SQRT(norm);
+		
+		ML_VDSP_VSMUL(_weights, 1, &beta, _weights, 1, _inputSize);
+		ML_VDSP_VSDIV(_weights, 1, &norm, _weights, 1, _inputSize);
+		
+	} else {
+		
+		// Apply common randomization
+		[MLRandom fillVector:_weights size:_inputSize ofGaussianRealsWithMean:0.0 sigma:ML_SQRT(_inputSize)];
+	}
 }
 
 

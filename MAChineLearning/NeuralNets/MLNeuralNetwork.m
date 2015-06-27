@@ -95,16 +95,22 @@
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing layer sizes)"
 																 userInfo:@{@"config": config}];
 	
+	// Get use of bias from configuration
+	NSNumber *useBias= [config objectForKey:CONFIG_PARAM_USE_BIAS];
+	if (!useBias)
+		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing flag for use of bias)"
+																 userInfo:@{@"config": config}];
+	
+	// Get hidden activation function type from configuration
+	NSNumber *hiddenFuncType= [config objectForKey:CONFIG_PARAM_HIDDEN_FUNCTION_TYPE];
+	if (!hiddenFuncType)
+		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing hidden function type)"
+																 userInfo:@{@"config": config}];
+	
 	NSNumber *funcType= [config objectForKey:CONFIG_PARAM_OUTPUT_FUNCTION_TYPE];
 	if (!funcType)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration (missing output function type)"
 																 userInfo:@{@"config": config}];
-	
-	// Get hidden activation function type from configuration: if it's
-	// missing it's not an error, we consider logistic
-	NSNumber *useBias= [config objectForKey:CONFIG_PARAM_USE_BIAS];
-	if (!useBias)
-		useBias= [NSNumber numberWithBool:YES];
 	
 	// Get backpropagation type from configuration: if it's
 	// missing it's not an error, we consider standard backprop
@@ -112,12 +118,6 @@
 	if (!backPropType)
 		backPropType= [NSNumber numberWithInt:MLBackPropagationTypeStandard];
 	
-	// Get use of bias from configuration: if it's missing it's not an error,
-	// we consider as a YES
-	NSNumber *hiddenFuncType= [config objectForKey:CONFIG_PARAM_HIDDEN_FUNCTION_TYPE];
-	if (!hiddenFuncType)
-		hiddenFuncType= [NSNumber numberWithInt:MLActivationFunctionTypeLogistic];
-
 	// Create the network
 	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes
 																  useBias:[useBias boolValue]
@@ -183,8 +183,20 @@
 	return network;
 }
 
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes useBias:(BOOL)useBias backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType {
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:useBias backPropagationType:backPropType hiddenFunctionType:MLActivationFunctionTypeLogistic outputFunctionType:funcType];
+	
+	return network;
+}
+
 + (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType {
 	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES backPropagationType:backPropType hiddenFunctionType:hiddenFuncType outputFunctionType:funcType];
+	
+	return network;
+}
+
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes useBias:(BOOL)useBias backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType {
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:useBias backPropagationType:backPropType hiddenFunctionType:hiddenFuncType outputFunctionType:funcType];
 	
 	return network;
 }
@@ -396,8 +408,10 @@
 
 	// Save layer sizes
 	NSMutableArray *sizes= [[NSMutableArray alloc] initWithCapacity:[_layers count]];
-	for (MLLayer *layer in _layers)
-		[sizes addObject:[NSNumber numberWithUnsignedInteger:layer.size]];
+	for (MLLayer *layer in _layers) {
+		BOOL hasBiasNeuron= ([layer isKindOfClass:[MLNeuronLayer class]] && [(MLNeuronLayer *) layer usingBias]);
+		[sizes addObject:[NSNumber numberWithUnsignedInteger:layer.size - (hasBiasNeuron ? 1 : 0)]];
+	}
 	
 	[config setObject:sizes forKey:CONFIG_PARAM_LAYER_SIZES];
 	
@@ -414,7 +428,7 @@
 			for (int k= 0; k < previousLayer.size; k++)
 				[weights addObject:[NSNumber numberWithDouble:neuron.weights[k]]];
 			
-			NSMutableDictionary *neuronConfig= [[NSMutableDictionary alloc] initWithCapacity:2];
+			NSMutableDictionary *neuronConfig= [[NSMutableDictionary alloc] initWithCapacity:1];
 			[neuronConfig setObject:weights forKey:CONFIG_PARAM_WEIGHTS];
 			
 			[layerConfig addObject:neuronConfig];
