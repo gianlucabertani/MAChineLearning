@@ -44,10 +44,8 @@
 #define REGRESSION_TEST_TRAINING_SET                    (50)
 #define REGRESSION_TEST_TRAIN_THRESHOLD                  (0.15)
 
-#define LOAD_SAVE_TEST_TRAIN_CYCLES                   (2000)
-#define LOAD_SAVE_TEST_LEARNING_RATE                     (0.8)
-
-#define POW_2_52                          (4503599627370496.0)
+#define LOAD_SAVE_TEST_TRAIN_CYCLES                    (100)
+#define LOAD_SAVE_TEST_LEARNING_RATE                     (0.1)
 
 
 #pragma mark -
@@ -80,10 +78,12 @@
 
 - (void) testNAND {
 	@try {
-		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@3, @1]
-																   useBias:NO
-													   backPropagationType:MLBackPropagationTypeStandard
-														outputFunctionType:MLActivationFunctionTypeStep];
+		MLNeuralNetwork *net= [[MLNeuralNetwork alloc] initWithLayerSizes:@[@3, @1]
+																  useBias:NO
+														 costFunctionType:MLCostFunctionTypeSquaredError
+													  backPropagationType:MLBackPropagationTypeStandard
+													   hiddenFunctionType:MLActivationFunctionTypeLinear
+													   outputFunctionType:MLActivationFunctionTypeStep];
 		
 		NSDate *begin= [NSDate date];
 		
@@ -185,11 +185,12 @@
 
 - (void) testBackpropagation {
 	@try {
-		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@2, @2, @1]
-																   useBias:NO
-													   backPropagationType:MLBackPropagationTypeRPROP
-														hiddenFunctionType:MLActivationFunctionTypeLinear
-														outputFunctionType:MLActivationFunctionTypeLinear];
+		MLNeuralNetwork *net= [[MLNeuralNetwork alloc] initWithLayerSizes:@[@2, @2, @1]
+																  useBias:NO
+														 costFunctionType:MLCostFunctionTypeSquaredError
+													  backPropagationType:MLBackPropagationTypeRPROP
+													   hiddenFunctionType:MLActivationFunctionTypeLinear
+													   outputFunctionType:MLActivationFunctionTypeLinear];
 		
 		MLNeuronLayer *layer1= [net.layers objectAtIndex:1];
 		MLNeuron *neuron11= [layer1.neurons objectAtIndex:0];
@@ -267,10 +268,14 @@
 
 - (void) testLoadSave {
 	@try {
-		MLNeuralNetwork *net= [MLNeuralNetwork createNetworkWithLayerSizes:@[@3, @2, @1]
-																   useBias:YES
-													   backPropagationType:MLBackPropagationTypeStandard
-														outputFunctionType:MLActivationFunctionTypeLogistic];
+		MLNeuralNetwork *net= [[MLNeuralNetwork alloc] initWithLayerSizes:@[@3, @2, @1]
+																  useBias:YES
+														 costFunctionType:MLCostFunctionTypeCrossEntropy
+													  backPropagationType:MLBackPropagationTypeStandard
+													   hiddenFunctionType:MLActivationFunctionTypeLogistic
+													   outputFunctionType:MLActivationFunctionTypeLogistic];
+		
+		[net randomizeWeights];
 		
 		MLNeuronLayer *layer1= [net.layers objectAtIndex:1];
 		MLNeuron *neuron11= [layer1.neurons objectAtIndex:0];
@@ -281,14 +286,18 @@
 		
 		NSDate *begin= [NSDate date];
 		
-		// Train the network with random numbers
+		// Train the network to compute the average of a sequence
+		// of progressive numbers
 		for (int i= 1; i <= LOAD_SAVE_TEST_TRAIN_CYCLES; i++) {
-			net.inputBuffer[0]= [MLRandom nextUniformRealWithMin:0.0 max:5.0];
-			net.inputBuffer[1]= [MLRandom nextUniformRealWithMin:-2.5 max:2.5];
-			net.inputBuffer[2]= [MLRandom nextUniformRealWithMin:-5.0 max:0.0];
-			net.expectedOutputBuffer[0]= [MLRandom nextUniformRealWithMin:0.5 max:1.0];
+			MLReal base= 1.0 / ((MLReal) i);
+			net.inputBuffer[0]= base - 0.07;
+			net.inputBuffer[1]= base + 0.05;
+			net.inputBuffer[2]= base + 0.13;
 			
 			[net feedForward];
+			
+			net.expectedOutputBuffer[0]= (net.inputBuffer[0] + net.inputBuffer[1] + net.inputBuffer[2]) / 3.0;
+
 			[net backPropagateWithLearningRate:LOAD_SAVE_TEST_LEARNING_RATE];
 			[net updateWeights];
 		}
@@ -311,9 +320,10 @@
 		NSLog(@"testLoadSave: average training time: %.2f µs per cycle", (elapsed * 1000000.0) / ((double) LOAD_SAVE_TEST_TRAIN_CYCLES));
 		
 		// Run a simple compute and save inputs and output
-		MLReal input0= [MLRandom nextUniformRealWithMin:0.0 max:5.0];
-		MLReal input1= [MLRandom nextUniformRealWithMin:-2.5 max:2.5];
-		MLReal input2= [MLRandom nextUniformRealWithMin:-5.0 max:0.0];
+		MLReal base= 1.0 / [MLRandom nextUniformRealWithMin:1.0 max:LOAD_SAVE_TEST_TRAIN_CYCLES];
+		MLReal input0= base - 0.07;
+		MLReal input1= base + 0.05;
+		MLReal input2= base + 0.13;
 		
 		net.inputBuffer[0]= input0;
 		net.inputBuffer[1]= input1;
@@ -321,7 +331,11 @@
 		
 		[net feedForward];
 		
+		MLReal expected= (input0 + input1 + input2) / 3.0;
 		MLReal output= net.outputBuffer[0];
+		
+		// Check accuracy
+		XCTAssertLessThan(ABS(output - expected), 0.1);
 		
 		// Save the config and recreate the network
 		NSDictionary *config= [net saveConfigurationToDictionary];
@@ -364,6 +378,10 @@
 		
 		[net2 feedForward];
 		
+		MLReal output2= net.outputBuffer[0];
+		
+		// Check again accuracy
+		XCTAssertLessThan(ABS(output2 - expected), 0.1);
 		XCTAssertEqualWithAccuracy(net2.outputBuffer[0], output, 0.0000000001);
 		
 	} @catch (NSException *e) {

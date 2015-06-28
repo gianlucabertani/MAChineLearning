@@ -365,7 +365,7 @@ static const MLReal __fourty=       40.0;
 	}
 }
 
-- (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType learningRate:(MLReal)learningRate {
+- (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType learningRate:(MLReal)learningRate costFunction:(MLCostFunctionType)costType {
 	if (!_neurons)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
 																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
@@ -389,12 +389,22 @@ static const MLReal __fourty=       40.0;
 			break;
 			
 		case MLActivationFunctionTypeLogistic:
+			switch (costType) {
+				case MLCostFunctionTypeCrossEntropy:
+					
+					// Apply formula: delta[i] = error[i]
+					ML_VDSP_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
+					break;
+					
+				case MLCostFunctionTypeSquaredError:
 			
-			// Apply formula: delta[i] = output[i] * (1 - output[i]) * error[i]
-			ML_VDSP_VSMUL(_outputBuffer, 1, &__minusOne, _tempBuffer, 1, _size);
-			ML_VDSP_VSADD(_tempBuffer, 1, &__one, _tempBuffer, 1, _size);
-			ML_VDSP_VMUL(_tempBuffer, 1, _outputBuffer, 1, _tempBuffer, 1, _size);
-			ML_VDSP_VMUL(_tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
+					// Apply formula: delta[i] = output[i] * (1 - output[i]) * error[i]
+					ML_VDSP_VSMUL(_outputBuffer, 1, &__minusOne, _tempBuffer, 1, _size);
+					ML_VDSP_VSADD(_tempBuffer, 1, &__one, _tempBuffer, 1, _size);
+					ML_VDSP_VMUL(_tempBuffer, 1, _outputBuffer, 1, _tempBuffer, 1, _size);
+					ML_VDSP_VMUL(_tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
+					break;
+			}
 			break;
 			
 		case MLActivationFunctionTypeHyperbolic:

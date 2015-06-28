@@ -36,8 +36,9 @@
 #import "MLReal.h"
 
 #import "MLNeuralNetworkStatus.h"
-#import "MLBackPropagationType.h"
 #import "MLActivationFunctionType.h"
+#import "MLBackPropagationType.h"
+#import "MLCostFunctionType.h"
 
 
 @interface MLNeuralNetwork : NSObject
@@ -49,12 +50,13 @@
 + (MLNeuralNetwork *) createNetworkFromConfigurationDictionary:(NSDictionary *)config;
 
 + (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType;
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes costFunctionType:(MLCostFunctionType)costType outputFunctionType:(MLActivationFunctionType)funcType;
 + (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType;
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes useBias:(BOOL)useBias backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType;
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes costFunctionType:(MLCostFunctionType)costType backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType;
 + (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType;
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes useBias:(BOOL)useBias backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType;
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes costFunctionType:(MLCostFunctionType)costType backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType;
 
-- (instancetype) initWithLayerSizes:(NSArray *)sizes useBias:(BOOL)useBias backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType;
+- (instancetype) initWithLayerSizes:(NSArray *)sizes useBias:(BOOL)useBias costFunctionType:(MLCostFunctionType)costType backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType;
 
 
 #pragma mark -
@@ -91,6 +93,7 @@
 @property (nonatomic, readonly) NSUInteger outputSize;
 @property (nonatomic, readonly) MLReal *outputBuffer;
 @property (nonatomic, readonly) MLReal *expectedOutputBuffer;
+@property (nonatomic, readonly) MLReal cost;
 
 @property (nonatomic, readonly) MLNeuralNetworkStatus status;
 

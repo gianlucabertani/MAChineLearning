@@ -19,12 +19,14 @@ FOUNDATION_EXPORT const unsigned char MAChineLearningVersionString[];
 #import <MAChineLearning/MLNeuralNetwork.h>
 #import <MAChineLearning/MLNeuralNetwork.h>
 #import <MAChineLearning/MLNeuralNetworkStatus.h>
-#import <MAChineLearning/MLBackPropagationType.h>
 #import <MAChineLearning/MLActivationFunctionType.h>
+#import <MAChineLearning/MLBackPropagationType.h>
+#import <MAChineLearning/MLCostFunctionType.h>
 #import <MAChineLearning/MLLayer.h>
 #import <MAChineLearning/MLInputLayer.h>
 #import <MAChineLearning/MLNeuronLayer.h>
 #import <MAChineLearning/MLNeuron.h>
+#import <MAChineLearning/MLBiasNeuron.h>
 #import <MAChineLearning/MLNeuralNetworkException.h>
 #import <MAChineLearning/MLBagOfWords.h>
 #import <MAChineLearning/MLBagOfWordsException.h>
