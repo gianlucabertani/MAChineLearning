@@ -50,8 +50,6 @@
 #define CONFIG_PARAM_LAYER                   (@"layer%d")
 #define CONFIG_PARAM_WEIGHTS                 (@"weights")
 
-#define DEFAULT_LEARNING_RATE                (0.1)
-
 
 #pragma mark -
 #pragma mark NeuralNetwork extension
@@ -324,11 +322,36 @@
 }
 
 - (void) backPropagate {
-	[self backPropagateWithLearningRate:DEFAULT_LEARNING_RATE];
+	
+	// Checks
+	switch (_backPropType) {
+		case MLBackPropagationTypeStandard:
+			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid learning rate: standard backpropagation requires a positive learning rate"
+																	 userInfo:nil];
+			
+		case MLBackPropagationTypeRPROP:
+			[self backPropagateWithLearningRate:0.0];
+			break;
+	}
 }
 
 - (void) backPropagateWithLearningRate:(MLReal)learningRate {
 	
+	// Checks
+	switch (_backPropType) {
+		case MLBackPropagationTypeStandard:
+			if (learningRate <= 0.0)
+				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid learning rate: standard backpropagation requires a positive learning rate"
+																		 userInfo:nil];
+			break;
+			
+		case MLBackPropagationTypeRPROP:
+			if (learningRate != 0.0)
+				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid learning rate: RPROP backpropagation makes no use of learning rate, should not be passed"
+																		 userInfo:nil];
+			break;
+	}
+
 	// Check call sequence
 	switch (_status) {
 		case MLNeuralNetworkStatusFeededForward:
