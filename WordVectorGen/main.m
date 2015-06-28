@@ -116,6 +116,10 @@ int main(int argc, const char * argv[]) {
 		MLNeuralNetwork *net= [[MLNeuralNetwork alloc] initWithLayerSizes:@[[NSNumber numberWithUnsignedInteger:dictionary.size],
 																			@VECTOR_SIZE,
 																			[NSNumber numberWithUnsignedInteger:dictionary.size]]
+																  useBias:NO
+														 costFunctionType:MLCostFunctionTypeCrossEntropy
+													  backPropagationType:MLBackPropagationTypeStandard
+													   hiddenFunctionType:MLActivationFunctionTypeLogistic
 													   outputFunctionType:MLActivationFunctionTypeLogistic];
 		
 		// Randomization of network weights (i.e. initial vectors)
@@ -203,13 +207,7 @@ int main(int argc, const char * argv[]) {
 											 outputBuffer:net.expectedOutputBuffer];
 						
 						// Compute the error (for statistics only)
-						// NOTE: VSUB operands are inverted compared to documentation (see function
-						// definition for operand order)
-						ML_VDSP_VSUB(net.expectedOutputBuffer, 1, net.outputBuffer, 1, errorBuffer, 1, dictionary.size);
-
-						MLReal error= 0.0;
-						ML_VDSP_SVESQ(errorBuffer, 1, &error, dictionary.size);
-						avgError += error / 2.0;
+						avgError += net.cost;
 						
 						// Compute the current learning rate
 						MLReal learningRate= MAX(LEARNING_RATE * (1.0 - progress), MIN_LEARNING_RATE);
@@ -233,14 +231,14 @@ int main(int argc, const char * argv[]) {
 						NSTimeInterval elapsed= [[NSDate date] timeIntervalSinceDate:begin];
 						avgError /= (MLReal) scannedContexts;
 						
-						NSLog(@"- Lines read: %8lu, cycle: %lu, progress: %5.2f%%, speed: %7.2f words/s, error: %6.2f", reader.lineNumber, trainingCycles +1, 100.0 * progress, (((double) scannedContexts) / elapsed), avgError);
+						NSLog(@"- Lines read: %8lu, cycle: %lu, progress: %5.2f%%, speed: %7.2f words/s, cost: %6.2f", reader.lineNumber, trainingCycles +1, 100.0 * progress, (((double) scannedContexts) / elapsed), avgError);
 
 						avgError= 0.0;
 						scannedContexts= 0;
 						begin= nil;
 					}
 					
-					if (reader.lineNumber % 1000 == 0) {
+					if (reader.lineNumber % 10000 == 0) {
 						
 						// Test the model
 						MLWordVectorMap *map= [MLWordVectorMap createFromNeuralNetwork:net dictionary:dictionary];
