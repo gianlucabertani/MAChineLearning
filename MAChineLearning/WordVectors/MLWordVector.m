@@ -50,6 +50,7 @@
 	BOOL _freeOnDealloc;
 
 	MLReal _magnitude;
+	MLReal *_temp;
 }
 
 
@@ -86,6 +87,11 @@
 	if (_freeOnDealloc) {
 		free(_vector);
 		_vector= NULL;
+	}
+	
+	if (_temp) {
+		free(_temp);
+		_temp= NULL;
 	}
 }
 
@@ -175,28 +181,26 @@
 														   userInfo:@{@"size": [NSNumber numberWithUnsignedInteger:_size],
 																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
 	
-	// Creation of difference vector
-	MLReal *subVector= NULL;
-	
-	int err= posix_memalign((void **) &subVector,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * _size);
-	if (err)
-		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
-														   userInfo:@{@"buffer": @"subVector",
-																	  @"error": [NSNumber numberWithInt:err]}];
+	// Allocate temp vector, if needed
+	if (!_temp) {
+		int err= posix_memalign((void **) &_temp,
+								BUFFER_MEMORY_ALIGNMENT,
+								sizeof(MLReal) * _size);
+		if (err)
+			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
+															   userInfo:@{@"buffer": @"temp",
+																		  @"error": [NSNumber numberWithInt:err]}];
+	}
 
 	// Subtraction of vectors
 	// NOTE: VSUB operands are inverted compared to documentation (see function
 	// definition for operand order)
-	ML_VDSP_VSUB(vector.vector, 1, _vector, 1, subVector, 1, _size);
+	ML_VDSP_VSUB(vector.vector, 1, _vector, 1, _temp, 1, _size);
 	
 	// Compute magnitude of vector difference
 	MLReal distance= 0.0;
-	ML_VDSP_SVESQ(subVector, 1, &distance, _size);
+	ML_VDSP_SVESQ(_temp, 1, &distance, _size);
 	distance= ML_SQRT(distance);
-	
-	free(subVector);
 	
 	return distance;
 }

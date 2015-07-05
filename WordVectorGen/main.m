@@ -242,7 +242,7 @@ int main(int argc, const char * argv[]) {
 						blockBegin= nil;
 					}
 					
-					if (reader.lineNumber % 10000 == 0) {
+					if (reader.lineNumber % 1000 == 0) {
 						
 						// Test the model
 						MLWordVectorMap *map= [MLWordVectorMap createFromNeuralNetwork:net dictionary:dictionary];
