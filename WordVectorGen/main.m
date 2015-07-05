@@ -35,12 +35,12 @@
 #import <MAChineLearning/MAChineLearning.h>
 #import <Accelerate/Accelerate.h>
 
-#define DICTIONARY_SIZE                 (1000)
-#define VECTOR_SIZE                       (10)
+#define DICTIONARY_SIZE                 (5000)
+#define VECTOR_SIZE                      (100)
 #define CONTEXT_WINDOW                     (6)
 #define LEARNING_RATE                      (0.05)
 #define MIN_LEARNING_RATE                  (0.00005)
-#define TRAIN_CYCLES                       (5)
+#define TRAIN_CYCLES                       (1)
 
 #define RETVAL_MISSING_ARGUMENT            (9)
 #define RETVAL_BUFFER_ALLOCATION_ERROR    (17)
@@ -138,6 +138,7 @@ int main(int argc, const char * argv[]) {
 		// Global stat counters
 		NSUInteger trainingCycles= 0;
 		NSUInteger linesRead= 0;
+		NSDate *totalBegin= [NSDate date];
 		MLReal progress= 0.0;
 		
 		// Loop for train cicles
@@ -146,7 +147,7 @@ int main(int argc, const char * argv[]) {
 			// Partial stat counters (they are reset every X lines)
 			NSUInteger scannedContexts= 0;
 			MLReal avgError= 0.0;
-			NSDate *begin= nil;
+			NSDate *blockBegin= nil;
 			
 			// Use the library's I/O line reader
 			IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:textPath];
@@ -157,8 +158,8 @@ int main(int argc, const char * argv[]) {
 				@autoreleasepool {
 					
 					// Mark time
-					if (!begin)
-						begin= [NSDate date];
+					if (!blockBegin)
+						blockBegin= [NSDate date];
 					
 					// Read next line
 					NSString *line= [reader readLine];
@@ -228,14 +229,17 @@ int main(int argc, const char * argv[]) {
 					progress= ((MLReal) linesRead) / ((MLReal) TRAIN_CYCLES * totLines);
 					
 					if (reader.lineNumber % 10 == 0) {
-						NSTimeInterval elapsed= [[NSDate date] timeIntervalSinceDate:begin];
 						avgError /= (MLReal) scannedContexts;
+
+						NSTimeInterval totalETA= ([[NSDate date] timeIntervalSinceDate:totalBegin] / progress) * (1.0 - progress);
+						NSTimeInterval blockElapsed= [[NSDate date] timeIntervalSinceDate:blockBegin];
+						NSString *etaTime= [[[NSDateComponentsFormatter alloc] init] stringFromTimeInterval:totalETA];
 						
-						NSLog(@"- Lines read: %8lu, cycle: %lu, progress: %5.2f%%, speed: %7.2f words/s, cost: %6.2f", reader.lineNumber, trainingCycles +1, 100.0 * progress, (((double) scannedContexts) / elapsed), avgError);
+						NSLog(@"- Lines read: %8lu, cycle: %lu, prog.: %5.2f%%, speed: %7.2f w/s, cost: %6.2f, ETA: %@", reader.lineNumber, trainingCycles +1, 100.0 * progress, (((double) scannedContexts) / blockElapsed), avgError, etaTime);
 
 						avgError= 0.0;
 						scannedContexts= 0;
-						begin= nil;
+						blockBegin= nil;
 					}
 					
 					if (reader.lineNumber % 10000 == 0) {
@@ -448,7 +452,7 @@ MLReal testModel(MLWordVectorMap *map, NSArray *equivalenceList) {
 				score += 0.5;
 			
 			} else if ([[nearestWords objectAtIndex:2] caseInsensitiveCompare:expectedWord] == NSOrderedSame) {
-				score += 0.3;
+				score += 0.25;
 			}
 		}
 	}
