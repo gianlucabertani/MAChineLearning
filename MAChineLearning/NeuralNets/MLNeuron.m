@@ -416,8 +416,6 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 	
 	// Compute the gradient sign: we have to apply an inverted clip to
 	// ensure no division by zero will be performed
-	// NOTE: VDIV operands are inverted compared to documentation (see function
-	// definition for operand order)
 	ML_VDSP_VICLIP(_gradient, 1, &__minusEpsilon, &__epsilon, _rpropTemp, 1, _inputSize);
 	ML_VDSP_VABS(_rpropTemp, 1, _rpropTemp, 1, _inputSize);
 	ML_VDSP_VDIV(_rpropTemp, 1, _gradient, 1, _gradientSign, 1, _inputSize);

@@ -145,8 +145,6 @@
 																	  @"error": [NSNumber numberWithInt:err]}];
 	
 	// Subtraction of vectors
-	// NOTE: VSUB operands are inverted compared to documentation (see function
-	// definition for operand order)
 	ML_VDSP_VSUB(vector.vector, 1, _vector, 1, subVector, 1, _size);
 	
 	// Creation of vector object
@@ -193,8 +191,6 @@
 	}
 
 	// Subtraction of vectors
-	// NOTE: VSUB operands are inverted compared to documentation (see function
-	// definition for operand order)
 	ML_VDSP_VSUB(vector.vector, 1, _vector, 1, _temp, 1, _size);
 	
 	// Compute magnitude of vector difference

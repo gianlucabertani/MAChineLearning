@@ -317,8 +317,6 @@ static const MLReal __fourty=       40.0;
 
 			// Apply formula: output[i] = (1 - exp(-2 * output[i])) / (1 + exp(-2 * output[i]))
 			// Equivalent to: output[i] = tanh(output[i])
-			// NOTE: VDIV operands are inverted compared to documentation (see function
-			// definition for operand order)
 			ML_VDSP_VSMUL(_outputBuffer, 1, &__minusTwo, _tempBuffer, 1, _size);
 			ML_VVEXP(_tempBuffer, _tempBuffer, &size);
 			ML_VDSP_VSADD(_tempBuffer, 1, &__one, _outputBuffer, 1, _size);

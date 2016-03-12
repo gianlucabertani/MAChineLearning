@@ -419,8 +419,6 @@ static const MLReal __one=                    1.0;
 		if (i == [_layers count] -1) {
 			
 			// Error on output layer is the difference between expected and actual output
-			// NOTE: VSUB operands are inverted compared to documentation (see function
-			// definition for operand order)
 			ML_VDSP_VSUB(_outputBuffer, 1, _expectedOutputBuffer, 1, _errorBuffer, 1, _outputSize);
 			
 		} else
@@ -535,8 +533,6 @@ static const MLReal __one=                    1.0;
 		case MLCostFunctionTypeSquaredError: {
 			
 			// Apply formula: cost = 0.5 * Sum((expectedOutput[i] - output[i])^2)
-			// NOTE: VSUB operands are inverted compared to documentation (see function
-			// definition for operand order)
 			ML_VDSP_VSUB(_outputBuffer, 1, _expectedOutputBuffer, 1, _errorBuffer, 1, _outputSize);
 			ML_VDSP_SVESQ(_errorBuffer, 1, &cost, _outputSize);
 			cost *= 0.5;
