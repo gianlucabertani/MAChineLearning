@@ -48,7 +48,6 @@
 		8C9A49481B1454FB003E3041 /* MLRandom.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9A49461B1454FB003E3041 /* MLRandom.m */; };
 		8C9C8DBC1B218A18004C0F7B /* WordVectorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9C8DBB1B218A18004C0F7B /* WordVectorTests.m */; };
 		8CA96BDC1B2B84D3007F323B /* RandomTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CA96BDB1B2B84D3007F323B /* RandomTests.m */; };
-		8CB9AB801B2354F2001E072C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB9AB7E1B2354E3001E072C /* main.m */; };
 		8CC07B501B1E11E8004D804B /* MLMutableWordDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC07B4E1B1E11E8004D804B /* MLMutableWordDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC07B511B1E11E8004D804B /* MLMutableWordDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC07B4F1B1E11E8004D804B /* MLMutableWordDictionary.m */; };
 		8CC9E4DC1AE9843B002659EA /* MLWordExtractorOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4DB1AE9843B002659EA /* MLWordExtractorOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -59,7 +58,6 @@
 		8CC9E4E71AE98DAE002659EA /* MLBagOfWordsException.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC9E4E51AE98DAE002659EA /* MLBagOfWordsException.m */; };
 		8CC9E4EB1AE9981D002659EA /* MLConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4EA1AE990AA002659EA /* MLConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CD4AD571B2DCAA8000091DA /* MLBackPropagationType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CD4AD561B2DC998000091DA /* MLBackPropagationType.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8CE464601AF8A376002A11DD /* MAChineLearning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */; };
 		8CF8D52E1AFF3CD8008FA0AC /* IOLineReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D52C1AFF3CD8008FA0AC /* IOLineReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CF8D52F1AFF3CD8008FA0AC /* IOLineReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D52D1AFF3CD8008FA0AC /* IOLineReader.m */; };
 		8CF8D5321AFF3E76008FA0AC /* IOLineWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D5301AFF3E76008FA0AC /* IOLineWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -82,15 +80,6 @@
 
 /* Begin PBXCopyFilesBuildPhase section */
 		8C58A3121AECDAA3006AB74D /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-		8CA8CE871AF75074006D5351 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -150,9 +139,7 @@
 		8C9A49451B1454FB003E3041 /* MLRandom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLRandom.h; sourceTree = "<group>"; };
 		8C9A49461B1454FB003E3041 /* MLRandom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLRandom.m; sourceTree = "<group>"; };
 		8C9C8DBB1B218A18004C0F7B /* WordVectorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordVectorTests.m; sourceTree = "<group>"; };
-		8CA8CE891AF75074006D5351 /* WordVectorGen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WordVectorGen; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CA96BDB1B2B84D3007F323B /* RandomTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RandomTests.m; sourceTree = "<group>"; };
-		8CB9AB7E1B2354E3001E072C /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8CC07B4E1B1E11E8004D804B /* MLMutableWordDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLMutableWordDictionary.h; sourceTree = "<group>"; };
 		8CC07B4F1B1E11E8004D804B /* MLMutableWordDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLMutableWordDictionary.m; sourceTree = "<group>"; };
 		8CC9E4DB1AE9843B002659EA /* MLWordExtractorOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLWordExtractorOption.h; sourceTree = "<group>"; };
@@ -196,14 +183,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8CA8CE861AF75074006D5351 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8CE464601AF8A376002A11DD /* MAChineLearning.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,7 +246,6 @@
 			children = (
 				8C4CEF1A1ADAC51200F1E139 /* MAChineLearning */,
 				8C4CEF271ADAC51200F1E139 /* MAChineLearningTests */,
-				8CB9AB7D1B2354A7001E072C /* WordVectorGen */,
 				8C58A3151AECDAA3006AB74D /* StopWordsGen */,
 				8C4CEF581ADACE4500F1E139 /* LICENSE */,
 				8C4CEF591ADACE4500F1E139 /* README.md */,
@@ -286,7 +264,6 @@
 				8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */,
 				8C4CEF231ADAC51200F1E139 /* MAChineLearningTests.xctest */,
 				8C58A3141AECDAA3006AB74D /* StopWordsGen */,
-				8CA8CE891AF75074006D5351 /* WordVectorGen */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -352,14 +329,6 @@
 				8C8437771B20E8F200ED0B92 /* MLWordVectorException.m */,
 			);
 			path = WordVectors;
-			sourceTree = "<group>";
-		};
-		8CB9AB7D1B2354A7001E072C /* WordVectorGen */ = {
-			isa = PBXGroup;
-			children = (
-				8CB9AB7E1B2354E3001E072C /* main.m */,
-			);
-			path = WordVectorGen;
 			sourceTree = "<group>";
 		};
 		8CC9E4E11AE9887D002659EA /* Commons */ = {
@@ -482,30 +451,13 @@
 			productReference = 8C58A3141AECDAA3006AB74D /* StopWordsGen */;
 			productType = "com.apple.product-type.tool";
 		};
-		8CA8CE881AF75074006D5351 /* WordVectorGen */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 8CA8CE8D1AF75074006D5351 /* Build configuration list for PBXNativeTarget "WordVectorGen" */;
-			buildPhases = (
-				8CA8CE851AF75074006D5351 /* Sources */,
-				8CA8CE861AF75074006D5351 /* Frameworks */,
-				8CA8CE871AF75074006D5351 /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = WordVectorGen;
-			productName = Word2vec;
-			productReference = 8CA8CE891AF75074006D5351 /* WordVectorGen */;
-			productType = "com.apple.product-type.tool";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		8C4CEF0F1ADAC51200F1E139 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Gianluca Bertani";
 				TargetAttributes = {
 					8C4CEF171ADAC51200F1E139 = {
@@ -515,9 +467,6 @@
 						CreatedOnToolsVersion = 6.3;
 					};
 					8C58A3131AECDAA3006AB74D = {
-						CreatedOnToolsVersion = 6.3.1;
-					};
-					8CA8CE881AF75074006D5351 = {
 						CreatedOnToolsVersion = 6.3.1;
 					};
 				};
@@ -536,7 +485,6 @@
 			targets = (
 				8C4CEF171ADAC51200F1E139 /* MAChineLearning */,
 				8C4CEF221ADAC51200F1E139 /* MAChineLearningTests */,
-				8CA8CE881AF75074006D5351 /* WordVectorGen */,
 				8C58A3131AECDAA3006AB74D /* StopWordsGen */,
 			);
 		};
@@ -607,14 +555,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8CA8CE851AF75074006D5351 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8CB9AB801B2354F2001E072C /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -647,6 +587,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -721,6 +662,7 @@
 				INFOPLIST_FILE = MAChineLearning/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.flyingdolphinstudio.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -738,6 +680,7 @@
 				INFOPLIST_FILE = MAChineLearning/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.flyingdolphinstudio.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -758,6 +701,7 @@
 				);
 				INFOPLIST_FILE = MAChineLearningTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.flyingdolphinstudio.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "MAChineLearningTests/MAChineLearningTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -775,6 +719,7 @@
 				);
 				INFOPLIST_FILE = MAChineLearningTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.flyingdolphinstudio.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "MAChineLearningTests/MAChineLearningTests-Bridging-Header.h";
 			};
@@ -793,26 +738,6 @@
 			name = Debug;
 		};
 		8C58A31A1AECDAA3006AB74D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		8CA8CE8E1AF75074006D5351 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		8CA8CE8F1AF75074006D5351 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
@@ -855,15 +780,6 @@
 			buildConfigurations = (
 				8C58A3191AECDAA3006AB74D /* Debug */,
 				8C58A31A1AECDAA3006AB74D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		8CA8CE8D1AF75074006D5351 /* Build configuration list for PBXNativeTarget "WordVectorGen" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				8CA8CE8E1AF75074006D5351 /* Debug */,
-				8CA8CE8F1AF75074006D5351 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
