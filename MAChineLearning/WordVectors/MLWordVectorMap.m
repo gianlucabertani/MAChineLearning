@@ -42,6 +42,8 @@
 
 #import "MLConstants.h"
 
+#import "IOLineReader.h"
+
 #import <Accelerate/Accelerate.h>
 
 #define WORD2VEC_MAX_WORD_LENGTH            (200)
@@ -65,48 +67,6 @@
 
 #pragma mark -
 #pragma mark Initialization
-
-+ (MLWordVectorMap *) createFromNeuralNetwork:(MLNeuralNetwork *)net dictionary:(MLWordDictionary *)dictionary {
-
-	// Checks
-	if (net.layers.count != 3)
-		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Neural network must have exactly 3 layers"
-														   userInfo:@{@"layersCount": [NSNumber numberWithUnsignedInteger:net.layers.count]}];
-	
-	if ([[net.layers objectAtIndex:0] size] != dictionary.size)
-		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Neural network input layer must have same size as dictionary"
-														   userInfo:@{@"inputLayerSize": [NSNumber numberWithUnsignedInteger:[[net.layers objectAtIndex:0] size]],
-																	  @"dictionarySize": [NSNumber numberWithUnsignedInteger:dictionary.size]}];
-	
-	if ([[net.layers objectAtIndex:2] size] != dictionary.size)
-		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Neural network output layer must have same size as dictionary"
-														   userInfo:@{@"outputLayerSize": [NSNumber numberWithUnsignedInteger:[[net.layers objectAtIndex:2] size]],
-																	  @"dictionarySize": [NSNumber numberWithUnsignedInteger:dictionary.size]}];
-	
-	// Prepare the transitory dictionary
-	NSMutableDictionary *vectorDictionary= [[NSMutableDictionary alloc] initWithCapacity:dictionary.size];
-	
-	// Creation of vector map from hidden layer
-	MLNeuronLayer *hiddenLayer= [net.layers objectAtIndex:1];
-	NSUInteger vectorSize= hiddenLayer.size;
-	
-	for (MLWordInfo *wordInfo in dictionary.wordInfos) {
-		
-		// Prepare the vector
-		NSMutableArray *vector= [[NSMutableArray alloc] initWithCapacity:vectorSize];
-
-		// Fill vector from neural network hidden layer
-		NSUInteger wordPos= wordInfo.position;
-		
-		for (MLNeuron *neuron in hiddenLayer.neurons)
-			[vector addObject:[NSNumber numberWithDouble:neuron.weights[wordPos]]];
-		
-		NSString *lowercaseWord= [wordInfo.word lowercaseString];
-		[vectorDictionary setObject:vector forKey:lowercaseWord];
-	}
-	
-	return [[MLWordVectorMap alloc] initWithDictionary:vectorDictionary];
-}
 
 + (MLWordVectorMap *) createFromWord2vecFile:(NSString *)vectorFilePath binary:(BOOL)binary {
 	
@@ -195,6 +155,76 @@
 	}
 	
 	return [[MLWordVectorMap alloc] initWithDictionary:vectorDictionary];
+}
+
++ (MLWordVectorMap *) createFromGloVeFile:(NSString *)vectorFilePath {
+
+    // Checks
+    NSFileManager *fileManger= [NSFileManager defaultManager];
+    if (![fileManger fileExistsAtPath:vectorFilePath])
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"File does not exist"
+                                                           userInfo:@{@"filePath": vectorFilePath}];
+    
+    // Prepare the reader
+    IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:vectorFilePath];
+
+    NSUInteger vectorSize= 0;
+    NSMutableDictionary *vectorDictionary= nil;
+    @try {
+        
+        // Prepare the transitory dictionary
+        vectorDictionary= [[NSMutableDictionary alloc] init];
+        
+        // Loop until the end of file
+        do {
+            
+            // Read next line
+            NSString *line= [reader readLine];
+            if (!line)
+                break;
+            
+            // Split the line
+            NSArray *components= [[line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                  componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            
+            // Check vector size
+            if (!vectorSize) {
+                vectorSize= components.count -1;
+            
+            } else {
+                if ((components.count -1) != vectorSize)
+                    @throw [MLWordVectorException wordVectorExceptionWithReason:@"Vector size mismatch"
+                                                                       userInfo:@{@"filePath": vectorFilePath,
+                                                                                  @"lineNumber": [NSNumber numberWithUnsignedInteger:reader.lineNumber]}];
+            }
+            
+            // Get the word
+            NSString *word= [components objectAtIndex:0];
+            if ([word isEqualToString:@"<unk>"])
+                continue;
+            
+            // Prepare the vector
+            NSMutableArray *vector= [[NSMutableArray alloc] initWithCapacity:components.count -1];
+            for (NSUInteger j= 1; j <= vectorSize; j++) {
+                
+                // Store the vector element
+                double elem= [[components objectAtIndex:j] doubleValue];
+                [vector addObject:[NSNumber numberWithDouble:elem]];
+            }
+            
+            // Store the vector in the transitory dictionary
+            [vectorDictionary setObject:vector forKey:word];
+            
+        } while (YES);
+        
+    } @catch (NSException *e) {
+        @throw e;
+        
+    } @finally {
+        [reader close];
+    }
+    
+    return [[MLWordVectorMap alloc] initWithDictionary:vectorDictionary];
 }
 
 - (instancetype) initWithDictionary:(NSDictionary *)vectorDictionary {
