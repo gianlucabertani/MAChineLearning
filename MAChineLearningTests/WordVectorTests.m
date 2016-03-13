@@ -41,6 +41,13 @@
 
 @interface WordVectorTests : XCTestCase
 
+
+#pragma mark -
+#pragma mark Internal
+
+- (void) checkEquivalenceOf:(NSString *)word1 to:(NSString *)word2 with:(NSString *)word3 to:(NSString *)word4 on:(MLWordVectorMap *)map;
+
+
 @end
 
 
@@ -157,6 +164,153 @@
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
 	}
+}
+
+- (void) testWord2vec {
+    @try {
+        NSBundle *bundle= [NSBundle bundleForClass:[self class]];
+        NSString *word2vecSamplePath= [bundle pathForResource:@"Word2vec-sample" ofType:@"bin"];
+        XCTAssertNotNil(word2vecSamplePath);
+        
+        // Here we use a pre-trained sample vector file, obtained by training with the 6000
+        // most used words from the same sample text used by the word2vec demo, we then test
+        // the vector map with know working equivalences
+        MLWordVectorMap *map= [MLWordVectorMap createFromWord2vecFile:word2vecSamplePath binary:YES];
+        XCTAssertNotNil(map);
+        
+        // Capital to nation
+        [self checkEquivalenceOf:@"philadelphia" to:@"pennsylvania" with:@"miami" to:@"florida" on:map];
+        
+        // Masculine to feminine
+        [self checkEquivalenceOf:@"he" to:@"she" with:@"brother" to:@"sister" on:map];
+        [self checkEquivalenceOf:@"son" to:@"daughter" with:@"his" to:@"her" on:map];
+        
+        // Adjective to adverb
+        [self checkEquivalenceOf:@"obvious" to:@"obviously" with:@"sudden" to:@"suddenly" on:map];
+        [self checkEquivalenceOf:@"usual" to:@"usually" with:@"typical" to:@"typically" on:map];
+        
+        // Adjective to superlative
+        [self checkEquivalenceOf:@"long" to:@"longest" with:@"low" to:@"lowest" on:map];
+        
+        // Infinitive to gerund
+        [self checkEquivalenceOf:@"code" to:@"coding" with:@"dance" to:@"dancing" on:map];
+        [self checkEquivalenceOf:@"sing" to:@"singing" with:@"look" to:@"looking" on:map];
+        
+        // Nation to nationality
+        [self checkEquivalenceOf:@"austria" to:@"austrian" with:@"mexico" to:@"mexican" on:map];
+        [self checkEquivalenceOf:@"greece" to:@"greek" with:@"bulgaria" to:@"bulgarian" on:map];
+        [self checkEquivalenceOf:@"france" to:@"french" with:@"albania" to:@"albanian" on:map];
+        [self checkEquivalenceOf:@"italy" to:@"italian" with:@"denmark" to:@"danish" on:map];
+        [self checkEquivalenceOf:@"ireland" to:@"irish" with:@"brazil" to:@"brazilian" on:map];
+        [self checkEquivalenceOf:@"korea" to:@"korean" with:@"england" to:@"english" on:map];
+        [self checkEquivalenceOf:@"norway" to:@"norwegian" with:@"korea" to:@"korean" on:map];
+        [self checkEquivalenceOf:@"spain" to:@"spanish" with:@"norway" to:@"norwegian" on:map];
+        
+        // Gerund to past
+        [self checkEquivalenceOf:@"taking" to:@"took" with:@"writing" to:@"wrote" on:map];
+        
+        // Singular to plurarl
+        [self checkEquivalenceOf:@"building" to:@"buildings" with:@"computer" to:@"computers" on:map];
+        [self checkEquivalenceOf:@"horse" to:@"horses" with:@"computer" to:@"computers" on:map];
+        [self checkEquivalenceOf:@"dog" to:@"dogs" with:@"computer" to:@"computers" on:map];
+        [self checkEquivalenceOf:@"mouse" to:@"mice" with:@"dog" to:@"dogs" on:map];
+        
+        // First person to third person
+        [self checkEquivalenceOf:@"find" to:@"finds" with:@"say" to:@"says" on:map];
+        [self checkEquivalenceOf:@"speak" to:@"speaks" with:@"play" to:@"plays" on:map];
+        
+    } @catch (NSException *e) {
+        XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+    }
+}
+
+- (void) testGloVe {
+    @try {
+        NSBundle *bundle= [NSBundle bundleForClass:[self class]];
+        NSString *gloveSamplePath= [bundle pathForResource:@"GloVe-sample" ofType:@"txt"];
+        XCTAssertNotNil(gloveSamplePath);
+        
+        // Here we use a pre-trained sample vector file, obtained by training with the 6000
+        // most used words from the same sample text used by the GloVe demo, we then test
+        // the vector map with know working equivalences
+        MLWordVectorMap *map= [MLWordVectorMap createFromGloVeFile:gloveSamplePath];
+        XCTAssertNotNil(map);
+        
+        // Capital to nation
+        [self checkEquivalenceOf:@"philadelphia" to:@"pennsylvania" with:@"miami" to:@"florida" on:map];
+        
+        // Masculine to feminine
+        [self checkEquivalenceOf:@"he" to:@"she" with:@"brother" to:@"sister" on:map];
+        [self checkEquivalenceOf:@"son" to:@"daughter" with:@"his" to:@"her" on:map];
+        
+        // Adjective to adverb
+        [self checkEquivalenceOf:@"obvious" to:@"obviously" with:@"sudden" to:@"suddenly" on:map];
+        [self checkEquivalenceOf:@"usual" to:@"usually" with:@"typical" to:@"typically" on:map];
+        
+        // Adjective to superlative
+        [self checkEquivalenceOf:@"long" to:@"longest" with:@"low" to:@"lowest" on:map];
+        
+        // Infinitive to gerund
+        [self checkEquivalenceOf:@"code" to:@"coding" with:@"dance" to:@"dancing" on:map];
+        [self checkEquivalenceOf:@"sing" to:@"singing" with:@"look" to:@"looking" on:map];
+        
+        // Nation to nationality
+        [self checkEquivalenceOf:@"austria" to:@"austrian" with:@"mexico" to:@"mexican" on:map];
+        [self checkEquivalenceOf:@"greece" to:@"greek" with:@"bulgaria" to:@"bulgarian" on:map];
+        [self checkEquivalenceOf:@"france" to:@"french" with:@"albania" to:@"albanian" on:map];
+        [self checkEquivalenceOf:@"italy" to:@"italian" with:@"denmark" to:@"danish" on:map];
+        [self checkEquivalenceOf:@"ireland" to:@"irish" with:@"brazil" to:@"brazilian" on:map];
+        [self checkEquivalenceOf:@"korea" to:@"korean" with:@"england" to:@"english" on:map];
+        [self checkEquivalenceOf:@"norway" to:@"norwegian" with:@"korea" to:@"korean" on:map];
+        [self checkEquivalenceOf:@"spain" to:@"spanish" with:@"norway" to:@"norwegian" on:map];
+        
+        // Gerund to past
+        [self checkEquivalenceOf:@"taking" to:@"took" with:@"writing" to:@"wrote" on:map];
+        
+        // Singular to plurarl
+        [self checkEquivalenceOf:@"building" to:@"buildings" with:@"computer" to:@"computers" on:map];
+        [self checkEquivalenceOf:@"horse" to:@"horses" with:@"computer" to:@"computers" on:map];
+        [self checkEquivalenceOf:@"dog" to:@"dogs" with:@"computer" to:@"computers" on:map];
+        [self checkEquivalenceOf:@"mouse" to:@"mice" with:@"dog" to:@"dogs" on:map];
+        
+        // First person to third person
+        [self checkEquivalenceOf:@"find" to:@"finds" with:@"say" to:@"says" on:map];
+        [self checkEquivalenceOf:@"speak" to:@"speaks" with:@"play" to:@"plays" on:map];
+        
+    } @catch (NSException *e) {
+        XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+    }
+}
+
+
+#pragma mark -
+#pragma mark Internal
+
+- (void) checkEquivalenceOf:(NSString *)word1 to:(NSString *)word2 with:(NSString *)word3 to:(NSString *)word4 on:(MLWordVectorMap *)map {
+    MLWordVector *vec1= [map vectorForWord:word1];
+    XCTAssertNotNil(vec1);
+
+    MLWordVector *vec2= [map vectorForWord:word2];
+    XCTAssertNotNil(vec2);
+
+    MLWordVector *vec3= [map vectorForWord:word3];
+    XCTAssertNotNil(vec3);
+    
+    MLWordVector *expectedVec4= [map vectorForWord:word4];
+    XCTAssertNotNil(expectedVec4);
+
+    MLWordVector *vec4= [[vec2 subtractVector:vec1] addVector:vec3];
+    XCTAssertNotNil(vec4);
+    
+    // Original accuracy checkers of both word2vec and GloVe do not
+    // consider first three words, so here we look if the expected
+    // resulting word is within the first four similar words
+    NSArray *similarWords= [map mostSimilarWordsToVector:vec4];
+    NSUInteger index= [similarWords indexOfObject:word4 inRange:NSMakeRange(0, 4)];
+    XCTAssertTrue(index != NSNotFound);
+    
+    if (index == NSNotFound)
+        NSLog(@"Failed equivalence for %@:%@ = %@:%@", word1, word2, word3, word4);
 }
 
 

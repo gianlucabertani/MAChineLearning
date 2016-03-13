@@ -63,4 +63,11 @@
 - (NSArray *) nearestWordsToVector:(MLWordVector *)vector;
 
 
+#pragma mark -
+#pragma mark Properties
+
+@property (nonatomic, readonly) NSUInteger wordCount;
+@property (nonatomic, readonly) NSUInteger vectorSize;
+
+
 @end

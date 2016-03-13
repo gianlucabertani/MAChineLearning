@@ -114,13 +114,17 @@
 
 - (BOOL) isEqual:(id)object {
 	if (![object isKindOfClass:[MLTextFragment class]])
-		@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Trying to compare a TextFragment with something else"
+		@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Trying to compare an MLTextFragment with something else"
 														 userInfo:@{@"self": self,
 																	@"object": object}];
 	
 	MLTextFragment *fragment= (MLTextFragment *) object;
 	return ([_fragment isEqualToString:fragment.fragment] &&
 			(_range.location == fragment.range.location));
+}
+
+- (NSUInteger) hash {
+    return (_fragment.hash + _range.location);
 }
 
 - (NSString *) description {
@@ -136,12 +140,6 @@
 @synthesize sentenceRange= _sentenceRange;
 @synthesize tokenIndex= _tokenIndex;
 @synthesize linguisticTag= _linguisticTag;
-
-@dynamic hash;
-
-- (NSUInteger) hash {
-	return (_fragment.hash + _range.location);
-}
 
 
 @end

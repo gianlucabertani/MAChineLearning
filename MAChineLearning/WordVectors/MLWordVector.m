@@ -54,6 +54,12 @@
 }
 
 
+#pragma mark -
+#pragma mark Internals
+
+- (void) allocateTemp;
+
+
 @end
 
 
@@ -180,15 +186,8 @@
 																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
 	
 	// Allocate temp vector, if needed
-	if (!_temp) {
-		int err= posix_memalign((void **) &_temp,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * _size);
-		if (err)
-			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
-															   userInfo:@{@"buffer": @"temp",
-																		  @"error": [NSNumber numberWithInt:err]}];
-	}
+	if (!_temp)
+        [self allocateTemp];
 
 	// Subtraction of vectors
 	ML_VDSP_VSUB(vector.vector, 1, _vector, 1, _temp, 1, _size);
@@ -203,11 +202,81 @@
 
 
 #pragma -
+#pragma Object overrides
+
+- (BOOL) isEqual:(id)object {
+    if (![object isKindOfClass:[MLWordVector class]])
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"Trying to compare an MLWordVector with something else"
+                                                           userInfo:@{@"self": self,
+                                                                      @"object": object}];
+    
+    MLWordVector *otherVector= (MLWordVector *) object;
+    
+    // First check size
+    if (_size != otherVector.size)
+        return NO;
+    
+    // Then check magnitude
+    if (_magnitude != otherVector.magnitude)
+        return NO;
+    
+    // Allocate temp vector, if needed
+    if (!_temp)
+        [self allocateTemp];
+    
+    // Finally check the numbers, we subtract the vectors
+    // and sum the results
+    ML_VDSP_VSUB(otherVector.vector, 1, _vector, 1, _temp, 1, _size);
+
+    MLReal sum= 0.0;
+    ML_VDSP_SVE(_temp, 1, &sum, _size);
+
+    return (sum == 0.0);
+}
+
+- (NSUInteger) hash {
+    
+    // We sum the vector and form an hash box XOR-ing
+    // the integer and fractional part projected to UINT_MAX
+    MLReal sum= 0.0;
+    ML_VDSP_SVE(_vector, 1, &sum, _size);
+    
+    double integer= 0.0;
+    double fraction= modf(sum, &integer);
+    
+    NSUInteger hash= (NSUInteger) (fraction * ((double) UINT_MAX));
+    hash= hash ^ (NSUInteger) remainder(integer, (double) UINT_MAX);
+
+    return hash;
+}
+
+
+#pragma -
 #pragma Properties
 
 @synthesize vector= _vector;
 @synthesize size= _size;
 @synthesize magnitude= _magnitude;
+
+
+#pragma mark -
+#pragma mark Internals
+
+- (void) allocateTemp {
+    @synchronized (self) {
+
+        // Allocate temp vector, if still needed
+        if (!_temp) {
+            int err= posix_memalign((void **) &_temp,
+                                    BUFFER_MEMORY_ALIGNMENT,
+                                    sizeof(MLReal) * _size);
+            if (err)
+                @throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
+                                                                   userInfo:@{@"buffer": @"temp",
+                                                                              @"error": [NSNumber numberWithInt:err]}];
+        }
+    }
+}
 
 
 @end

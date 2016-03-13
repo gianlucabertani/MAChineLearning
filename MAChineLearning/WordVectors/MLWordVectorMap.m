@@ -53,6 +53,9 @@
 #pragma mark MLWordVectorMap extension
 
 @interface MLWordVectorMap () {
+    NSUInteger _wordCount;
+    NSUInteger _vectorSize;
+    
 	NSMutableDictionary *_vectors;
 }
 
@@ -144,6 +147,9 @@
 			
 			// Store the vector in the transitory dictionary
 			NSString *word= [[NSString alloc] initWithCString:wordStr encoding:NSUTF8StringEncoding];
+            if ([word isEqualToString:@"</s>"])
+                continue;
+            
 			[vectorDictionary setObject:vector forKey:word];
 		}
 		
@@ -233,7 +239,7 @@
 		// Initialization
 		_vectors= [[NSMutableDictionary alloc] initWithCapacity:vectorDictionary.count];
 		
-		NSUInteger vectorSize= 0;
+		_vectorSize= 0;
 		for (NSObject *key in [vectorDictionary allKeys]) {
 			if (![key isKindOfClass:[NSString class]])
 				@throw [MLWordVectorException wordVectorExceptionWithReason:@"Dictionary keys must be strings"
@@ -244,21 +250,21 @@
 				@throw [MLWordVectorException wordVectorExceptionWithReason:@"Dictionary values must be arrays of numbers"
 																   userInfo:@{@"dictionaryValue": vectorObj}];
 			
-			NSString *word= (NSString *) key;
+            NSString *word= (NSString *) key;
 			NSArray *vectorArray= (NSArray *) vectorObj;
 			
-			if (!vectorSize) {
-				vectorSize= vectorArray.count;
+			if (!_vectorSize) {
+				_vectorSize= vectorArray.count;
 				
-				if (!vectorSize)
+				if (!_vectorSize)
 					@throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must contain at least a number"
-																	   userInfo:@{@"vectorSize": [NSNumber numberWithUnsignedInteger:vectorSize],
+																	   userInfo:@{@"vectorSize": [NSNumber numberWithUnsignedInteger:_vectorSize],
 																				  @"word": word}];
 			
 			} else {
-				if (vectorArray.count != vectorSize)
+				if (vectorArray.count != _vectorSize)
 					@throw [MLWordVectorException wordVectorExceptionWithReason:@"Vector size mismatch"
-																	   userInfo:@{@"expectedVectorSize": [NSNumber numberWithUnsignedInteger:vectorSize],
+																	   userInfo:@{@"expectedVectorSize": [NSNumber numberWithUnsignedInteger:_vectorSize],
 																				  @"actualVectorSize": [NSNumber numberWithUnsignedInteger:vectorArray.count],
 																				  @"word": word}];
 			}
@@ -268,7 +274,7 @@
 			
 			int err= posix_memalign((void **) &vector,
 									BUFFER_MEMORY_ALIGNMENT,
-									sizeof(MLReal) * vectorSize);
+									sizeof(MLReal) * _vectorSize);
 			if (err)
 				@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
 																   userInfo:@{@"buffer": @"vector",
@@ -290,19 +296,21 @@
 			
 			// Normalization of vector
 			MLReal normL2= 0.0;
-			ML_VDSP_SVESQ(vector, 1, &normL2, vectorSize);
+			ML_VDSP_SVESQ(vector, 1, &normL2, _vectorSize);
 			normL2= ML_SQRT(normL2);
 			
-			ML_VDSP_VSDIV(vector, 1, &normL2, vector, 1, vectorSize);
+			ML_VDSP_VSDIV(vector, 1, &normL2, vector, 1, _vectorSize);
 			
 			// Creation of vector wrapper
-			MLWordVector *wordVector= [[MLWordVector alloc] initWithVector:vector
-																	  size:vectorSize
-													   freeVectorOnDealloc:YES];
+            MLWordVector *wordVector= [[MLWordVector alloc] initWithVector:vector
+                                                                      size:_vectorSize
+                                                       freeVectorOnDealloc:YES];
 
-			NSString *lowercaseWord= [word lowercaseString];
+            NSString *lowercaseWord= [word lowercaseString];
 			[_vectors setObject:wordVector forKey:lowercaseWord];
 		}
+        
+        _wordCount= _vectors.count;
 	}
 	
 	return self;
@@ -332,8 +340,8 @@
 	// an improved search (based on clusters) will follow
 	for (NSString *word in [_vectors allKeys]) {
 		MLWordVector *otherVector= [_vectors objectForKey:word];
+        
 		MLReal similarity= [vector similarityToVector:otherVector];
-		
 		if (similarity > bestSimilarity) {
 			bestSimilarity= similarity;
 			mostSimilarWord= word;
@@ -351,8 +359,8 @@
 	// an improved search (based on clusters) will follow
 	for (NSString *word in [_vectors allKeys]) {
 		MLWordVector *otherVector= [_vectors objectForKey:word];
+        
 		MLReal distance= [vector distanceToVector:otherVector];
-		
 		if (distance < minorDistance) {
 			minorDistance= distance;
 			nearestWord= word;
@@ -363,7 +371,7 @@
 }
 
 - (NSArray *) mostSimilarWordsToVector:(MLWordVector *)vector {
-	NSArray *sortedKeys= [[_vectors allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+	NSArray *sortedKeys= [[_vectors allKeys] sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
 		MLWordVector *otherVector1= [_vectors objectForKey:obj1];
 		MLWordVector *otherVector2= [_vectors objectForKey:obj2];
 		
@@ -382,7 +390,7 @@
 }
 
 - (NSArray *) nearestWordsToVector:(MLWordVector *)vector {
-	NSArray *sortedKeys= [[_vectors allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+    NSArray *sortedKeys= [[_vectors allKeys] sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
 		MLWordVector *otherVector1= [_vectors objectForKey:obj1];
 		MLWordVector *otherVector2= [_vectors objectForKey:obj2];
 		
@@ -399,6 +407,13 @@
 	
 	return sortedKeys;
 }
+
+
+#pragma mark -
+#pragma mark Properties
+
+@synthesize wordCount= _wordCount;
+@synthesize vectorSize= _vectorSize;
 
 
 @end
