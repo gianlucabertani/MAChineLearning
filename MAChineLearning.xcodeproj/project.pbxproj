@@ -43,6 +43,9 @@
 		8C7C13201E632AA7000F92C3 /* MLAlloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C7C131F1E632018000F92C3 /* MLAlloc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C7C13231E633752000F92C3 /* MLParallel.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C7C13211E633752000F92C3 /* MLParallel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C7C13241E633752000F92C3 /* MLParallel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C13221E633752000F92C3 /* MLParallel.m */; };
+		8C7C132C1E63483C000F92C3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C132B1E63483C000F92C3 /* main.m */; };
+		8C7C133B1E634C2E000F92C3 /* Dataset.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C133A1E634C2E000F92C3 /* Dataset.m */; };
+		8C7C13431E634D67000F92C3 /* MAChineLearning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */; };
 		8C8437781B20E8F200ED0B92 /* MLWordVectorException.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C8437761B20E8F200ED0B92 /* MLWordVectorException.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C8437791B20E8F200ED0B92 /* MLWordVectorException.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8437771B20E8F200ED0B92 /* MLWordVectorException.m */; };
 		8C94CBFF1AE91C0800A0A328 /* MLFeatureNormalizationType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C94CBFE1AE91C0800A0A328 /* MLFeatureNormalizationType.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -81,10 +84,26 @@
 			remoteGlobalIDString = 8C4CEF171ADAC51200F1E139;
 			remoteInfo = MAChineLearning;
 		};
+		8C7C133C1E634D06000F92C3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8C4CEF0F1ADAC51200F1E139 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8C4CEF171ADAC51200F1E139;
+			remoteInfo = MAChineLearning;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		8C58A3121AECDAA3006AB74D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		8C7C13271E63483B000F92C3 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -140,6 +159,10 @@
 		8C7C131F1E632018000F92C3 /* MLAlloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MLAlloc.h; sourceTree = "<group>"; };
 		8C7C13211E633752000F92C3 /* MLParallel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLParallel.h; sourceTree = "<group>"; };
 		8C7C13221E633752000F92C3 /* MLParallel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLParallel.m; sourceTree = "<group>"; };
+		8C7C13291E63483B000F92C3 /* MNIST */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MNIST; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C7C132B1E63483C000F92C3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8C7C13391E634C2E000F92C3 /* Dataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dataset.h; sourceTree = "<group>"; };
+		8C7C133A1E634C2E000F92C3 /* Dataset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dataset.m; sourceTree = "<group>"; };
 		8C8437761B20E8F200ED0B92 /* MLWordVectorException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLWordVectorException.h; sourceTree = "<group>"; };
 		8C8437771B20E8F200ED0B92 /* MLWordVectorException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLWordVectorException.m; sourceTree = "<group>"; };
 		8C94CBFE1AE91C0800A0A328 /* MLFeatureNormalizationType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLFeatureNormalizationType.h; sourceTree = "<group>"; };
@@ -193,6 +216,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C7C13261E63483B000F92C3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C7C13431E634D67000F92C3 /* MAChineLearning.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,6 +288,7 @@
 				8C4CEF1A1ADAC51200F1E139 /* MAChineLearning */,
 				8C4CEF271ADAC51200F1E139 /* MAChineLearningTests */,
 				8C58A3151AECDAA3006AB74D /* StopWordsGen */,
+				8C7C132A1E63483C000F92C3 /* MNIST */,
 				8C4CEF581ADACE4500F1E139 /* LICENSE */,
 				8C4CEF591ADACE4500F1E139 /* README.md */,
 				8CF961F91AF66C240071A995 /* NeuralNets.md */,
@@ -274,6 +306,7 @@
 				8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */,
 				8C4CEF231ADAC51200F1E139 /* MAChineLearningTests.xctest */,
 				8C58A3141AECDAA3006AB74D /* StopWordsGen */,
+				8C7C13291E63483B000F92C3 /* MNIST */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -340,6 +373,16 @@
 				8C8437771B20E8F200ED0B92 /* MLWordVectorException.m */,
 			);
 			path = WordVectors;
+			sourceTree = "<group>";
+		};
+		8C7C132A1E63483C000F92C3 /* MNIST */ = {
+			isa = PBXGroup;
+			children = (
+				8C7C132B1E63483C000F92C3 /* main.m */,
+				8C7C13391E634C2E000F92C3 /* Dataset.h */,
+				8C7C133A1E634C2E000F92C3 /* Dataset.m */,
+			);
+			path = MNIST;
 			sourceTree = "<group>";
 		};
 		8CC9E4E11AE9887D002659EA /* Commons */ = {
@@ -475,6 +518,25 @@
 			productReference = 8C58A3141AECDAA3006AB74D /* StopWordsGen */;
 			productType = "com.apple.product-type.tool";
 		};
+		8C7C13281E63483B000F92C3 /* MNIST */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C7C132D1E63483C000F92C3 /* Build configuration list for PBXNativeTarget "MNIST" */;
+			buildPhases = (
+				8C7C13251E63483B000F92C3 /* Sources */,
+				8C7C13261E63483B000F92C3 /* Frameworks */,
+				8C7C13271E63483B000F92C3 /* CopyFiles */,
+				8C7C133E1E634D16000F92C3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8C7C133D1E634D06000F92C3 /* PBXTargetDependency */,
+			);
+			name = MNIST;
+			productName = MNIST;
+			productReference = 8C7C13291E63483B000F92C3 /* MNIST */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -493,6 +555,10 @@
 					8C58A3131AECDAA3006AB74D = {
 						CreatedOnToolsVersion = 6.3.1;
 					};
+					8C7C13281E63483B000F92C3 = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 8C4CEF121ADAC51200F1E139 /* Build configuration list for PBXProject "MAChineLearning" */;
@@ -510,6 +576,7 @@
 				8C4CEF171ADAC51200F1E139 /* MAChineLearning */,
 				8C4CEF221ADAC51200F1E139 /* MAChineLearningTests */,
 				8C58A3131AECDAA3006AB74D /* StopWordsGen */,
+				8C7C13281E63483B000F92C3 /* MNIST */,
 			);
 		};
 /* End PBXProject section */
@@ -528,6 +595,13 @@
 			files = (
 				8CFF56141C9585A300D31A45 /* GloVe-sample.txt in Resources */,
 				8CFF56151C9585A300D31A45 /* Word2vec-sample.bin in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C7C133E1E634D16000F92C3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -583,6 +657,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8C7C13251E63483B000F92C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C7C133B1E634C2E000F92C3 /* Dataset.m in Sources */,
+				8C7C132C1E63483C000F92C3 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -590,6 +673,11 @@
 			isa = PBXTargetDependency;
 			target = 8C4CEF171ADAC51200F1E139 /* MAChineLearning */;
 			targetProxy = 8C4CEF251ADAC51200F1E139 /* PBXContainerItemProxy */;
+		};
+		8C7C133D1E634D06000F92C3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8C4CEF171ADAC51200F1E139 /* MAChineLearning */;
+			targetProxy = 8C7C133C1E634D06000F92C3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -764,7 +852,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -772,7 +860,29 @@
 		8C58A31A1AECDAA3006AB74D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		8C7C132E1E63483C000F92C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "-";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		8C7C132F1E63483C000F92C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "-";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -812,6 +922,15 @@
 			buildConfigurations = (
 				8C58A3191AECDAA3006AB74D /* Debug */,
 				8C58A31A1AECDAA3006AB74D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8C7C132D1E63483C000F92C3 /* Build configuration list for PBXNativeTarget "MNIST" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C7C132E1E63483C000F92C3 /* Debug */,
+				8C7C132F1E63483C000F92C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
