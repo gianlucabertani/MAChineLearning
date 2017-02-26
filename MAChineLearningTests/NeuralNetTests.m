@@ -179,7 +179,7 @@
 		XCTAssertEqualWithAccuracy(net.outputBuffer[0], 0.0, 0.1);
 		
 	} @catch (NSException *e) {
-		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
 	}
 }
 
@@ -262,7 +262,7 @@
 		XCTAssertEqualWithAccuracy(neuron2.weights[1], 0.76, 0.01);
 		
 	} @catch (NSException *e) {
-		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
 	}
 }
 
@@ -385,7 +385,7 @@
 		XCTAssertEqualWithAccuracy(net2.outputBuffer[0], output, 0.0000000001);
 		
 	} @catch (NSException *e) {
-		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
 	}
 }
 

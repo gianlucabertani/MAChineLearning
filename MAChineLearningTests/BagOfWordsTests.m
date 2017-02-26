@@ -123,7 +123,7 @@
 		XCTAssertEqualObjects(lang5, @"de");
 
 	} @catch (NSException *e) {
-		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
 	}
 }
 
@@ -145,7 +145,7 @@
 		XCTAssertEqualObjects(lang5, @"de");
 		
 	} @catch (NSException *e) {
-		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
 	}
 }
 
@@ -203,7 +203,7 @@
 		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"right"].position], 2.0);
 
 	} @catch (NSException *e) {
-		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
 	}
 }
 
@@ -265,7 +265,7 @@
 		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"right"].position], 2.0);
 		
 	} @catch (NSException *e) {
-		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
 	}
 }
 
@@ -317,7 +317,7 @@
 		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"joseph weizenbaum"].position], 1.0);
 		
 	} @catch (NSException *e) {
-		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
 	}
 }
 

@@ -35,10 +35,10 @@
 #define MAChineLearning_MLCostFunctionType_h
 
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, MLCostFunctionType) {
 	MLCostFunctionTypeSquaredError= 0,
 	MLCostFunctionTypeCrossEntropy,
-} MLCostFunctionType;
+};
 
 
 #endif

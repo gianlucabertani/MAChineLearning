@@ -35,10 +35,10 @@
 #define MAChineLearning_MLWordExtractorType_h
 
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, MLWordExtractorType) {
 	MLWordExtractorTypeSimpleTokenizer= 0,
 	MLWordExtractorTypeLinguisticTagger
-} MLWordExtractorType;
+};
 
 
 #endif

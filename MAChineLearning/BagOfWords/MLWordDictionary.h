@@ -38,10 +38,10 @@
 
 @class MLWordInfo;
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, MLWordFilterOutcome) {
 	MLWordFilterOutcomeDiscardWord= 0,
 	MLWordFilterOutcomeKeepWord= 1
-} MLWordFilterOutcome;
+};
 
 typedef MLWordFilterOutcome (^MLWordFilter)(MLWordInfo *wordInfo);
 

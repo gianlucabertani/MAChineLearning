@@ -35,10 +35,10 @@
 #define MAChineLearning_MLBackPropagationType_h
 
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, MLBackPropagationType) {
 	MLBackPropagationTypeStandard= 0,
 	MLBackPropagationTypeResilient
-} MLBackPropagationType;
+};
 
 
 #endif

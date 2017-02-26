@@ -35,14 +35,14 @@
 #define MAChineLearning_MLFeatureNormalizationType_h
 
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, MLFeatureNormalizationType) {
 	MLFeatureNormalizationTypeNone= 0,
 	MLFeatureNormalizationTypeBoolean,
 	MLFeatureNormalizationTypeL1,
 	MLFeatureNormalizationTypeL2,
 	MLFeatureNormalizationTypeL1TFiDF,
 	MLFeatureNormalizationTypeL2TFiDF
-} MLFeatureNormalizationType;
+};
 
 
 #endif

@@ -35,12 +35,12 @@
 #define MAChineLearning_MLActivationFunctionType_h
 
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, MLActivationFunctionType) {
 	MLActivationFunctionTypeLinear= 0,
 	MLActivationFunctionTypeStep,
 	MLActivationFunctionTypeSigmoid,
 	MLActivationFunctionTypeTanh
-} MLActivationFunctionType;
+};
 
 
 #endif

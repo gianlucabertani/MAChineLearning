@@ -185,43 +185,100 @@ static const MLReal __one=                    1.0;
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType {
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:MLCostFunctionTypeSquaredError backPropagationType:MLBackPropagationTypeResilient hiddenFunctionType:MLActivationFunctionTypeSigmoid outputFunctionType:funcType];
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
+                               outputFunctionType:(MLActivationFunctionType)funcType {
+    
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes
+                                                                  useBias:YES
+                                                         costFunctionType:MLCostFunctionTypeSquaredError
+                                                      backPropagationType:MLBackPropagationTypeResilient
+                                                       hiddenFunctionType:MLActivationFunctionTypeSigmoid
+                                                       outputFunctionType:funcType];
 	
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes costFunctionType:(MLCostFunctionType)costType outputFunctionType:(MLActivationFunctionType)funcType {
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:costType backPropagationType:MLBackPropagationTypeResilient hiddenFunctionType:MLActivationFunctionTypeSigmoid outputFunctionType:funcType];
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
+                                 costFunctionType:(MLCostFunctionType)costType
+                               outputFunctionType:(MLActivationFunctionType)funcType {
+	
+    MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes
+                                                                  useBias:YES
+                                                         costFunctionType:costType
+                                                      backPropagationType:MLBackPropagationTypeResilient
+                                                       hiddenFunctionType:MLActivationFunctionTypeSigmoid
+                                                       outputFunctionType:funcType];
 	
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType {
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:MLCostFunctionTypeSquaredError backPropagationType:backPropType hiddenFunctionType:MLActivationFunctionTypeSigmoid outputFunctionType:funcType];
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
+                              backPropagationType:(MLBackPropagationType)backPropType
+                               outputFunctionType:(MLActivationFunctionType)funcType {
+	
+    MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes
+                                                                  useBias:YES
+                                                         costFunctionType:MLCostFunctionTypeSquaredError
+                                                      backPropagationType:backPropType
+                                                       hiddenFunctionType:MLActivationFunctionTypeSigmoid
+                                                       outputFunctionType:funcType];
 	
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes costFunctionType:(MLCostFunctionType)costType backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType {
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:costType backPropagationType:backPropType hiddenFunctionType:MLActivationFunctionTypeSigmoid outputFunctionType:funcType];
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
+                                 costFunctionType:(MLCostFunctionType)costType
+                              backPropagationType:(MLBackPropagationType)backPropType
+                               outputFunctionType:(MLActivationFunctionType)funcType {
+    
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes
+                                                                  useBias:YES
+                                                         costFunctionType:costType
+                                                      backPropagationType:backPropType
+                                                       hiddenFunctionType:MLActivationFunctionTypeSigmoid
+                                                       outputFunctionType:funcType];
 	
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType {
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:MLCostFunctionTypeSquaredError backPropagationType:backPropType hiddenFunctionType:hiddenFuncType outputFunctionType:funcType];
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
+                              backPropagationType:(MLBackPropagationType)backPropType
+                               hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType
+                               outputFunctionType:(MLActivationFunctionType)funcType {
+    
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes
+                                                                  useBias:YES
+                                                         costFunctionType:MLCostFunctionTypeSquaredError
+                                                      backPropagationType:backPropType
+                                                       hiddenFunctionType:hiddenFuncType
+                                                       outputFunctionType:funcType];
 	
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes costFunctionType:(MLCostFunctionType)costType backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType {
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:costType backPropagationType:backPropType hiddenFunctionType:hiddenFuncType outputFunctionType:funcType];
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
+                                 costFunctionType:(MLCostFunctionType)costType
+                              backPropagationType:(MLBackPropagationType)backPropType
+                               hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType
+                               outputFunctionType:(MLActivationFunctionType)funcType {
+    
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes
+                                                                  useBias:YES
+                                                         costFunctionType:costType
+                                                      backPropagationType:backPropType
+                                                       hiddenFunctionType:hiddenFuncType
+                                                       outputFunctionType:funcType];
 	
 	return network;
 }
 
-- (instancetype) initWithLayerSizes:(NSArray *)sizes useBias:(BOOL)useBias costFunctionType:(MLCostFunctionType)costType backPropagationType:(MLBackPropagationType)backPropType hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType outputFunctionType:(MLActivationFunctionType)funcType {
+- (instancetype) initWithLayerSizes:(NSArray *)sizes
+                            useBias:(BOOL)useBias
+                   costFunctionType:(MLCostFunctionType)costType
+                backPropagationType:(MLBackPropagationType)backPropType
+                 hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType
+                 outputFunctionType:(MLActivationFunctionType)funcType {
+    
 	if ((self = [super init])) {
 		
 		// Checks

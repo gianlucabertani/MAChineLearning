@@ -35,7 +35,7 @@
 #define MAChineLearning_MLWordExtractorOption_h
 
 
-typedef enum {
+typedef NS_OPTIONS(NSUInteger, MLWordExtractorOption) {
 	MLWordExtractorOptionOmitStopWords= 1,
 
 	MLWordExtractorOptionOmitVerbs= 1 << 1,
@@ -58,9 +58,8 @@ typedef enum {
 	MLWordExtractorOptionKeepAllBigrams= 1 << 20,
 	MLWordExtractorOptionKeepAllTrigrams= 1 << 21,
 	
-	MLWordExtractorOptionKeepEmoticons= 1 << 24,
-	
-} MLWordExtractorOption;
+	MLWordExtractorOptionKeepEmoticons= 1 << 24,	
+};
 
 
 #endif

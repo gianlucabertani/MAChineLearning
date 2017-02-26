@@ -91,7 +91,7 @@
 			XCTAssertEqualWithAccuracy(sum.vector[i], vec1[i] + vec2[i], 0.0000000001);
 		
 	} @catch (NSException *e) {
-		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
 	}
 }
 
@@ -114,7 +114,7 @@
 			XCTAssertEqualWithAccuracy(sub.vector[i], vec1[i] - vec2[i], 0.0000000001);
 		
 	} @catch (NSException *e) {
-		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
 	}
 }
 
@@ -162,7 +162,7 @@
 		XCTAssertEqualWithAccuracy(null4, 0.0, 0.000001);
 		
 	} @catch (NSException *e) {
-		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
 	}
 }
 
@@ -220,7 +220,7 @@
         [self checkEquivalenceOf:@"speak" to:@"speaks" with:@"play" to:@"plays" on:map];
         
     } @catch (NSException *e) {
-        XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+        XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
     }
 }
 
@@ -278,7 +278,7 @@
         [self checkEquivalenceOf:@"speak" to:@"speaks" with:@"play" to:@"plays" on:map];
         
     } @catch (NSException *e) {
-        XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@", e.name, e.reason, e.userInfo);
+        XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
     }
 }
 

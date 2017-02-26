@@ -35,12 +35,12 @@
 #define MAChineLearning_MLNeuralNetworkStatus_h
 
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, MLNeuralNetworkStatus) {
 	MLNeuralNetworkStatusIdle= 0,
 	MLNeuralNetworkStatusFeededForward,
 	MLNeuralNetworkStatusBackPropagated,
 	MLNeuralNetworkStatusWeightsUpdated
-} MLNeuralNetworkStatus;
+};
 
 
 #endif
