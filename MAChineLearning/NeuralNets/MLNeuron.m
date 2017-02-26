@@ -264,7 +264,7 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 	}
 	
 	switch (backPropType) {
-		case MLBackPropagationTypeRPROP: {
+		case MLBackPropagationTypeResilient: {
 			
 			// Allocate more buffers for RPROP
 			int err= posix_memalign((void **) &_weightSteps,
@@ -379,7 +379,7 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 			[self backPropagateWithLearningRate:learningRate delta:delta];
 			break;
 			
-		case MLBackPropagationTypeRPROP:
+		case MLBackPropagationTypeResilient:
 			[self backPropagateResilientlyWithDelta:delta];
 			break;
 	}

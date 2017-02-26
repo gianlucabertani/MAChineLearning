@@ -38,8 +38,8 @@
 typedef enum {
 	MLActivationFunctionTypeLinear= 0,
 	MLActivationFunctionTypeStep,
-	MLActivationFunctionTypeLogistic,
-	MLActivationFunctionTypeHyperbolic
+	MLActivationFunctionTypeSigmoid,
+	MLActivationFunctionTypeTanh
 } MLActivationFunctionType;
 
 

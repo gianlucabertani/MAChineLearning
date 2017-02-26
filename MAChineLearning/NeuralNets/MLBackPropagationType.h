@@ -37,7 +37,7 @@
 
 typedef enum {
 	MLBackPropagationTypeStandard= 0,
-	MLBackPropagationTypeRPROP
+	MLBackPropagationTypeResilient
 } MLBackPropagationType;
 
 

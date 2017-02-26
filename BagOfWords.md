@@ -179,7 +179,7 @@ You may need to experiment a bit to find the correct configuration for you.
 
 ### Choosing normalization options
 
-When no normalization is applied, ach position on the bag of words vector specifies the number of occurences of the corresponding word in the text. Normalizing the vector means keeping its values limited, to improve the neural network convergence.
+When no normalization is applied, each position on the bag of words vector specifies the number of occurences of the corresponding word in the text. Normalizing the vector means keeping its values limited, to improve the neural network convergence.
 
 The following normalizations may be applied:
 

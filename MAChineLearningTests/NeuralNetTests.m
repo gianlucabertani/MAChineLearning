@@ -188,7 +188,7 @@
 		MLNeuralNetwork *net= [[MLNeuralNetwork alloc] initWithLayerSizes:@[@2, @2, @1]
 																  useBias:NO
 														 costFunctionType:MLCostFunctionTypeSquaredError
-													  backPropagationType:MLBackPropagationTypeRPROP
+													  backPropagationType:MLBackPropagationTypeResilient
 													   hiddenFunctionType:MLActivationFunctionTypeLinear
 													   outputFunctionType:MLActivationFunctionTypeLinear];
 		
@@ -272,8 +272,8 @@
 																  useBias:YES
 														 costFunctionType:MLCostFunctionTypeCrossEntropy
 													  backPropagationType:MLBackPropagationTypeStandard
-													   hiddenFunctionType:MLActivationFunctionTypeLogistic
-													   outputFunctionType:MLActivationFunctionTypeLogistic];
+													   hiddenFunctionType:MLActivationFunctionTypeSigmoid
+													   outputFunctionType:MLActivationFunctionTypeSigmoid];
 		
 		[net randomizeWeights];
 		

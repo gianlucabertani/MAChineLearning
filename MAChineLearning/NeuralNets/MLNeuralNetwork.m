@@ -187,25 +187,25 @@ static const MLReal __one=                    1.0;
 }
 
 + (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes outputFunctionType:(MLActivationFunctionType)funcType {
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:MLCostFunctionTypeSquaredError backPropagationType:MLBackPropagationTypeRPROP hiddenFunctionType:MLActivationFunctionTypeLogistic outputFunctionType:funcType];
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:MLCostFunctionTypeSquaredError backPropagationType:MLBackPropagationTypeResilient hiddenFunctionType:MLActivationFunctionTypeSigmoid outputFunctionType:funcType];
 	
 	return network;
 }
 
 + (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes costFunctionType:(MLCostFunctionType)costType outputFunctionType:(MLActivationFunctionType)funcType {
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:costType backPropagationType:MLBackPropagationTypeRPROP hiddenFunctionType:MLActivationFunctionTypeLogistic outputFunctionType:funcType];
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:costType backPropagationType:MLBackPropagationTypeResilient hiddenFunctionType:MLActivationFunctionTypeSigmoid outputFunctionType:funcType];
 	
 	return network;
 }
 
 + (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType {
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:MLCostFunctionTypeSquaredError backPropagationType:backPropType hiddenFunctionType:MLActivationFunctionTypeLogistic outputFunctionType:funcType];
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:MLCostFunctionTypeSquaredError backPropagationType:backPropType hiddenFunctionType:MLActivationFunctionTypeSigmoid outputFunctionType:funcType];
 	
 	return network;
 }
 
 + (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes costFunctionType:(MLCostFunctionType)costType backPropagationType:(MLBackPropagationType)backPropType outputFunctionType:(MLActivationFunctionType)funcType {
-	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:costType backPropagationType:backPropType hiddenFunctionType:MLActivationFunctionTypeLogistic outputFunctionType:funcType];
+	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes useBias:YES costFunctionType:costType backPropagationType:backPropType hiddenFunctionType:MLActivationFunctionTypeSigmoid outputFunctionType:funcType];
 	
 	return network;
 }
@@ -228,8 +228,8 @@ static const MLReal __one=                    1.0;
 		// Checks
 		switch (costType) {
 			case MLCostFunctionTypeCrossEntropy:
-				if ((hiddenFuncType != MLActivationFunctionTypeLogistic) || (funcType != MLActivationFunctionTypeLogistic))
-					@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Wrong cost function: cross entropy can be used only with logistic activation function for all layers"
+				if ((hiddenFuncType != MLActivationFunctionTypeSigmoid) || (funcType != MLActivationFunctionTypeSigmoid))
+					@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Wrong cost function: cross entropy can be used only with sigmoid activation function for all layers"
 																			 userInfo:@{@"hiddenFunctionType": [NSNumber numberWithInt:hiddenFuncType],
 																						@"outputFunctionType": [NSNumber numberWithInt:funcType]}];
 				break;
@@ -377,7 +377,7 @@ static const MLReal __one=                    1.0;
 			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid learning rate: standard backpropagation requires a positive learning rate"
 																	 userInfo:nil];
 			
-		case MLBackPropagationTypeRPROP:
+		case MLBackPropagationTypeResilient:
 			[self backPropagateWithLearningRate:0.0];
 			break;
 	}
@@ -393,7 +393,7 @@ static const MLReal __one=                    1.0;
 																		 userInfo:@{@"learningRate": [NSNumber numberWithDouble:learningRate]}];
 			break;
 			
-		case MLBackPropagationTypeRPROP:
+		case MLBackPropagationTypeResilient:
 			if (learningRate != 0.0)
 				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid learning rate: RPROP backpropagation makes no use of learning rate, should not be passed"
 																		 userInfo:nil];

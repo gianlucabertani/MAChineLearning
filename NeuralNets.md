@@ -6,8 +6,8 @@ Neural networks in MAChineLearning currently support:
 - 4 kinds of activation function:
   - linear,
   - step (0 if output is less than 0.5, 1 if greater),
-  - logistic,
-  - hyperbolic;
+  - sigmoid (logistic),
+  - tanh (hyperbolic tangent);
 - training through backpropagation with standard gradient descent;
 - training both by sample and by epoch;
 - load/save of the network status;

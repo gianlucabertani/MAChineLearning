@@ -289,7 +289,7 @@ static const MLReal __fourty=       40.0;
 			ML_VDSP_VTHRES(_tempBuffer, 1, &__zero, _outputBuffer, 1, _size);
 			break;
 			
-		case MLActivationFunctionTypeLogistic: {
+		case MLActivationFunctionTypeSigmoid: {
 			
 			// Apply clipping before the function to avoid NaNs
 			ML_VDSP_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
@@ -306,7 +306,7 @@ static const MLReal __fourty=       40.0;
 			break;
 		}
 			
-		case MLActivationFunctionTypeHyperbolic: {
+		case MLActivationFunctionTypeTanh: {
 			
 			// Apply clipping before the function to avoid NaNs
 			ML_VDSP_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
@@ -386,7 +386,7 @@ static const MLReal __fourty=       40.0;
 			ML_VDSP_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
 			break;
 			
-		case MLActivationFunctionTypeLogistic:
+		case MLActivationFunctionTypeSigmoid:
 			switch (costType) {
 				case MLCostFunctionTypeCrossEntropy:
 					
@@ -405,7 +405,7 @@ static const MLReal __fourty=       40.0;
 			}
 			break;
 			
-		case MLActivationFunctionTypeHyperbolic:
+		case MLActivationFunctionTypeTanh:
 			
 			// Apply formula: delta[i] = (1 - (output[i] * output[i])) * error[i]
 			ML_VDSP_VSQ(_outputBuffer, 1, _tempBuffer, 1, _size);
