@@ -377,7 +377,7 @@ static const MLReal __one=                    1.0;
 			
 		case MLBackPropagationTypeResilient:
 			if (learningRate != 0.0)
-				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid learning rate: RPROP backpropagation makes no use of learning rate, should not be passed"
+				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid learning rate: resilient backpropagation makes no use of learning rate, should not be passed"
 																		 userInfo:nil];
 			break;
 	}
