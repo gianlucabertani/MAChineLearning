@@ -38,8 +38,7 @@
 #import "MLStopWords.h"
 #import "NSString+WordUtils.h"
 #import "MLBagOfWordsException.h"
-
-#import "MLConstants.h"
+#import "MLAlloc.h"
 
 #import <Accelerate/Accelerate.h>
 
@@ -259,10 +258,8 @@ static NSDictionary *__stopWords= nil;
 }
 
 - (void) dealloc {
-	if (_localBuffer) {
-		free(_outputBuffer);
-		_outputBuffer= NULL;
-	}
+    mlFreeRealBuffer(_outputBuffer);
+    _outputBuffer= NULL;
 }
 
 
@@ -275,14 +272,7 @@ static NSDictionary *__stopWords= nil;
 		_localBuffer= NO;
 		
 	} else {
-		int err= posix_memalign((void **) &_outputBuffer,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * _outputSize);
-		if (err)
-			@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Error while allocating buffer"
-															 userInfo:@{@"buffer": @"outputBuffer",
-																		@"error": [NSNumber numberWithInt:err]}];
-		
+        _outputBuffer= mlAllocRealBuffer(_outputSize);
 		_localBuffer= YES;
 	}
 	

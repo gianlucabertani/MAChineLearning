@@ -35,7 +35,7 @@
 #import "MLWordVectorException.h"
 
 #import "MLReal.h"
-#import "MLConstants.h"
+#import "MLAlloc.h"
 
 #import <Accelerate/Accelerate.h>
 
@@ -50,14 +50,7 @@
 	BOOL _freeOnDealloc;
 
 	MLReal _magnitude;
-	MLReal *_temp;
 }
-
-
-#pragma mark -
-#pragma mark Internals
-
-- (void) allocateTemp;
 
 
 @end
@@ -91,13 +84,8 @@
 
 - (void) dealloc {
 	if (_freeOnDealloc) {
-		free(_vector);
+		mlFreeRealBuffer(_vector);
 		_vector= NULL;
-	}
-	
-	if (_temp) {
-		free(_temp);
-		_temp= NULL;
 	}
 }
 
@@ -114,15 +102,7 @@
 																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
 	
 	// Creation of sum vector
-	MLReal *sumVector= NULL;
-	
-	int err= posix_memalign((void **) &sumVector,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * _size);
-	if (err)
-		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
-														   userInfo:@{@"buffer": @"sumVector",
-																	  @"error": [NSNumber numberWithInt:err]}];
+	MLReal *sumVector= mlAllocRealBuffer(_size);
 	
 	// Sum of vectors
 	ML_VDSP_VADD(_vector, 1, vector.vector, 1, sumVector, 1, _size);
@@ -140,15 +120,7 @@
 																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
 	
 	// Creation of difference vector
-	MLReal *subVector= NULL;
-	
-	int err= posix_memalign((void **) &subVector,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * _size);
-	if (err)
-		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
-														   userInfo:@{@"buffer": @"subVector",
-																	  @"error": [NSNumber numberWithInt:err]}];
+	MLReal *subVector= mlAllocRealBuffer(_size);
 	
 	// Subtraction of vectors
 	ML_VDSP_VSUB(vector.vector, 1, _vector, 1, subVector, 1, _size);
@@ -185,17 +157,18 @@
 														   userInfo:@{@"size": [NSNumber numberWithUnsignedInteger:_size],
 																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
 	
-	// Allocate temp vector, if needed
-	if (!_temp)
-        [self allocateTemp];
+	// Allocate temp vector
+    MLReal *temp= mlAllocRealBuffer(_size);
 
 	// Subtraction of vectors
-	ML_VDSP_VSUB(vector.vector, 1, _vector, 1, _temp, 1, _size);
+	ML_VDSP_VSUB(vector.vector, 1, _vector, 1, temp, 1, _size);
 	
 	// Compute magnitude of vector difference
 	MLReal distance= 0.0;
-	ML_VDSP_SVESQ(_temp, 1, &distance, _size);
+	ML_VDSP_SVESQ(temp, 1, &distance, _size);
 	distance= ML_SQRT(distance);
+    
+    mlFreeRealBuffer(temp);
 	
 	return distance;
 }
@@ -221,15 +194,16 @@
         return NO;
     
     // Allocate temp vector, if needed
-    if (!_temp)
-        [self allocateTemp];
+    MLReal *temp= mlAllocRealBuffer(_size);
     
     // Finally check the numbers, we subtract the vectors
     // and sum the results
-    ML_VDSP_VSUB(otherVector.vector, 1, _vector, 1, _temp, 1, _size);
+    ML_VDSP_VSUB(otherVector.vector, 1, _vector, 1, temp, 1, _size);
 
     MLReal sum= 0.0;
-    ML_VDSP_SVE(_temp, 1, &sum, _size);
+    ML_VDSP_SVE(temp, 1, &sum, _size);
+    
+    mlFreeRealBuffer(temp);
 
     return (sum == 0.0);
 }
@@ -257,26 +231,6 @@
 @synthesize vector= _vector;
 @synthesize size= _size;
 @synthesize magnitude= _magnitude;
-
-
-#pragma mark -
-#pragma mark Internals
-
-- (void) allocateTemp {
-    @synchronized (self) {
-
-        // Allocate temp vector, if still needed
-        if (!_temp) {
-            int err= posix_memalign((void **) &_temp,
-                                    BUFFER_MEMORY_ALIGNMENT,
-                                    sizeof(MLReal) * _size);
-            if (err)
-                @throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
-                                                                   userInfo:@{@"buffer": @"temp",
-                                                                              @"error": [NSNumber numberWithInt:err]}];
-        }
-    }
-}
 
 
 @end

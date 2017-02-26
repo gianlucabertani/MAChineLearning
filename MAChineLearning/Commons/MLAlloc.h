@@ -1,9 +1,9 @@
 //
-//  MLConstants.h
+//  MLAlloc.h
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 23/04/15.
-//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
+//  Created by Gianluca Bertani on 26/02/2017.
+//  Copyright © 2017 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -31,11 +31,16 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef MAChineLearning_MLConstants_h
-#define MAChineLearning_MLConstants_h
+#import <Foundation/Foundation.h>
+
+#import "MLReal.h"
 
 
-#define BUFFER_MEMORY_ALIGNMENT          (128)
+MLReal *mlAllocRealBuffer(NSUInteger size);
+void mlFreeRealBuffer(MLReal *buffer);
 
+MLReal **mlAllocRealPointerBuffer(NSUInteger size);
+void mlFreeRealPointerBuffer(MLReal **buffer);
 
-#endif
+int *mlAllocIntBuffer(NSUInteger size);
+void mlFreeIntBuffer(int *buffer);

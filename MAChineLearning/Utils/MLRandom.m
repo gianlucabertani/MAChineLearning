@@ -33,7 +33,7 @@
 
 #import "MLRandom.h"
 
-#import "MLConstants.h"
+#import "MLAlloc.h"
 
 #import <Accelerate/Accelerate.h>
 
@@ -95,15 +95,7 @@ static MLReal __spareGaussian=        0.0;
 + (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofUniformRealsWithMin:(MLReal)min max:(MLReal)max {
 	
 	// Allocate and fill a temp integer vector
-	int *tempUniform= NULL;
-	int err= posix_memalign((void **) &tempUniform,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(int) * size);
-	if (err)
-		@throw [NSException exceptionWithName:RANDOMIZATION_EXCEPTION_NAME
-									   reason:@"Error while allocating buffer"
-									 userInfo:@{@"buffer": @"tempUniform",
-												@"error": [NSNumber numberWithInt:err]}];
+    int *tempUniform= mlAllocIntBuffer(size);
 	
 	int result= SecRandomCopyBytes(kSecRandomDefault, sizeof(int) * size, (uint8_t *) tempUniform);
     if (result != 0)
@@ -136,8 +128,7 @@ static MLReal __spareGaussian=        0.0;
 	ML_VDSP_VSADD(vector, 1, &min, vector, 1, size);
 	
 	// Free the temp vector
-	free(tempUniform);
-	tempUniform= NULL;
+	mlFreeIntBuffer(tempUniform);
 }
 
 + (MLReal) nextGaussianRealWithMean:(MLReal)mean sigma:(MLReal)sigma {
@@ -202,15 +193,7 @@ static MLReal __spareGaussian=        0.0;
 	NSUInteger oddStridedSize= (size % 2 == 0) ? evenStridedSize : (evenStridedSize -1);
 	
 	// Allocate and fill a temp vectors with uniform randoms
-	MLReal *tempGaussian1= NULL;
-	int err= posix_memalign((void **) &tempGaussian1,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * size);
-	if (err)
-		@throw [NSException exceptionWithName:RANDOMIZATION_EXCEPTION_NAME
-									   reason:@"Error while allocating buffer"
-									 userInfo:@{@"buffer": @"tempGaussian1",
-												@"error": [NSNumber numberWithInt:err]}];
+    MLReal *tempGaussian1= mlAllocRealBuffer(size);
 
 	[MLRandom fillVector:tempGaussian1 size:size ofUniformRealsWithMin:0.0 max:1.0];
 	
@@ -221,15 +204,7 @@ static MLReal __spareGaussian=        0.0;
 		ML_VDSP_VSMUL(tempGaussian1, 2, &__one, &tempGaussian1[1], 2, oddStridedSize);
 	}
 	
-	MLReal *tempGaussian2= NULL;
-	err= posix_memalign((void **) &tempGaussian2,
-						BUFFER_MEMORY_ALIGNMENT,
-						sizeof(MLReal) * size);
-	if (err)
-		@throw [NSException exceptionWithName:RANDOMIZATION_EXCEPTION_NAME
-									   reason:@"Error while allocating buffer"
-									 userInfo:@{@"buffer": @"tempGaussian2",
-												@"error": [NSNumber numberWithInt:err]}];
+	MLReal *tempGaussian2= mlAllocRealBuffer(size);
 	
 	// Duplicate temp1 on temp2
 	ML_VDSP_VSMUL(tempGaussian1, 1, &__one, tempGaussian2, 1, size);
@@ -274,11 +249,8 @@ static MLReal __spareGaussian=        0.0;
 	ML_VDSP_VSADD(vector, 1, &mean, vector, 1, size);
 	
 	// Free the temp vectors
-	free(tempGaussian1);
-	tempGaussian1= NULL;
-	
-	free(tempGaussian2);
-	tempGaussian2= NULL;
+	mlFreeRealBuffer(tempGaussian1);
+	mlFreeRealBuffer(tempGaussian2);
 }
 
 

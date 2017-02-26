@@ -79,16 +79,7 @@
 
 - (void) testUniform {
 	@try {
-		MLReal *distribution= NULL;
-		
-		int err= posix_memalign((void **) &distribution,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * UNIFORM_TEST_SIZE);
-		if (err)
-			@throw [NSException exceptionWithName:@"PosixMemalignError"
-										   reason:@"Error while allocating buffer"
-										 userInfo:@{@"buffer": @"distribution",
-													@"error": [NSNumber numberWithInt:err]}];
+		MLReal *distribution= mlAllocRealBuffer(UNIFORM_TEST_SIZE);
 		
 		MLReal randomMin= [MLRandom nextUniformReal] * 0.5;
 		MLReal randomMax= 0.5 + [MLRandom nextUniformReal] * 0.5;
@@ -129,16 +120,7 @@
 
 - (void) testGaussian {
 	@try {
-		MLReal *distribution= NULL;
-		
-		int err= posix_memalign((void **) &distribution,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * GAUSSIAN_TEST_SIZE);
-		if (err)
-			@throw [NSException exceptionWithName:@"PosixMemalignError"
-										   reason:@"Error while allocating buffer"
-										 userInfo:@{@"buffer": @"distribution",
-													@"error": [NSNumber numberWithInt:err]}];
+		MLReal *distribution= mlAllocRealBuffer(GAUSSIAN_TEST_SIZE);
 		
 		MLReal randomMean= [MLRandom nextUniformReal] - 0.5;
 		MLReal randomSigma= [MLRandom nextUniformReal];

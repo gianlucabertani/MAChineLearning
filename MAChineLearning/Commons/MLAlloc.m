@@ -1,9 +1,9 @@
 //
-//  MLInputLayer.m
+//  MLAlloc.m
 //  MAChineLearning
 //
-//  Created by Gianluca Bertani on 01/03/15.
-//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
+//  Created by Gianluca Bertani on 26/02/2017.
+//  Copyright © 2017 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -31,68 +31,52 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "MLInputLayer.h"
-#import "MLNeuralNetworkException.h"
-
 #import "MLAlloc.h"
 
-#import <Accelerate/Accelerate.h>
+#define BUFFER_MEMORY_ALIGNMENT          (128)
+#define ALLOC_EXCEPTION_NAME               (@"MLAllocException")
 
 
-#pragma mark -
-#pragma mark InputLayer extension
-
-@interface MLInputLayer () {
-	MLReal *_inputBuffer;
+void *mlAllocBuffer(NSUInteger itemSize, NSUInteger items, NSString *errorReason) {
+    void *buffer= NULL;
+    
+    int err= posix_memalign((void **) &buffer, BUFFER_MEMORY_ALIGNMENT, itemSize * items);
+    if (err != 0)
+        @throw [NSException exceptionWithName:ALLOC_EXCEPTION_NAME
+                                       reason:errorReason
+                                     userInfo:@{@"error": [NSNumber numberWithInt:err]}];
+    
+    return buffer;
 }
 
-
-@end
-
-
-#pragma mark -
-#pragma mark InputLayer implementation
-
-@implementation MLInputLayer
-
-
-#pragma mark -
-#pragma mark Initialization
-
-- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size {
-	if ((self = [super initWithIndex:index size:size])) {
-		
-		// Nothing to do
-	}
-	
-	return self;
+void mlFreeBuffer(void *buffer) {
+    if (!buffer)
+        return;
+    
+    free(buffer);
 }
 
-- (void) dealloc {
-	
-	// Deallocate the input buffer
-	mlFreeRealBuffer(_inputBuffer);
-	_inputBuffer= NULL;
+MLReal *mlAllocRealBuffer(NSUInteger size) {
+    return mlAllocBuffer(sizeof(MLReal), size, @"Error while allocating a buffer of reals");
 }
 
-
-#pragma mark -
-#pragma mark Setup
-
-- (void) setUp {
-	
-	// Allocate buffers
-    _inputBuffer= mlAllocRealBuffer(self.size);
-	
-	// Clear and fill buffers as needed
-	ML_VDSP_VCLR(_inputBuffer, 1, self.size);
+void mlFreeRealBuffer(MLReal *buffer) {
+    mlFreeBuffer(buffer);
 }
 
+MLReal **mlAllocRealPointerBuffer(NSUInteger size) {
+    return mlAllocBuffer(sizeof(MLReal *), size, @"Error while allocating a buffer of real pointes");
+}
 
-#pragma mark -
-#pragma mark Properties
+void mlFreeRealPointerBuffer(MLReal **buffer) {
+    mlFreeBuffer(buffer);
+}
 
-@synthesize inputBuffer= _inputBuffer;
+int *mlAllocIntBuffer(NSUInteger size) {
+    return mlAllocBuffer(sizeof(int), size, @"Error while allocating a buffer of ints");
+}
 
+void mlFreeIntBuffer(int *buffer) {
+    mlFreeBuffer(buffer);
+}
 
-@end

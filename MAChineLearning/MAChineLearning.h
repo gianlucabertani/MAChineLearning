@@ -15,7 +15,7 @@ FOUNDATION_EXPORT double MAChineLearningVersionNumber;
 FOUNDATION_EXPORT const unsigned char MAChineLearningVersionString[];
 
 #import <MAChineLearning/MLReal.h>
-#import <MAChineLearning/MLConstants.h>
+#import <MAChineLearning/MLAlloc.h>
 #import <MAChineLearning/MLNeuralNetwork.h>
 #import <MAChineLearning/MLNeuralNetwork.h>
 #import <MAChineLearning/MLNeuralNetworkStatus.h>

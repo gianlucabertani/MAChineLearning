@@ -40,7 +40,7 @@
 #import "MLNeuronLayer.h"
 #import "MLNeuron.h"
 
-#import "MLConstants.h"
+#import "MLAlloc.h"
 
 #import "IOLineReader.h"
 
@@ -270,15 +270,7 @@
 			}
 			
 			// Creation of vector
-			MLReal *vector= NULL;
-			
-			int err= posix_memalign((void **) &vector,
-									BUFFER_MEMORY_ALIGNMENT,
-									sizeof(MLReal) * _vectorSize);
-			if (err)
-				@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while allocating buffer"
-																   userInfo:@{@"buffer": @"vector",
-																			  @"error": [NSNumber numberWithInt:err]}];
+			MLReal *vector= mlAllocRealBuffer(_vectorSize);
 			
 			// Fill vector from array
 			NSUInteger i= 0;

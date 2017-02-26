@@ -35,7 +35,7 @@
 #import "MLNeuronLayer.h"
 #import "MLNeuralNetworkException.h"
 
-#import "MLConstants.h"
+#import "MLAlloc.h"
 #import "MLRandom.h"
 
 #import <Accelerate/Accelerate.h>
@@ -77,7 +77,6 @@
 	MLReal *_gradientsProduct;
 
 	MLReal *_weightsRestore;
-	MLReal *_rpropTemp;
 }
 
 
@@ -139,67 +138,40 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 - (void) dealloc {
 
 	// Deallocate common buffers
-	if (_weights) {
-		free(_weights);
-		_weights= NULL;
-	}
+    mlFreeRealBuffer(_weights);
+    _weights= NULL;
 	
-	if (_weightsDelta) {
-		free(_weightsDelta);
-		_weightsDelta= NULL;
-	}
+    mlFreeRealBuffer(_weightsDelta);
+    _weightsDelta= NULL;
 
 	// Deallocate pointes for weight gathering
-	if (_nextLayerWeightPtrs) {
-		free(_nextLayerWeightPtrs);
-		_nextLayerWeightPtrs= NULL;
-	}
+    mlFreeRealPointerBuffer(_nextLayerWeightPtrs);
+    _nextLayerWeightPtrs= NULL;
 	
-	if (_nextLayerWeightDeltaPtrs) {
-		free(_nextLayerWeightDeltaPtrs);
-		_nextLayerWeightDeltaPtrs= NULL;
-	}
+    mlFreeRealPointerBuffer(_nextLayerWeightDeltaPtrs);
+    _nextLayerWeightDeltaPtrs= NULL;
 
 	// Deallocate pointers for RPROP
-	if (_weightSteps) {
-		free(_weightSteps);
-		_weightSteps= NULL;
-	}
+    mlFreeRealBuffer(_weightSteps);
+    _weightSteps= NULL;
 	
-	if (_previousGradient) {
-		free(_previousGradient);
-		_previousGradient= NULL;
-	}
+    mlFreeRealBuffer(_previousGradient);
+    _previousGradient= NULL;
 	
-	if (_previousWeightsChange) {
-		free(_previousWeightsChange);
-		_previousWeightsChange= NULL;
-	}
+    mlFreeRealBuffer(_previousWeightsChange);
+    _previousWeightsChange= NULL;
 	
-	if (_gradient) {
-		free(_gradient);
-		_gradient= NULL;
-	}
+    mlFreeRealBuffer(_gradient);
+    _gradient= NULL;
 	
-	if (_gradientSign) {
-		free(_gradientSign);
-		_gradientSign= NULL;
-	}
+    mlFreeRealBuffer(_gradientSign);
+    _gradientSign= NULL;
 	
-	if (_gradientsProduct) {
-		free(_gradientsProduct);
-		_gradientsProduct= NULL;
-	}
+    mlFreeRealBuffer(_gradientsProduct);
+    _gradientsProduct= NULL;
 	
-	if (_weightsRestore) {
-		free(_weightsRestore);
-		_weightsRestore= NULL;
-	}
-
-	if (_rpropTemp) {
-		free(_rpropTemp);
-		_rpropTemp= NULL;
-	}
+    mlFreeRealBuffer(_weightsRestore);
+    _weightsRestore= NULL;
 }
 
 
@@ -214,21 +186,8 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 	
 	
 	// Allocate common buffers
-	int err= posix_memalign((void **) &_weights,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal) * _inputSize);
-	if (err)
-		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																 userInfo:@{@"buffer": @"weights",
-																			@"error": [NSNumber numberWithInt:err]}];
-	
-	err= posix_memalign((void **) &_weightsDelta,
-						BUFFER_MEMORY_ALIGNMENT,
-						sizeof(MLReal) * _inputSize);
-	if (err)
-		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																 userInfo:@{@"buffer": @"weightsDelta",
-																			@"error": [NSNumber numberWithInt:err]}];
+    _weights= mlAllocRealBuffer(_inputSize);
+    _weightsDelta= mlAllocRealBuffer(_inputSize);
 	
 	// Clear and fill common buffers as needed
 	ML_VDSP_VCLR(_weights, 1, _inputSize);
@@ -238,21 +197,8 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 		MLNeuronLayer *nextLayer= (MLNeuronLayer *) self.layer.nextLayer;
 		
 		// Set up pointers to gather weights of next layer
-		int err= posix_memalign((void **) &_nextLayerWeightPtrs,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal *) * nextLayer.size);
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																	 userInfo:@{@"buffer": @"nextLayerWeightPtrs",
-																				@"error": [NSNumber numberWithInt:err]}];
-		
-		err= posix_memalign((void **) &_nextLayerWeightDeltaPtrs,
-							BUFFER_MEMORY_ALIGNMENT,
-							sizeof(MLReal *) * nextLayer.size);
-		if (err)
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																	 userInfo:@{@"buffer": @"nextLayerWeightDeltaPtrs",
-																				@"error": [NSNumber numberWithInt:err]}];
+        _nextLayerWeightPtrs= mlAllocRealPointerBuffer(nextLayer.size);
+        _nextLayerWeightDeltaPtrs= mlAllocRealPointerBuffer(nextLayer.size);
 		
 		// Fill pointers
 		int j= 0;
@@ -267,68 +213,13 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 		case MLBackPropagationTypeResilient: {
 			
 			// Allocate more buffers for RPROP
-			int err= posix_memalign((void **) &_weightSteps,
-									BUFFER_MEMORY_ALIGNMENT,
-									sizeof(MLReal) * _inputSize);
-			if (err)
-				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																		 userInfo:@{@"buffer": @"weightSteps",
-																					@"error": [NSNumber numberWithInt:err]}];
-			
-			err= posix_memalign((void **) &_previousGradient,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * _inputSize);
-			if (err)
-				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																		 userInfo:@{@"buffer": @"previousGradient",
-																					@"error": [NSNumber numberWithInt:err]}];
-			
-			err= posix_memalign((void **) &_previousWeightsChange,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * _inputSize);
-			if (err)
-				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																		 userInfo:@{@"buffer": @"previousWeightsChange",
-																					@"error": [NSNumber numberWithInt:err]}];
-			err= posix_memalign((void **) &_gradient,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * _inputSize);
-			if (err)
-				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																		 userInfo:@{@"buffer": @"gradient",
-																					@"error": [NSNumber numberWithInt:err]}];
-			
-			err= posix_memalign((void **) &_gradientSign,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * _inputSize);
-			if (err)
-				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																		 userInfo:@{@"buffer": @"gradientSign",
-																					@"error": [NSNumber numberWithInt:err]}];
-			
-			err= posix_memalign((void **) &_gradientsProduct,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * _inputSize);
-			if (err)
-				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																		 userInfo:@{@"buffer": @"gradientsProduct",
-																					@"error": [NSNumber numberWithInt:err]}];
-			
-			err= posix_memalign((void **) &_weightsRestore,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * _inputSize);
-			if (err)
-				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																		 userInfo:@{@"buffer": @"weightsRestore",
-																					@"error": [NSNumber numberWithInt:err]}];
-			
-			err= posix_memalign((void **) &_rpropTemp,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * _inputSize);
-			if (err)
-				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Error while allocating buffer"
-																		 userInfo:@{@"buffer": @"rpropTemp",
-																					@"error": [NSNumber numberWithInt:err]}];
+            _weightSteps= mlAllocRealBuffer(_inputSize);
+            _previousGradient= mlAllocRealBuffer(_inputSize);
+            _previousWeightsChange= mlAllocRealBuffer(_inputSize);
+            _gradient= mlAllocRealBuffer(_inputSize);
+            _gradientSign= mlAllocRealBuffer(_inputSize);
+            _gradientsProduct= mlAllocRealBuffer(_inputSize);
+            _weightsRestore= mlAllocRealBuffer(_inputSize);
 			
 			// Clear and fill buffers as needed
 			ML_VDSP_VFILL(&__stepInitialValue, _weightSteps, 1, _inputSize);
@@ -410,15 +301,16 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 }
 
 - (void) backPropagateResilientlyWithDelta:(MLReal)delta {
+    MLReal *rpropTemp= mlAllocRealBuffer(_inputSize);
 	
 	// Compute the current gradient
 	ML_VDSP_VSMUL(_inputBuffer, 1, &delta, _gradient, 1, _inputSize);
 	
 	// Compute the gradient sign: we have to apply an inverted clip to
 	// ensure no division by zero will be performed
-	ML_VDSP_VICLIP(_gradient, 1, &__minusEpsilon, &__epsilon, _rpropTemp, 1, _inputSize);
-	ML_VDSP_VABS(_rpropTemp, 1, _rpropTemp, 1, _inputSize);
-	ML_VDSP_VDIV(_rpropTemp, 1, _gradient, 1, _gradientSign, 1, _inputSize);
+	ML_VDSP_VICLIP(_gradient, 1, &__minusEpsilon, &__epsilon, rpropTemp, 1, _inputSize);
+	ML_VDSP_VABS(rpropTemp, 1, rpropTemp, 1, _inputSize);
+	ML_VDSP_VDIV(rpropTemp, 1, _gradient, 1, _gradientSign, 1, _inputSize);
 	
 	// Compute product of current gradient by previous gradient
 	ML_VDSP_VMUL(_gradient, 1, _previousGradient, 1, _gradientsProduct, 1, _inputSize);
@@ -426,44 +318,46 @@ static const MLReal __stepScaledDeceleration= __stepDeceleration / __stepScaleFa
 	// Use clipping functions to compute change factor of weight steps:
 	// we use scaled down acceleration/deceleration factors as thresholds,
 	// then scale up the resulting vector appropriately
-	ML_VDSP_VCLIP(_gradientsProduct, 1, &__stepScaledDeceleration, &__stepScaledAcceleration, _rpropTemp, 1, _inputSize);
-	ML_VDSP_VSMUL(_rpropTemp, 1, &__stepScaleFactor, _rpropTemp, 1, _inputSize);
+	ML_VDSP_VCLIP(_gradientsProduct, 1, &__stepScaledDeceleration, &__stepScaledAcceleration, rpropTemp, 1, _inputSize);
+	ML_VDSP_VSMUL(rpropTemp, 1, &__stepScaleFactor, rpropTemp, 1, _inputSize);
 	
 	// Multiply and add the change factor to obtain final weights steps,
 	// also apply a clip to ensure steps don't get too big or small
-	ML_VDSP_VMA(_rpropTemp, 1, _weightSteps, 1, _weightSteps, 1, _weightSteps, 1, _inputSize);
+	ML_VDSP_VMA(rpropTemp, 1, _weightSteps, 1, _weightSteps, 1, _weightSteps, 1, _inputSize);
 	ML_VDSP_VCLIP(_weightSteps, 1, &__stepMin, &__stepMax, _weightSteps, 1, _inputSize);
 	
 	// Apply threshold and sum to gradients product to find which weights
 	// must be reset to their previous value: this vector has -1 where the
 	// gradients product is negative, 0 otherwise
-	ML_VDSP_VTHRSC(_gradientsProduct, 1, &__zero, &__half, _rpropTemp, 1, _inputSize);
-	ML_VDSP_VSADD(_rpropTemp, 1, &__minusHalf, _rpropTemp, 1, _inputSize);
+	ML_VDSP_VTHRSC(_gradientsProduct, 1, &__zero, &__half, rpropTemp, 1, _inputSize);
+	ML_VDSP_VSADD(rpropTemp, 1, &__minusHalf, rpropTemp, 1, _inputSize);
 	
 	// Multiply for previous weight change, the result vector is the "restore" vector:
 	// has 0 where the gradients product is positive, and the opposite of previous weight
 	// change where the gradients product is negative
-	ML_VDSP_VMUL(_rpropTemp, 1, _previousWeightsChange, 1, _weightsRestore, 1, _inputSize);
+	ML_VDSP_VMUL(rpropTemp, 1, _previousWeightsChange, 1, _weightsRestore, 1, _inputSize);
 	
 	// Complement the precursor of the "restore" vector: the result has 1
 	// where the gradients product is positive, 0 otherwise
-	ML_VDSP_VSADD(_rpropTemp, 1, &__one, _rpropTemp, 1, _inputSize);
+	ML_VDSP_VSADD(rpropTemp, 1, &__one, rpropTemp, 1, _inputSize);
 	
 	// Nullify the gradient where the gradients product is negative
-	ML_VDSP_VMUL(_gradient, 1, _rpropTemp, 1, _gradient, 1, _inputSize);
+	ML_VDSP_VMUL(_gradient, 1, rpropTemp, 1, _gradient, 1, _inputSize);
 	
 	// Compute the final weights change by multiplying the weight steps by the complement
 	// of the "restore" vector, then multuplying by the sign of the gradient and finally
 	// adding with the "restore" vector
-	ML_VDSP_VMUL(_weightSteps, 1, _rpropTemp, 1, _rpropTemp, 1, _inputSize);
-	ML_VDSP_VMA(_rpropTemp, 1, _gradientSign, 1, _weightsRestore, 1, _rpropTemp, 1, _inputSize);
+	ML_VDSP_VMUL(_weightSteps, 1, rpropTemp, 1, rpropTemp, 1, _inputSize);
+	ML_VDSP_VMA(rpropTemp, 1, _gradientSign, 1, _weightsRestore, 1, rpropTemp, 1, _inputSize);
 	
 	// Finally apply the steps to weights delta
-	ML_VDSP_VADD(_rpropTemp, 1, _weightsDelta, 1, _weightsDelta, 1, _inputSize);
+	ML_VDSP_VADD(rpropTemp, 1, _weightsDelta, 1, _weightsDelta, 1, _inputSize);
 		
 	// Save gradient and weights delta for next step
 	ML_VDSP_VSMUL(_gradient, 1, &__one, _previousGradient, 1, _inputSize);
-	ML_VDSP_VSMUL(_rpropTemp, 1, &__one, _previousWeightsChange, 1, _inputSize);
+	ML_VDSP_VSMUL(rpropTemp, 1, &__one, _previousWeightsChange, 1, _inputSize);
+    
+    mlFreeRealBuffer(rpropTemp);
 }
 
 

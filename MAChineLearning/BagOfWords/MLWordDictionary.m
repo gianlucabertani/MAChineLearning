@@ -35,7 +35,7 @@
 #import "MLWordInfo.h"
 #import "MLBagOfWordsException.h"
 
-#import "MLConstants.h"
+#import "MLAlloc.h"
 
 #import <Accelerate/Accelerate.h>
 
@@ -93,10 +93,8 @@
 }
 
 - (void) dealloc {
-	if (_idfWeights) {
-		free(_idfWeights);
-		_idfWeights= NULL;
-	}
+    mlFreeRealBuffer(_idfWeights);
+    _idfWeights= NULL;
 }
 
 
@@ -216,15 +214,8 @@
 	if (!_idfWeightsDirty)
 		return _idfWeights;
 	
-	if (!_idfWeights) {
-		int err= posix_memalign((void **) &_idfWeights,
-								BUFFER_MEMORY_ALIGNMENT,
-								sizeof(MLReal) * _dictionary.count);
-		if (err)
-			@throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"Error while allocating buffer"
-															   userInfo:@{@"buffer": @"idfWeights",
-																		  @"error": [NSNumber numberWithInt:err]}];
-	}
+	if (!_idfWeights)
+        _idfWeights= mlAllocRealBuffer(_dictionary.count);
 	
 	// Clear the IDF buffer
 	ML_VDSP_VCLR(_idfWeights, 1, _dictionary.count);

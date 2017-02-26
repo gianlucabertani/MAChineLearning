@@ -39,6 +39,8 @@
 		8C58A31E1AED4DE8006AB74D /* BagOfWordsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */; };
 		8C78C6E11B371F3A00245298 /* MLBiasNeuron.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C78C6DF1B371F3A00245298 /* MLBiasNeuron.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C78C6E21B371F3A00245298 /* MLBiasNeuron.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C78C6E01B371F3A00245298 /* MLBiasNeuron.m */; };
+		8C7C131E1E632004000F92C3 /* MLAlloc.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C131D1E632004000F92C3 /* MLAlloc.m */; };
+		8C7C13201E632AA7000F92C3 /* MLAlloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C7C131F1E632018000F92C3 /* MLAlloc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C8437781B20E8F200ED0B92 /* MLWordVectorException.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C8437761B20E8F200ED0B92 /* MLWordVectorException.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C8437791B20E8F200ED0B92 /* MLWordVectorException.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8437771B20E8F200ED0B92 /* MLWordVectorException.m */; };
 		8C94CBFF1AE91C0800A0A328 /* MLFeatureNormalizationType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C94CBFE1AE91C0800A0A328 /* MLFeatureNormalizationType.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -56,7 +58,6 @@
 		8CC9E4E31AE988AE002659EA /* MLReal.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4E21AE988AE002659EA /* MLReal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC9E4E61AE98DAE002659EA /* MLBagOfWordsException.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4E41AE98DAE002659EA /* MLBagOfWordsException.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC9E4E71AE98DAE002659EA /* MLBagOfWordsException.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC9E4E51AE98DAE002659EA /* MLBagOfWordsException.m */; };
-		8CC9E4EB1AE9981D002659EA /* MLConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4EA1AE990AA002659EA /* MLConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CD4AD571B2DCAA8000091DA /* MLBackPropagationType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CD4AD561B2DC998000091DA /* MLBackPropagationType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CF8D52E1AFF3CD8008FA0AC /* IOLineReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D52C1AFF3CD8008FA0AC /* IOLineReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CF8D52F1AFF3CD8008FA0AC /* IOLineReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D52D1AFF3CD8008FA0AC /* IOLineReader.m */; };
@@ -133,6 +134,8 @@
 		8C58A31D1AED4DE8006AB74D /* BagOfWordsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BagOfWordsTests.m; sourceTree = "<group>"; };
 		8C78C6DF1B371F3A00245298 /* MLBiasNeuron.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLBiasNeuron.h; sourceTree = "<group>"; };
 		8C78C6E01B371F3A00245298 /* MLBiasNeuron.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLBiasNeuron.m; sourceTree = "<group>"; };
+		8C7C131D1E632004000F92C3 /* MLAlloc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLAlloc.m; sourceTree = "<group>"; };
+		8C7C131F1E632018000F92C3 /* MLAlloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MLAlloc.h; sourceTree = "<group>"; };
 		8C8437761B20E8F200ED0B92 /* MLWordVectorException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLWordVectorException.h; sourceTree = "<group>"; };
 		8C8437771B20E8F200ED0B92 /* MLWordVectorException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLWordVectorException.m; sourceTree = "<group>"; };
 		8C94CBFE1AE91C0800A0A328 /* MLFeatureNormalizationType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLFeatureNormalizationType.h; sourceTree = "<group>"; };
@@ -150,7 +153,6 @@
 		8CC9E4E21AE988AE002659EA /* MLReal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLReal.h; sourceTree = "<group>"; };
 		8CC9E4E41AE98DAE002659EA /* MLBagOfWordsException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLBagOfWordsException.h; sourceTree = "<group>"; };
 		8CC9E4E51AE98DAE002659EA /* MLBagOfWordsException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLBagOfWordsException.m; sourceTree = "<group>"; };
-		8CC9E4EA1AE990AA002659EA /* MLConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MLConstants.h; sourceTree = "<group>"; };
 		8CD4AD561B2DC998000091DA /* MLBackPropagationType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MLBackPropagationType.h; sourceTree = "<group>"; };
 		8CF8D52C1AFF3CD8008FA0AC /* IOLineReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOLineReader.h; sourceTree = "<group>"; };
 		8CF8D52D1AFF3CD8008FA0AC /* IOLineReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOLineReader.m; sourceTree = "<group>"; };
@@ -340,7 +342,8 @@
 			isa = PBXGroup;
 			children = (
 				8CC9E4E21AE988AE002659EA /* MLReal.h */,
-				8CC9E4EA1AE990AA002659EA /* MLConstants.h */,
+				8C7C131F1E632018000F92C3 /* MLAlloc.h */,
+				8C7C131D1E632004000F92C3 /* MLAlloc.m */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -377,7 +380,6 @@
 				8C4CEF1E1ADAC51200F1E139 /* MAChineLearning.h in Headers */,
 				8CC9E4E31AE988AE002659EA /* MLReal.h in Headers */,
 				8C58A30E1AECD275006AB74D /* MLTextFragment.h in Headers */,
-				8CC9E4EB1AE9981D002659EA /* MLConstants.h in Headers */,
 				8C1251DF1AE8D38E00FA493E /* MLNeuralNetwork.h in Headers */,
 				8C1251E41AE8D38E00FA493E /* MLNeuralNetworkStatus.h in Headers */,
 				8C1251DA1AE8D38E00FA493E /* MLActivationFunctionType.h in Headers */,
@@ -402,6 +404,7 @@
 				8C8437781B20E8F200ED0B92 /* MLWordVectorException.h in Headers */,
 				8CD4AD571B2DCAA8000091DA /* MLBackPropagationType.h in Headers */,
 				8C94CBFF1AE91C0800A0A328 /* MLFeatureNormalizationType.h in Headers */,
+				8C7C13201E632AA7000F92C3 /* MLAlloc.h in Headers */,
 				8C1FE66D1B1EE6F300596278 /* MLMutableWordInfo.h in Headers */,
 				8CC9E4E61AE98DAE002659EA /* MLBagOfWordsException.h in Headers */,
 				8C58A31C1AECECC5006AB74D /* MLStopWords.h in Headers */,
@@ -532,6 +535,7 @@
 				8C1FE66E1B1EE6F300596278 /* MLMutableWordInfo.m in Sources */,
 				8C1FE66A1B1ED9C400596278 /* MLWordVector.m in Sources */,
 				8C78C6E21B371F3A00245298 /* MLBiasNeuron.m in Sources */,
+				8C7C131E1E632004000F92C3 /* MLAlloc.m in Sources */,
 				8C1251DC1AE8D38E00FA493E /* MLInputLayer.m in Sources */,
 				8CC9E4E71AE98DAE002659EA /* MLBagOfWordsException.m in Sources */,
 				8C1251DE1AE8D38E00FA493E /* MLLayer.m in Sources */,
