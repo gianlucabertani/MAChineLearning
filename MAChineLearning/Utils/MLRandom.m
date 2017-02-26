@@ -37,6 +37,8 @@
 
 #import <Accelerate/Accelerate.h>
 
+#define RANDOMIZATION_EXCEPTION_NAME          (@"MLRandomException")
+
 
 #pragma mark -
 #pragma mark Static constants
@@ -62,7 +64,11 @@ static MLReal __spareGaussian=        0.0;
 + (NSUInteger) nextUniformUInt {
 	NSUInteger random= 0;
 	
-	SecRandomCopyBytes(kSecRandomDefault, sizeof(random), (uint8_t *) &random);
+	int result= SecRandomCopyBytes(kSecRandomDefault, sizeof(random), (uint8_t *) &random);
+    if (result != 0)
+        @throw [NSException exceptionWithName:RANDOMIZATION_EXCEPTION_NAME
+                                       reason:@"Non zero result from SecRandomCopyBytes"
+                                     userInfo:@{@"result": [NSNumber numberWithInt:result]}];
 	
 	return random;
 }
@@ -94,12 +100,17 @@ static MLReal __spareGaussian=        0.0;
 							BUFFER_MEMORY_ALIGNMENT,
 							sizeof(int) * size);
 	if (err)
-		@throw [NSException exceptionWithName:@"MLRandomException"
+		@throw [NSException exceptionWithName:RANDOMIZATION_EXCEPTION_NAME
 									   reason:@"Error while allocating buffer"
 									 userInfo:@{@"buffer": @"tempUniform",
 												@"error": [NSNumber numberWithInt:err]}];
 	
-	SecRandomCopyBytes(kSecRandomDefault, sizeof(int) * size, (uint8_t *) tempUniform);
+	int result= SecRandomCopyBytes(kSecRandomDefault, sizeof(int) * size, (uint8_t *) tempUniform);
+    if (result != 0)
+        @throw [NSException exceptionWithName:RANDOMIZATION_EXCEPTION_NAME
+                                       reason:@"Non zero result from SecRandomCopyBytes"
+                                     userInfo:@{@"result": [NSNumber numberWithInt:result]}];
+    
 	
 	// Use vector absolute value to avoid signed randoms
 	vDSP_vabsi(tempUniform, 1, tempUniform, 1, size);
@@ -196,7 +207,7 @@ static MLReal __spareGaussian=        0.0;
 							BUFFER_MEMORY_ALIGNMENT,
 							sizeof(MLReal) * size);
 	if (err)
-		@throw [NSException exceptionWithName:@"MLRandomException"
+		@throw [NSException exceptionWithName:RANDOMIZATION_EXCEPTION_NAME
 									   reason:@"Error while allocating buffer"
 									 userInfo:@{@"buffer": @"tempGaussian1",
 												@"error": [NSNumber numberWithInt:err]}];
@@ -215,7 +226,7 @@ static MLReal __spareGaussian=        0.0;
 						BUFFER_MEMORY_ALIGNMENT,
 						sizeof(MLReal) * size);
 	if (err)
-		@throw [NSException exceptionWithName:@"MLRandomException"
+		@throw [NSException exceptionWithName:RANDOMIZATION_EXCEPTION_NAME
 									   reason:@"Error while allocating buffer"
 									 userInfo:@{@"buffer": @"tempGaussian2",
 												@"error": [NSNumber numberWithInt:err]}];
