@@ -32,7 +32,29 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <MAChineLearning/MAChineLearning.h>
 
 
 @interface Dataset : NSObject
+
+
+#pragma mark -
+#pragma mark Initialization
+
+- (instancetype) initWithFileName:(NSString *)fileName;
+
+
+#pragma mark -
+#pragma mark Accessors
+
+- (MLReal *) itemAtIndex:(NSUInteger)index;
+
+
+#pragma mark -
+#pragma mark Properties
+
+@property (nonatomic, readonly) NSUInteger items;
+@property (nonatomic, readonly) NSUInteger itemSize;
+
+
 @end

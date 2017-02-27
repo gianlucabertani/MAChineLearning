@@ -35,17 +35,31 @@
 
 #import "Dataset.h"
 
+#define TRAIN_IMAGES_FILE_NAME        (@"train-images-idx3-ubyte")
+#define TRAIN_LABELS_FILE_NAME        (@"train-labels-idx1-ubyte")
+#define TEST_IMAGES_FILE_NAME         (@"t10k-images-idx3-ubyte")
+#define TEST_LABELS_FILE_NAME         (@"t10k-labels-idx1-ubyte")
+
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
+        @try {
+            NSLog(@"Loading datasets...");
 
-        // First of all, get the dataset
-        Dataset *dataset= [[Dataset alloc] init];
-        
-        // !! TODO: da completare
-        
-        // insert code here...
-        NSLog(@"Hello, World!");
+            // First of all, get the dataset
+            Dataset *trainingImageSet= [[Dataset alloc] initWithFileName:TRAIN_IMAGES_FILE_NAME];
+            Dataset *trainingLabelSet= [[Dataset alloc] initWithFileName:TRAIN_LABELS_FILE_NAME];
+            Dataset *testImageSet= [[Dataset alloc] initWithFileName:TEST_IMAGES_FILE_NAME];
+            Dataset *testLabelSet= [[Dataset alloc] initWithFileName:TEST_LABELS_FILE_NAME];
+            
+            // !! TODO: da completare
+            
+            // insert code here...
+            NSLog(@"Finished!");
+
+        } @catch (NSException *e) {
+            NSLog(@"Exception caught: %@, reason: %@: user info: %@\nStack trace: %@", e.name, e.reason, e.userInfo, e.callStackSymbols);
+        }
     }
     
     return 0;

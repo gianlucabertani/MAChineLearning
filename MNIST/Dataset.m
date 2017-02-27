@@ -35,22 +35,23 @@
 
 #define BASE_URL                      (@"http://yann.lecun.com/exdb/mnist/")
 
-#define TRAIN_IMAGES_FILE_NAME        (@"train-images-idx3-ubyte")
-#define TRAIN_LABELS_FILE_NAME        (@"train-labels-idx1-ubyte")
-#define TEST_IMAGES_FILE_NAME         (@"t10k-images-idx3-ubyte")
-#define TEST_LABELS_FILE_NAME         (@"t10k-labels-idx1-ubyte")
-
 
 #pragma mark -
 #pragma mark Dataset extension
 
-@interface Dataset ()
+@interface Dataset () {
+    NSUInteger _items;
+    NSUInteger _itemSize;
+    MLReal **_itemBuffers;
+}
 
 
 #pragma mark -
 #pragma mark Internals
 
 - (void) downloadAndExpand:(NSString *)fileName atPath:(NSString *)path;
+- (void) readImages:(NSFileHandle *)handle;
+- (void) readLabels:(NSFileHandle *)handle;
 
 
 @end
@@ -65,35 +66,68 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) init {
+- (instancetype) initWithFileName:(NSString *)fileName {
     if ((self = [super init])) {
         
         // Get the current temp dir
         NSURL *tempUrl= [[NSFileManager defaultManager] temporaryDirectory];
         NSString *tempPath= [tempUrl path];
+
+        NSLog(@"- Checking dataset: %@...", fileName);
         
         // Check if MNIST dataset is already there
-        NSString *trainImagesFilePath= [tempPath stringByAppendingPathComponent:TRAIN_IMAGES_FILE_NAME];
+        NSString *trainImagesFilePath= [tempPath stringByAppendingPathComponent:fileName];
         if (![[NSFileManager defaultManager] fileExistsAtPath:trainImagesFilePath])
-            [self downloadAndExpand:TRAIN_IMAGES_FILE_NAME atPath:tempPath];
+            [self downloadAndExpand:fileName atPath:tempPath];
         
-        NSString *trainLabelsFilePath= [tempPath stringByAppendingPathComponent:TRAIN_LABELS_FILE_NAME];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:trainLabelsFilePath])
-            [self downloadAndExpand:TRAIN_LABELS_FILE_NAME atPath:tempPath];
-
-        NSString *testImagesFilePath= [tempPath stringByAppendingPathComponent:TEST_IMAGES_FILE_NAME];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:testImagesFilePath])
-            [self downloadAndExpand:TEST_IMAGES_FILE_NAME atPath:tempPath];
-
-        NSString *testLabelsFilePath= [tempPath stringByAppendingPathComponent:TEST_LABELS_FILE_NAME];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:testLabelsFilePath])
-            [self downloadAndExpand:TEST_LABELS_FILE_NAME atPath:tempPath];
+        NSLog(@"- Reading dataset: %@...", fileName);
         
-        // !! TODO: da completare
+        NSFileHandle *handle= [NSFileHandle fileHandleForReadingAtPath:[tempPath stringByAppendingPathComponent:fileName]];
+        
+        NSData *magicData= [handle readDataOfLength:4];
+        UInt32 magic= CFSwapInt32(* (UInt32 *) [magicData bytes]);
+        switch (magic) {
+            case 0x801:
+                [self readLabels:handle];
+                break;
+                
+            case 0x803:
+                [self readImages:handle];
+                break;
+                
+            default:
+                @throw [NSException exceptionWithName:@"DatasetException"
+                                               reason:@"Unknown magic number"
+                                             userInfo:@{@"magic": [NSNumber numberWithInteger:magic]}];
+        }
     }
     
     return self;
 }
+
+- (void) dealloc {
+    
+    // Deallocate buffers
+    for (int i= 0; i < _items; i++)
+        mlFreeRealBuffer(_itemBuffers[i]);
+    
+    mlFreeRealPointerBuffer(_itemBuffers);
+}
+
+
+#pragma mark -
+#pragma mark Accessors
+
+- (MLReal *) itemAtIndex:(NSUInteger)index {
+    return _itemBuffers[index];
+}
+
+
+#pragma mark -
+#pragma mark Properties
+
+@synthesize items= _items;
+@synthesize itemSize= _itemSize;
 
 
 #pragma mark -
@@ -105,7 +139,7 @@
     NSURL *baseUrl= [NSURL URLWithString:BASE_URL];
     NSURL *fileUrl= [[baseUrl URLByAppendingPathComponent:fileName] URLByAppendingPathExtension:@"gz"];
     
-    NSLog(@"Downloading file at URL: %@...", fileUrl);
+    NSLog(@"  - Downloading file at URL: %@...", fileUrl);
     
     // Download
     NSError *error= nil;
@@ -115,7 +149,7 @@
                                        reason:@"Error while downloading dataset"
                                      userInfo:@{@"error": error}];
     
-    NSLog(@"Downloaded file at URL: %@, saving to disk...", fileUrl);
+    NSLog(@"  - Downloaded file at URL: %@, saving to disk...", fileUrl);
 
     // Save to disk
     NSString *filePath= [[path stringByAppendingPathComponent:fileName] stringByAppendingPathExtension:@"gz"];
@@ -126,7 +160,7 @@
                                      userInfo:@{@"error": error}];
     
    
-    NSLog(@"Saved to disk file at path: %@, expanding...", filePath);
+    NSLog(@"  - Saved to disk file at path: %@, expanding...", filePath);
     
     // Expand using gunzip
     NSTask *task = [[NSTask alloc] init];
@@ -137,14 +171,68 @@
     [task launch];
     [task waitUntilExit];
     
-    // Check we have file file
+    // Check we have the file
     if (![[NSFileManager defaultManager] fileExistsAtPath:[path stringByAppendingPathComponent:fileName]])
         @throw [NSException exceptionWithName:@"DatasetException"
                                        reason:@"Failed expanding file"
                                      userInfo:@{@"path": path,
                                                 @"fileName": fileName}];
     
-    NSLog(@"Expanded file at path : %@", filePath);
+    NSLog(@"  - Expanded file at path : %@", filePath);
+}
+
+- (void) readImages:(NSFileHandle *)handle {
+    
+    // Read sizes
+    NSData *itemsData= [handle readDataOfLength:4];
+    _items= CFSwapInt32(* (UInt32 *) [itemsData bytes]);
+    
+    NSData *rowsData= [handle readDataOfLength:4];
+    NSUInteger rows= CFSwapInt32(* (UInt32 *) [rowsData bytes]);
+    
+    NSData *colsData= [handle readDataOfLength:4];
+    NSUInteger cols= CFSwapInt32(* (UInt32 *) [colsData bytes]);
+    
+    _itemSize= rows * cols;
+    
+    // Allocate buffer
+    _itemBuffers= mlAllocRealPointerBuffer(_items);
+    
+    // Read images
+    for (int i= 0; i < _items; i++) {
+        @autoreleasepool {
+            NSData *imageData= [handle readDataOfLength:_itemSize];
+            UInt8 *image= (UInt8 *) [imageData bytes];
+            
+            _itemBuffers[i]= mlAllocRealBuffer(_itemSize);
+
+            for (int j= 0; j < _itemSize; j++)
+                _itemBuffers[i][j]= (MLReal) image[j];
+        }
+    }
+}
+
+- (void) readLabels:(NSFileHandle *)handle {
+
+    // Read sizes
+    NSData *itemsData= [handle readDataOfLength:4];
+    _items= CFSwapInt32(* (UInt32 *) [itemsData bytes]);
+    
+    _itemSize= 10;
+    
+    // Allocate buffer
+    _itemBuffers= mlAllocRealPointerBuffer(_items);
+    
+    // Read images
+    for (int i= 0; i < _items; i++) {
+        @autoreleasepool {
+            NSData *labelData= [handle readDataOfLength:1];
+            UInt8 label= * (UInt8 *) [labelData bytes];
+            
+            _itemBuffers[i]= mlAllocRealBuffer(_itemSize);
+            _itemBuffers[i][label]= 1.0;
+        }
+    }
 }
 
 
