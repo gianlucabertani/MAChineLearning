@@ -44,7 +44,7 @@
 		8C7C13231E633752000F92C3 /* MLParallel.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C7C13211E633752000F92C3 /* MLParallel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C7C13241E633752000F92C3 /* MLParallel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C13221E633752000F92C3 /* MLParallel.m */; };
 		8C7C132C1E63483C000F92C3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C132B1E63483C000F92C3 /* main.m */; };
-		8C7C133B1E634C2E000F92C3 /* Dataset.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C133A1E634C2E000F92C3 /* Dataset.m */; };
+		8C7C133B1E634C2E000F92C3 /* MNISTDataset.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C133A1E634C2E000F92C3 /* MNISTDataset.m */; };
 		8C7C13431E634D67000F92C3 /* MAChineLearning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */; };
 		8C8437781B20E8F200ED0B92 /* MLWordVectorException.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C8437761B20E8F200ED0B92 /* MLWordVectorException.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C8437791B20E8F200ED0B92 /* MLWordVectorException.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8437771B20E8F200ED0B92 /* MLWordVectorException.m */; };
@@ -161,8 +161,8 @@
 		8C7C13221E633752000F92C3 /* MLParallel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLParallel.m; sourceTree = "<group>"; };
 		8C7C13291E63483B000F92C3 /* MNIST */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MNIST; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C7C132B1E63483C000F92C3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		8C7C13391E634C2E000F92C3 /* Dataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dataset.h; sourceTree = "<group>"; };
-		8C7C133A1E634C2E000F92C3 /* Dataset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dataset.m; sourceTree = "<group>"; };
+		8C7C13391E634C2E000F92C3 /* MNISTDataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNISTDataset.h; sourceTree = "<group>"; };
+		8C7C133A1E634C2E000F92C3 /* MNISTDataset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNISTDataset.m; sourceTree = "<group>"; };
 		8C8437761B20E8F200ED0B92 /* MLWordVectorException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLWordVectorException.h; sourceTree = "<group>"; };
 		8C8437771B20E8F200ED0B92 /* MLWordVectorException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLWordVectorException.m; sourceTree = "<group>"; };
 		8C94CBFE1AE91C0800A0A328 /* MLFeatureNormalizationType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLFeatureNormalizationType.h; sourceTree = "<group>"; };
@@ -379,8 +379,8 @@
 			isa = PBXGroup;
 			children = (
 				8C7C132B1E63483C000F92C3 /* main.m */,
-				8C7C13391E634C2E000F92C3 /* Dataset.h */,
-				8C7C133A1E634C2E000F92C3 /* Dataset.m */,
+				8C7C13391E634C2E000F92C3 /* MNISTDataset.h */,
+				8C7C133A1E634C2E000F92C3 /* MNISTDataset.m */,
 			);
 			path = MNIST;
 			sourceTree = "<group>";
@@ -661,7 +661,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C7C133B1E634C2E000F92C3 /* Dataset.m in Sources */,
+				8C7C133B1E634C2E000F92C3 /* MNISTDataset.m in Sources */,
 				8C7C132C1E63483C000F92C3 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

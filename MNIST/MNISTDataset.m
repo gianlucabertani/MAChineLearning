@@ -1,5 +1,5 @@
 //
-//  Dataset.m
+//  MNISTDataset.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 26/02/2017.
@@ -31,7 +31,9 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "Dataset.h"
+#import "MNISTDataset.h"
+
+#import <Accelerate/Accelerate.h>
 
 #define BASE_URL                      (@"http://yann.lecun.com/exdb/mnist/")
 
@@ -39,7 +41,7 @@
 #pragma mark -
 #pragma mark Dataset extension
 
-@interface Dataset () {
+@interface MNISTDataset () {
     NSUInteger _items;
     NSUInteger _itemSize;
     MLReal **_itemBuffers;
@@ -60,7 +62,7 @@
 #pragma mark -
 #pragma mark Dataset implementation
 
-@implementation Dataset
+@implementation MNISTDataset
 
 
 #pragma mark -
@@ -149,7 +151,7 @@
                                        reason:@"Error while downloading dataset"
                                      userInfo:@{@"error": error}];
     
-    NSLog(@"  - Downloaded file at URL: %@, saving to disk...", fileUrl);
+    NSLog(@"  - Saving to disk...");
 
     // Save to disk
     NSString *filePath= [[path stringByAppendingPathComponent:fileName] stringByAppendingPathExtension:@"gz"];
@@ -160,7 +162,7 @@
                                      userInfo:@{@"error": error}];
     
    
-    NSLog(@"  - Saved to disk file at path: %@, expanding...", filePath);
+    NSLog(@"  - Expanding file at path: %@...", filePath);
     
     // Expand using gunzip
     NSTask *task = [[NSTask alloc] init];
@@ -177,8 +179,6 @@
                                        reason:@"Failed expanding file"
                                      userInfo:@{@"path": path,
                                                 @"fileName": fileName}];
-    
-    NSLog(@"  - Expanded file at path : %@", filePath);
 }
 
 - (void) readImages:(NSFileHandle *)handle {
@@ -207,7 +207,7 @@
             _itemBuffers[i]= mlAllocRealBuffer(_itemSize);
 
             for (int j= 0; j < _itemSize; j++)
-                _itemBuffers[i][j]= (MLReal) image[j];
+                _itemBuffers[i][j]= ((MLReal) image[j]) / 255.0;
         }
     }
 }
@@ -223,13 +223,14 @@
     // Allocate buffer
     _itemBuffers= mlAllocRealPointerBuffer(_items);
     
-    // Read images
+    // Read labels
     for (int i= 0; i < _items; i++) {
         @autoreleasepool {
             NSData *labelData= [handle readDataOfLength:1];
             UInt8 label= * (UInt8 *) [labelData bytes];
             
             _itemBuffers[i]= mlAllocRealBuffer(_itemSize);
+            ML_VDSP_VCLR(_itemBuffers[i], 1, _itemSize);
             _itemBuffers[i][label]= 1.0;
         }
     }

@@ -32,33 +32,158 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Accelerate/Accelerate.h>
+#import <MAChineLearning/MAChineLearning.h>
 
-#import "Dataset.h"
+#import "MNISTDataset.h"
 
-#define TRAIN_IMAGES_FILE_NAME        (@"train-images-idx3-ubyte")
-#define TRAIN_LABELS_FILE_NAME        (@"train-labels-idx1-ubyte")
+#define TRAINING_IMAGES_FILE_NAME     (@"train-images-idx3-ubyte")
+#define TRAINING_LABELS_FILE_NAME     (@"train-labels-idx1-ubyte")
 #define TEST_IMAGES_FILE_NAME         (@"t10k-images-idx3-ubyte")
 #define TEST_LABELS_FILE_NAME         (@"t10k-labels-idx1-ubyte")
+
+#define TRAINING_COST_LIMIT           (0.001)
+#define TRAINING_GAIN_COST_LIMIT      (0.1)
 
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         @try {
-            NSLog(@"Loading datasets...");
+            
+            
+            ////////////////////////////////////////////////////////////////
+            // Training
+            
+            NSLog(@"Loading training datasets...");
 
-            // First of all, get the dataset
-            Dataset *trainingImageSet= [[Dataset alloc] initWithFileName:TRAIN_IMAGES_FILE_NAME];
-            Dataset *trainingLabelSet= [[Dataset alloc] initWithFileName:TRAIN_LABELS_FILE_NAME];
-            Dataset *testImageSet= [[Dataset alloc] initWithFileName:TEST_IMAGES_FILE_NAME];
-            Dataset *testLabelSet= [[Dataset alloc] initWithFileName:TEST_LABELS_FILE_NAME];
+            // Load the training dataset
+            MNISTDataset *trainingImageSet= [[MNISTDataset alloc] initWithFileName:TRAINING_IMAGES_FILE_NAME];
+            MNISTDataset *trainingLabelSet= [[MNISTDataset alloc] initWithFileName:TRAINING_LABELS_FILE_NAME];
+
+            NSLog(@"Training...");
             
-            // !! TODO: da completare
+            // Prepare the network
+            MLNeuralNetwork *net= [[MLNeuralNetwork alloc] initWithLayerSizes:@[[NSNumber numberWithUnsignedInteger:trainingImageSet.itemSize],
+                                                                                @300,
+                                                                                [NSNumber numberWithUnsignedInteger:trainingLabelSet.itemSize]]
+                                                                      useBias:YES
+                                                             costFunctionType:MLCostFunctionTypeSquaredError
+                                                          backPropagationType:MLBackPropagationTypeStandard
+                                                           hiddenFunctionType:MLActivationFunctionTypeSigmoid
+                                                           outputFunctionType:MLActivationFunctionTypeSigmoid];
             
-            // insert code here...
-            NSLog(@"Finished!");
+            [net randomizeWeights];
+            
+            // Training loop
+            int epochs= 0;
+            MLReal lastCost= 0.0;
+            do {
+                NSDate *begin= [NSDate date];
+                
+                // Run an epoch
+                MLReal cost= 0.0;
+                for (int i= 0; i < trainingImageSet.items; i++) {
+                    
+                    // Fill the input buffer
+                    ML_VDSP_VCLR(net.inputBuffer, 1, net.inputSize);
+                    ML_VDSP_VADD([trainingImageSet itemAtIndex:i], 1, net.inputBuffer, 1, net.inputBuffer, 1, net.inputSize);
+                    
+                    // Fill the expected output buffer
+                    ML_VDSP_VCLR(net.expectedOutputBuffer, 1, net.outputSize);
+                    ML_VDSP_VADD([trainingLabelSet itemAtIndex:i], 1, net.expectedOutputBuffer, 1, net.expectedOutputBuffer, 1, net.outputSize);
+                    
+                    // Run the network
+                    [net feedForward];
+                    [net backPropagateWithLearningRate:0.1];
+                    [net updateWeights];
+                    
+                    // Sum the cost
+                    cost += net.cost;
+                    
+                    // Log every 1000 samples
+                    if ((i > 0) && (i % 1000 == 0)) {
+                        NSDate *end= [NSDate date];
+                        NSTimeInterval elapsed= [end timeIntervalSinceDate:begin];
+                        NSTimeInterval elapsedPerSample= elapsed / (double) i;
+                        NSTimeInterval eta= (double)(trainingImageSet.items - i) * elapsedPerSample;
+
+                        NSLog(@"  - Trained %5d samples, %2d epochs, ETA: %6.2f secs...", i, epochs, eta);
+                    }
+                }
+                
+                cost /= (MLReal) trainingImageSet.items;
+                epochs++;
+                
+                NSLog(@"- Trained %2d epochs, current error: %7.5f", epochs, cost);
+                
+                // Check termination condition
+                if (cost < TRAINING_COST_LIMIT) {
+                    break;
+                
+                } else if (epochs > 1) {
+                    double costGain= (lastCost - cost) / lastCost;
+                    if (costGain < TRAINING_GAIN_COST_LIMIT)
+                        break;
+                }
+                
+                lastCost= cost;
+                
+            } while (YES);
+            
+            
+            ////////////////////////////////////////////////////////////////
+            // Test
+            
+            NSLog(@"Finished training, loading test dataset...");
+            
+            // Load the test dataset
+            MNISTDataset *testImageSet= [[MNISTDataset alloc] initWithFileName:TEST_IMAGES_FILE_NAME];
+            MNISTDataset *testLabelSet= [[MNISTDataset alloc] initWithFileName:TEST_LABELS_FILE_NAME];
+            
+            // Test loop
+            NSUInteger matches= 0;
+            NSDate *begin= [NSDate date];
+            for (int i= 0; i < testImageSet.items; i++) {
+                
+                // Fill the input buffer
+                ML_VDSP_VCLR(net.inputBuffer, 1, net.inputSize);
+                ML_VDSP_VADD([testImageSet itemAtIndex:i], 1, net.inputBuffer, 1, net.inputBuffer, 1, net.inputSize);
+                
+                // Run the network
+                [net feedForward];
+                
+                // Search highest value label
+                MLReal value= 0.0;
+                int label= -1;
+                for (int j= 0; j < net.outputSize; j++) {
+                    if (net.outputBuffer[j] > value) {
+                        value= net.outputBuffer[j];
+                        label= j;
+                    }
+                }
+                
+                if ([testLabelSet itemAtIndex:i][label] == 1.0)
+                    matches++;
+                
+                // Log every 1000 samples
+                if ((i > 0) && (i % 1000 == 0)) {
+                    NSDate *end= [NSDate date];
+                    NSTimeInterval elapsed= [end timeIntervalSinceDate:begin];
+                    NSTimeInterval elapsedPerSample= elapsed / (double) i;
+                    NSTimeInterval eta= (double)(testImageSet.items - i) * elapsedPerSample;
+                    
+                    NSLog(@"- Tested %5d samples, ETA: %6.2f secs...", i, eta);
+                }
+            }
+            
+            NSLog(@"Finished testing, report: %lu/%lu matches or %.2f%%, error rate: %.2f%%",
+                  matches,
+                  testImageSet.items,
+                  100.0 * ((double) matches) / ((double) testImageSet.items),
+                  100.0 * ((double) testImageSet.items - matches) / ((double) testImageSet.items));
 
         } @catch (NSException *e) {
-            NSLog(@"Exception caught: %@, reason: %@: user info: %@\nStack trace: %@", e.name, e.reason, e.userInfo, e.callStackSymbols);
+            NSLog(@"Exception caught: %@, reason: %@: user info: %@\nStack trace:\n%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
         }
     }
     

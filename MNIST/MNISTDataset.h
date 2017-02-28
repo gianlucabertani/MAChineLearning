@@ -1,5 +1,5 @@
 //
-//  Dataset.h
+//  MNISTDataset.h
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 26/02/2017.
@@ -35,7 +35,7 @@
 #import <MAChineLearning/MAChineLearning.h>
 
 
-@interface Dataset : NSObject
+@interface MNISTDataset : NSObject
 
 
 #pragma mark -
