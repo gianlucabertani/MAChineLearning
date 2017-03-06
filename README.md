@@ -13,7 +13,7 @@ Currently the framework supports:
 - [Bag of Words](#Bag of Words)
 - [Word Vectors](#Word Vectors)
 
-Differently than many other machine learning libraries for macOS and iOS, MAChineLearning includes full training implementation for its neural networks. You don't need a separate language or another framework to train your network, you have all you need here.
+Differently than many other machine learning libraries for macOS and iOS, MAChineLearning includes full training implementation for its neural networks. You don't need a separate language or another framework to train the network, you have all you need here.
 
 
 ### Use on iOS
