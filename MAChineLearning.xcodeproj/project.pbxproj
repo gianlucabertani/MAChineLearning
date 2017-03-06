@@ -23,8 +23,8 @@
 		8C1251E81AE8D38E00FA493E /* MLNeuronLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251D91AE8D38E00FA493E /* MLNeuronLayer.m */; };
 		8C1251EC1AE8D4BE00FA493E /* MLBagOfWords.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1251EA1AE8D4BE00FA493E /* MLBagOfWords.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C1251ED1AE8D4BE00FA493E /* MLBagOfWords.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1251EB1AE8D4BE00FA493E /* MLBagOfWords.m */; };
-		8C1FE6651B1ED91300596278 /* MLWordVectorMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1FE6631B1ED91300596278 /* MLWordVectorMap.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C1FE6661B1ED91300596278 /* MLWordVectorMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1FE6641B1ED91300596278 /* MLWordVectorMap.m */; };
+		8C1FE6651B1ED91300596278 /* MLWordVectorDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1FE6631B1ED91300596278 /* MLWordVectorDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C1FE6661B1ED91300596278 /* MLWordVectorDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1FE6641B1ED91300596278 /* MLWordVectorDictionary.m */; };
 		8C1FE6691B1ED9C400596278 /* MLWordVector.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1FE6671B1ED9C400596278 /* MLWordVector.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C1FE66A1B1ED9C400596278 /* MLWordVector.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1FE6681B1ED9C400596278 /* MLWordVector.m */; };
 		8C1FE66D1B1EE6F300596278 /* MLMutableWordInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C1FE66B1B1EE6F300596278 /* MLMutableWordInfo.h */; };
@@ -129,8 +129,8 @@
 		8C1251D91AE8D38E00FA493E /* MLNeuronLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLNeuronLayer.m; sourceTree = "<group>"; };
 		8C1251EA1AE8D4BE00FA493E /* MLBagOfWords.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLBagOfWords.h; sourceTree = "<group>"; };
 		8C1251EB1AE8D4BE00FA493E /* MLBagOfWords.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLBagOfWords.m; sourceTree = "<group>"; };
-		8C1FE6631B1ED91300596278 /* MLWordVectorMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLWordVectorMap.h; sourceTree = "<group>"; };
-		8C1FE6641B1ED91300596278 /* MLWordVectorMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLWordVectorMap.m; sourceTree = "<group>"; };
+		8C1FE6631B1ED91300596278 /* MLWordVectorDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLWordVectorDictionary.h; sourceTree = "<group>"; };
+		8C1FE6641B1ED91300596278 /* MLWordVectorDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLWordVectorDictionary.m; sourceTree = "<group>"; };
 		8C1FE6671B1ED9C400596278 /* MLWordVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLWordVector.h; sourceTree = "<group>"; };
 		8C1FE6681B1ED9C400596278 /* MLWordVector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLWordVector.m; sourceTree = "<group>"; };
 		8C1FE66B1B1EE6F300596278 /* MLMutableWordInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLMutableWordInfo.h; sourceTree = "<group>"; };
@@ -185,8 +185,6 @@
 		8CF8D54D1AFF6CE0008FA0AC /* MLWordInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLWordInfo.m; sourceTree = "<group>"; };
 		8CF8D5501AFF732F008FA0AC /* MLWordDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLWordDictionary.h; sourceTree = "<group>"; };
 		8CF8D5511AFF732F008FA0AC /* MLWordDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLWordDictionary.m; sourceTree = "<group>"; };
-		8CF961F91AF66C240071A995 /* NeuralNets.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = NeuralNets.md; sourceTree = "<group>"; };
-		8CF961FA1AF66FEE0071A995 /* BagOfWords.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BagOfWords.md; sourceTree = "<group>"; };
 		8CF961FC1AF690420071A995 /* Bag Of Words Norm Example.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Bag Of Words Norm Example.png"; sourceTree = SOURCE_ROOT; };
 		8CFF56121C9585A300D31A45 /* GloVe-sample.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "GloVe-sample.txt"; sourceTree = "<group>"; };
 		8CFF56131C9585A300D31A45 /* Word2vec-sample.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = "Word2vec-sample.bin"; sourceTree = "<group>"; };
@@ -287,8 +285,6 @@
 				8C7C132A1E63483C000F92C3 /* MNIST */,
 				8C4CEF581ADACE4500F1E139 /* LICENSE */,
 				8C4CEF591ADACE4500F1E139 /* README.md */,
-				8CF961F91AF66C240071A995 /* NeuralNets.md */,
-				8CF961FA1AF66FEE0071A995 /* BagOfWords.md */,
 				8C4CEF5E1ADAED9300F1E139 /* 3-Input Perceptron.png */,
 				8C4CEF5F1ADAED9300F1E139 /* Network States.png */,
 				8CF961FC1AF690420071A995 /* Bag Of Words Norm Example.png */,
@@ -361,8 +357,8 @@
 		8C5FC78E1B16F725004E74C4 /* WordVectors */ = {
 			isa = PBXGroup;
 			children = (
-				8C1FE6631B1ED91300596278 /* MLWordVectorMap.h */,
-				8C1FE6641B1ED91300596278 /* MLWordVectorMap.m */,
+				8C1FE6631B1ED91300596278 /* MLWordVectorDictionary.h */,
+				8C1FE6641B1ED91300596278 /* MLWordVectorDictionary.m */,
 				8C1FE6671B1ED9C400596278 /* MLWordVector.h */,
 				8C1FE6681B1ED9C400596278 /* MLWordVector.m */,
 				8C8437761B20E8F200ED0B92 /* MLWordVectorException.h */,
@@ -439,7 +435,7 @@
 				8C78C6E11B371F3A00245298 /* MLBiasNeuron.h in Headers */,
 				8CC9E4DC1AE9843B002659EA /* MLWordExtractorOption.h in Headers */,
 				8CF8D52E1AFF3CD8008FA0AC /* IOLineReader.h in Headers */,
-				8C1FE6651B1ED91300596278 /* MLWordVectorMap.h in Headers */,
+				8C1FE6651B1ED91300596278 /* MLWordVectorDictionary.h in Headers */,
 				8C1FE6691B1ED9C400596278 /* MLWordVector.h in Headers */,
 				8CC07B501B1E11E8004D804B /* MLMutableWordDictionary.h in Headers */,
 				8C9A49471B1454FB003E3041 /* MLRandom.h in Headers */,
@@ -621,7 +617,7 @@
 				8CF8D5531AFF732F008FA0AC /* MLWordDictionary.m in Sources */,
 				8CC07B511B1E11E8004D804B /* MLMutableWordDictionary.m in Sources */,
 				8C1251E81AE8D38E00FA493E /* MLNeuronLayer.m in Sources */,
-				8C1FE6661B1ED91300596278 /* MLWordVectorMap.m in Sources */,
+				8C1FE6661B1ED91300596278 /* MLWordVectorDictionary.m in Sources */,
 				8C1251E21AE8D38E00FA493E /* MLNeuralNetworkException.m in Sources */,
 				8C58A30F1AECD275006AB74D /* MLTextFragment.m in Sources */,
 				8CF8D52F1AFF3CD8008FA0AC /* IOLineReader.m in Sources */,

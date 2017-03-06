@@ -45,7 +45,7 @@
 #pragma mark -
 #pragma mark Internal
 
-- (void) checkEquivalenceOf:(NSString *)word1 to:(NSString *)word2 with:(NSString *)word3 to:(NSString *)word4 on:(MLWordVectorMap *)map;
+- (void) checkEquivalenceOf:(NSString *)word1 to:(NSString *)word2 with:(NSString *)word3 to:(NSString *)word4 on:(MLWordVectorDictionary *)map;
 
 
 @end
@@ -174,8 +174,8 @@
         
         // Here we use a pre-trained sample vector file, obtained by training with the 6000
         // most used words from the same sample text used by the word2vec demo, we then test
-        // the vector map with know working equivalences
-        MLWordVectorMap *map= [MLWordVectorMap createFromWord2vecFile:word2vecSamplePath binary:YES];
+        // the vector map with known working equivalences
+        MLWordVectorDictionary *map= [MLWordVectorDictionary createFromWord2vecFile:word2vecSamplePath binary:YES];
         XCTAssertNotNil(map);
         
         // Capital to nation
@@ -232,8 +232,8 @@
         
         // Here we use a pre-trained sample vector file, obtained by training with the 6000
         // most used words from the same sample text used by the GloVe demo, we then test
-        // the vector map with know working equivalences
-        MLWordVectorMap *map= [MLWordVectorMap createFromGloVeFile:gloveSamplePath];
+        // the vector map with known working equivalences
+        MLWordVectorDictionary *map= [MLWordVectorDictionary createFromGloVeFile:gloveSamplePath];
         XCTAssertNotNil(map);
         
         // Capital to nation
@@ -286,7 +286,7 @@
 #pragma mark -
 #pragma mark Internal
 
-- (void) checkEquivalenceOf:(NSString *)word1 to:(NSString *)word2 with:(NSString *)word3 to:(NSString *)word4 on:(MLWordVectorMap *)map {
+- (void) checkEquivalenceOf:(NSString *)word1 to:(NSString *)word2 with:(NSString *)word3 to:(NSString *)word4 on:(MLWordVectorDictionary *)map {
     MLWordVector *vec1= [map vectorForWord:word1];
     XCTAssertNotNil(vec1);
 

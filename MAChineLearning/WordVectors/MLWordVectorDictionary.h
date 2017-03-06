@@ -1,5 +1,5 @@
 //
-//  MLWordVectorMap.h
+//  MLWordVectorDictionary.h
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 03/06/15.
@@ -38,15 +38,15 @@
 @class MLWordDictionary;
 @class MLWordVector;
 
-@interface MLWordVectorMap : NSObject
+@interface MLWordVectorDictionary : NSObject
 
 
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLWordVectorMap *) createFromWord2vecFile:(NSString *)vectorFilePath binary:(BOOL)binary;
-+ (MLWordVectorMap *) createFromGloVeFile:(NSString *)vectorFilePath;
-+ (MLWordVectorMap *) createFromFastTextFile:(NSString *)vectorFilePath;
++ (MLWordVectorDictionary *) createFromWord2vecFile:(NSString *)vectorFilePath binary:(BOOL)binary;
++ (MLWordVectorDictionary *) createFromGloVeFile:(NSString *)vectorFilePath;
++ (MLWordVectorDictionary *) createFromFastTextFile:(NSString *)vectorFilePath;
 
 - (instancetype) initWithDictionary:(NSDictionary *)vectorDictionary;
 

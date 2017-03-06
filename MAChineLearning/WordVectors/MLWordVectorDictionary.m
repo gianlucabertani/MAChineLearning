@@ -1,5 +1,5 @@
 //
-//  MLWordVectorMap.m
+//  MLWordVectorDictionary.m
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 03/06/15.
@@ -31,7 +31,7 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import "MLWordVectorMap.h"
+#import "MLWordVectorDictionary.h"
 #import "MLWordVector.h"
 #import "MLWordVectorException.h"
 #import "MLWordDictionary.h"
@@ -48,9 +48,9 @@
 
 
 #pragma mark -
-#pragma mark MLWordVectorMap extension
+#pragma mark MLWordVectorDictionary extension
 
-@interface MLWordVectorMap () {
+@interface MLWordVectorDictionary () {
     NSUInteger _wordCount;
     NSUInteger _vectorSize;
     
@@ -61,15 +61,15 @@
 
 
 #pragma mark -
-#pragma mark MLWordVectorMap implementation
+#pragma mark MLWordVectorDictionary implementation
 
-@implementation MLWordVectorMap
+@implementation MLWordVectorDictionary
 
 
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLWordVectorMap *) createFromWord2vecFile:(NSString *)vectorFilePath binary:(BOOL)binary {
++ (MLWordVectorDictionary *) createFromWord2vecFile:(NSString *)vectorFilePath binary:(BOOL)binary {
 	
 	// Checks
 	NSFileManager *fileManger= [NSFileManager defaultManager];
@@ -158,10 +158,10 @@
 		fclose(f);
 	}
 	
-	return [[MLWordVectorMap alloc] initWithDictionary:vectorDictionary];
+	return [[MLWordVectorDictionary alloc] initWithDictionary:vectorDictionary];
 }
 
-+ (MLWordVectorMap *) createFromGloVeFile:(NSString *)vectorFilePath {
++ (MLWordVectorDictionary *) createFromGloVeFile:(NSString *)vectorFilePath {
 
     // Checks
     NSFileManager *fileManger= [NSFileManager defaultManager];
@@ -228,10 +228,10 @@
         [reader close];
     }
     
-    return [[MLWordVectorMap alloc] initWithDictionary:vectorDictionary];
+    return [[MLWordVectorDictionary alloc] initWithDictionary:vectorDictionary];
 }
 
-+ (MLWordVectorMap *) createFromFastTextFile:(NSString *)vectorFilePath {
++ (MLWordVectorDictionary *) createFromFastTextFile:(NSString *)vectorFilePath {
     
     // Checks
     NSFileManager *fileManger= [NSFileManager defaultManager];
@@ -301,7 +301,7 @@
         [reader close];
     }
     
-    return [[MLWordVectorMap alloc] initWithDictionary:vectorDictionary];
+    return [[MLWordVectorDictionary alloc] initWithDictionary:vectorDictionary];
 }
 
 - (instancetype) initWithDictionary:(NSDictionary *)vectorDictionary {

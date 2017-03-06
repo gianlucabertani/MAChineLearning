@@ -39,7 +39,7 @@
 
 
 #pragma mark -
-#pragma mark MLWordVectorMap extension
+#pragma mark MLWordVector extension
 
 @interface MLWordVector () {
 	MLReal *_vector;
@@ -55,7 +55,7 @@
 
 
 #pragma mark -
-#pragma mark MLWordVectorMap implementation
+#pragma mark MLWordVector implementation
 
 @implementation MLWordVector
 
