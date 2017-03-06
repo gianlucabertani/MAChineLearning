@@ -46,6 +46,7 @@
 
 + (MLWordVectorMap *) createFromWord2vecFile:(NSString *)vectorFilePath binary:(BOOL)binary;
 + (MLWordVectorMap *) createFromGloVeFile:(NSString *)vectorFilePath;
++ (MLWordVectorMap *) createFromFastTextFile:(NSString *)vectorFilePath;
 
 - (instancetype) initWithDictionary:(NSDictionary *)vectorDictionary;
 

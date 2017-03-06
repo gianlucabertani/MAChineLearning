@@ -156,7 +156,7 @@
 		// Bag of words for sentiment analysis uses the (quick) simple tokenizer,
 		// removing stop words but keeping emoticon and all bigrams
 		MLBagOfWords *bag= [MLBagOfWords bagOfWordsForSentimentAnalysisWithText:MOVIE_REVIEW
-																		 documentID:@"review1"
+                                                                     documentID:@"review1"
 																	 dictionary:dictionary
 																	   language:@"en"
 														   featureNormalization:MLFeatureNormalizationTypeNone];

@@ -231,6 +231,79 @@
     return [[MLWordVectorMap alloc] initWithDictionary:vectorDictionary];
 }
 
++ (MLWordVectorMap *) createFromFastTextFile:(NSString *)vectorFilePath {
+    
+    // Checks
+    NSFileManager *fileManger= [NSFileManager defaultManager];
+    if (![fileManger fileExistsAtPath:vectorFilePath])
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"File does not exist"
+                                                           userInfo:@{@"filePath": vectorFilePath}];
+    
+    // Prepare the reader
+    IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:vectorFilePath];
+    
+    NSUInteger vectorSize= 0;
+    NSMutableDictionary *vectorDictionary= nil;
+    @try {
+        
+        // Prepare the transitory dictionary
+        vectorDictionary= [[NSMutableDictionary alloc] init];
+        
+        // Loop until the end of file
+        BOOL firstLine= YES;
+        do {
+            
+            // Read next line
+            NSString *line= [reader readLine];
+            if (!line)
+                break;
+            
+            // Split the line
+            NSArray *components= [[line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                  componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            
+            if (firstLine) {
+                
+                // First line contains number of vectors and vector size
+                vectorSize= [[components objectAtIndex:1] unsignedIntegerValue];
+                continue;
+            }
+            
+            // Check vector size
+            if ((components.count -1) != vectorSize)
+                @throw [MLWordVectorException wordVectorExceptionWithReason:@"Vector size mismatch"
+                                                                   userInfo:@{@"filePath": vectorFilePath,
+                                                                              @"lineNumber": [NSNumber numberWithUnsignedInteger:reader.lineNumber]}];
+            
+            // Get the word
+            NSString *word= [components objectAtIndex:0];
+            if ([word isEqualToString:@"</s>"])
+                continue;
+            
+            // Prepare the vector
+            NSMutableArray *vector= [[NSMutableArray alloc] initWithCapacity:components.count -1];
+            for (NSUInteger j= 1; j <= vectorSize; j++) {
+                
+                // Store the vector element
+                double elem= [[components objectAtIndex:j] doubleValue];
+                [vector addObject:[NSNumber numberWithDouble:elem]];
+            }
+            
+            // Store the vector in the transitory dictionary
+            [vectorDictionary setObject:vector forKey:word];
+            
+        } while (YES);
+        
+    } @catch (NSException *e) {
+        @throw e;
+        
+    } @finally {
+        [reader close];
+    }
+    
+    return [[MLWordVectorMap alloc] initWithDictionary:vectorDictionary];
+}
+
 - (instancetype) initWithDictionary:(NSDictionary *)vectorDictionary {
 	if ((self = [super init])) {
 	
