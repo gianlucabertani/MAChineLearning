@@ -3,7 +3,7 @@
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 12/04/15.
-//  Copyright (c) 2015 Gianluca Bertani. All rights reserved.
+//  Copyright (c) 2015-2017 Gianluca Bertani. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
