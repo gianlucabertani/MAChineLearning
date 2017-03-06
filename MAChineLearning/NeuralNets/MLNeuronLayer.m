@@ -231,6 +231,13 @@ static const MLReal __fourty=       40.0;
 			break;
         }
 			
+        case MLActivationFunctionTypeRectifiedLinear: {
+            
+            // Apply formula: output[i] = (output[i] < 0.0 ? 0.0 : output[i])
+            ML_VTHRES(_outputBuffer, 1, &__zero, _outputBuffer, 1, _size);
+            break;
+        }
+
         case MLActivationFunctionTypeStep: {
             MLReal *tempBuffer= MLAllocRealBuffer(self.size);
 
@@ -262,7 +269,7 @@ static const MLReal __fourty=       40.0;
 			break;
 		}
 			
-		case MLActivationFunctionTypeTanh: {
+		case MLActivationFunctionTypeTanH: {
             MLReal *tempBuffer= MLAllocRealBuffer(self.size);
 			
 			// Apply clipping before the function to avoid NaNs
@@ -334,6 +341,14 @@ static const MLReal __fourty=       40.0;
 			break;
         }
 			
+        case MLActivationFunctionTypeRectifiedLinear: {
+            
+            // Apply formula: delta[i] = (error[i] < 0.0 ? 0.0 : error[i])
+            ML_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
+            ML_VTHRES(_errorBuffer, 1, &__zero, _errorBuffer, 1, _size);
+            break;
+        }
+
         case MLActivationFunctionTypeStep: {
 			if (self.nextLayer)
 				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Can't backpropagate in a hidden layer with step function"
@@ -369,7 +384,7 @@ static const MLReal __fourty=       40.0;
 			break;
         }
 			
-        case MLActivationFunctionTypeTanh: {
+        case MLActivationFunctionTypeTanH: {
             MLReal *tempBuffer= MLAllocRealBuffer(self.size);
 			
 			// Apply formula: delta[i] = (1 - (output[i] * output[i])) * error[i]

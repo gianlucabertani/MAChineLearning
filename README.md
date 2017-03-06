@@ -5,7 +5,7 @@ Machine Learning for the Mac
 
 ## Intro
 
-*MAChineLearning* (pron. ˈmækˌʃiːn ˈlɜːnɪŋ) is framework that provides a quick and easy way to experiment Machine Learning with native code on the Mac, with some specific support for Natural Language Processing. It is written in Objective-C, but it is compatible by Swift.
+*MAChineLearning* (pron. ˈmækʃiːn ˈlɜːnɪŋ) is framework that provides a quick and easy way to experiment Machine Learning with native code on the Mac, with some specific support for Natural Language Processing. It is written in Objective-C, but it is compatible by Swift.
 
 Currently the framework supports:
 
@@ -28,17 +28,18 @@ For an introduction to neural networks, see [Artificial neural network](https://
 Neural networks in MAChineLearning currently support:
 
 - [Multilayer perceptrons](https://en.wikipedia.org/wiki/Multilayer_perceptron) of any depth (limited only by memory).
-- 4 kinds of activation functions:
+- 5 kinds of activation functions:
   - Linear.
+  - [Rectified linear (a.k.a. ReLU)](https://en.wikipedia.org/wiki/Rectifier_(neural_networks)).
   - Step (0 if output is less than 0.5, 1 if greater).
-  - Sigmoid (a.k.a. logistic).
-  - Tanh (a.k.a. hyperbolic tangent).
+  - [Sigmoid (a.k.a. logistic)](https://en.wikipedia.org/wiki/Logistic_function).
+  - [TanH (a.k.a. hyperbolic tangent)](https://en.wikipedia.org/wiki/Hyperbolic_function#Hyperbolic_tangent).
 - 2 kinds of cost functions:
   - Squared error.
-  - Cross entropy.
+  - [Cross entropy](https://en.wikipedia.org/wiki/Cross_entropy#Cross-entropy_error_function_and_logistic_regression).
 - 2 kinds of backpropagation:
   - Standard.
-  - Resilient (a.k.a. RPROP).
+  - [Resilient (a.k.a. RPROP)](https://en.wikipedia.org/wiki/Rprop).
 - Training by sample or by batch.
 - Load/save of the network status from/to a dictionary.
 - Single/double precision (needs recompilation, default is single precision).
@@ -50,7 +51,7 @@ Internal code makes heavy use of the [Accelerate framework](https://developer.ap
 
 ### Setting up the network
 
-Setting up a network is a matter of one line:
+Setting up a network is a matter of two lines:
 
 ```obj-c
 #import <MAChineLearning/MAChineLearning.h>
@@ -58,9 +59,11 @@ Setting up a network is a matter of one line:
 // Create a perceptron with 3 input lines and 1 output neuron
 MLNeuralNetwork *net= [NeuralNetwork createNetworkWithLayerSizes:@[@3, @1]
                                               outputFunctionType:MLActivationFunctionTypeStep];
+
+[net randomizeWeights];
 ```
 
-This line creates a single layer [perceptron](https://en.wikipedia.org/wiki/Perceptron) with 3 inputs and 1 output, with step activation function. See the following diagram:
+These lines create a single layer [perceptron](https://en.wikipedia.org/wiki/Perceptron) with 3 inputs and 1 output, with step activation function, and randomize its initial weights. See the following diagram:
 
 ![3-Input Perceptron](3-Input%20Perceptron.png)
 
@@ -141,7 +144,7 @@ Once your training batch is complete, update weights in the following way:
 ```
 
 
-### Training loop example
+#### Training loop
 
 During training, you typically feed the full sample set to the network multiple times, so that it increases its predictive capabilities. Each complete pass for the sample set is called an *epoch*. While feeding the epoch, you may update the weights after each sample, or wait until a batch of samples have been fed (e.g. 10 samples), to slightly increase the training performance.
 

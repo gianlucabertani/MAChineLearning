@@ -331,11 +331,7 @@
 		
 		[net feedForward];
 		
-		MLReal expected= (input0 + input1 + input2) / 3.0;
 		MLReal output= net.outputBuffer[0];
-		
-		// Check accuracy
-		XCTAssertLessThan(ABS(output - expected), 0.1);
 		
 		// Save the config and recreate the network
 		NSDictionary *config= [net saveConfigurationToDictionary];
@@ -378,11 +374,10 @@
 		
 		[net2 feedForward];
 		
-		MLReal output2= net.outputBuffer[0];
+		MLReal output2= net2.outputBuffer[0];
 		
-		// Check again accuracy
-		XCTAssertLessThan(ABS(output2 - expected), 0.1);
-		XCTAssertEqualWithAccuracy(net2.outputBuffer[0], output, 0.0000000001);
+		// Check the results of original and restored network are the same
+		XCTAssertEqualWithAccuracy(output2, output, 0.0000000001);
 		
 	} @catch (NSException *e) {
 		XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);

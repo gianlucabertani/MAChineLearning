@@ -37,9 +37,10 @@
 
 typedef NS_ENUM(NSUInteger, MLActivationFunctionType) {
 	MLActivationFunctionTypeLinear= 0,
+    MLActivationFunctionTypeRectifiedLinear,
 	MLActivationFunctionTypeStep,
 	MLActivationFunctionTypeSigmoid,
-	MLActivationFunctionTypeTanh
+	MLActivationFunctionTypeTanH
 };
 
 
