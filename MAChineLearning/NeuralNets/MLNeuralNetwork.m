@@ -39,8 +39,6 @@
 
 #import "MLAlloc.h"
 
-#import <Accelerate/Accelerate.h>
-
 
 #define CONFIG_PARAM_LAYER_SIZES             (@"layerSizes")
 #define CONFIG_PARAM_USE_BIAS                (@"useBias")
@@ -364,7 +362,7 @@ static const MLReal __one=                    1.0;
 				[neuron setUpForBackpropagationWithAlgorithm:_backPropType];
 		}
 		
-        _expectedOutputBuffer= mlAllocRealBuffer(_outputSize);
+        _expectedOutputBuffer= MLAllocRealBuffer(_outputSize);
 		
 		_status= MLNeuralNetworkStatusIdle;
 	}
@@ -375,7 +373,7 @@ static const MLReal __one=                    1.0;
 - (void) dealloc {
 	
 	// Deallocate buffer
-	mlFreeRealBuffer(_expectedOutputBuffer);
+	MLFreeRealBuffer(_expectedOutputBuffer);
 	_expectedOutputBuffer= NULL;
 }
 
@@ -458,7 +456,7 @@ static const MLReal __one=                    1.0;
 		if (i == [_layers count] -1) {
 			
 			// Error on output layer is the difference between expected and actual output
-			ML_VDSP_VSUB(_outputBuffer, 1, _expectedOutputBuffer, 1, _errorBuffer, 1, _outputSize);
+			ML_VSUB(_outputBuffer, 1, _expectedOutputBuffer, 1, _errorBuffer, 1, _outputSize);
 			
 		} else
 			[layer fetchErrorFromNextLayer];
@@ -572,36 +570,36 @@ static const MLReal __one=                    1.0;
 		case MLCostFunctionTypeSquaredError: {
 			
 			// Apply formula: cost = 0.5 * Sum((expectedOutput[i] - output[i])^2)
-			ML_VDSP_VSUB(_outputBuffer, 1, _expectedOutputBuffer, 1, _errorBuffer, 1, _outputSize);
-			ML_VDSP_SVESQ(_errorBuffer, 1, &cost, _outputSize);
+			ML_VSUB(_outputBuffer, 1, _expectedOutputBuffer, 1, _errorBuffer, 1, _outputSize);
+			ML_SVESQ(_errorBuffer, 1, &cost, _outputSize);
 			cost *= 0.5;
 			break;
 		}
 			
 		case MLCostFunctionTypeCrossEntropy: {
-            MLReal *tempBuffer= mlAllocRealBuffer(_outputSize);
+            MLReal *tempBuffer= MLAllocRealBuffer(_outputSize);
 			
 			// An "int" size is needed by vvlog,
 			// the others still use _outputSize
 			int outputSize= (int) _outputSize;
 
 			// Apply formula: cost = -Sum(expectedOutput[i] * ln(output[i]) + (1 - expectedOutput[i]) * ln(1 - output[i]))
-			ML_VDSP_VSMUL(_outputBuffer, 1, &__minusOne, tempBuffer, 1, _outputSize);
-			ML_VDSP_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _outputSize);
+			ML_VSMUL(_outputBuffer, 1, &__minusOne, tempBuffer, 1, _outputSize);
+			ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _outputSize);
 			ML_VVLOG(_errorBuffer, tempBuffer, &outputSize);
 			
-			ML_VDSP_VMUL(_errorBuffer, 1, _expectedOutputBuffer, 1, tempBuffer, 1, _outputSize);
-			ML_VDSP_VSMUL(tempBuffer, 1, &__minusOne, tempBuffer, 1, _outputSize);
-			ML_VDSP_VADD(tempBuffer, 1, _errorBuffer, 1, _errorBuffer, 1, _outputSize);
+			ML_VMUL(_errorBuffer, 1, _expectedOutputBuffer, 1, tempBuffer, 1, _outputSize);
+			ML_VSMUL(tempBuffer, 1, &__minusOne, tempBuffer, 1, _outputSize);
+			ML_VADD(tempBuffer, 1, _errorBuffer, 1, _errorBuffer, 1, _outputSize);
 			
 			ML_VVLOG(tempBuffer, _outputBuffer, &outputSize);
-			ML_VDSP_VMUL(tempBuffer, 1, _expectedOutputBuffer, 1, tempBuffer, 1, _outputSize);
-			ML_VDSP_VADD(tempBuffer, 1, _errorBuffer, 1, _errorBuffer, 1, _outputSize);
+			ML_VMUL(tempBuffer, 1, _expectedOutputBuffer, 1, tempBuffer, 1, _outputSize);
+			ML_VADD(tempBuffer, 1, _errorBuffer, 1, _errorBuffer, 1, _outputSize);
 			
-			ML_VDSP_SVE(_errorBuffer, 1, &cost, _outputSize);
+			ML_SVE(_errorBuffer, 1, &cost, _outputSize);
 			cost *= -1.0;
             
-            mlFreeRealBuffer(tempBuffer);
+            MLFreeRealBuffer(tempBuffer);
 			break;
 		}
 	}

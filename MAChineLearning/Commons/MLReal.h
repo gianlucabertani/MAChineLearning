@@ -34,40 +34,42 @@
 #ifndef MAChineLearning_MLReal_h
 #define MAChineLearning_MLReal_h
 
+#import <Accelerate/Accelerate.h>
+
 
 /* Uncomment to use double precision.
  * Beware: it is much slower.
  
 typedef double          MLReal;
 
-#define ML_VDSP_VCLR    vDSP_vclrD
-#define ML_VDSP_VFILL   vDSP_vfillD
-#define ML_VDSP_VCLIP   vDSP_vclipD
-#define ML_VDSP_VICLIP  vDSP_viclipD
-#define ML_VDSP_VTHR    vDSP_vthrD
-#define ML_VDSP_VTHRSC  vDSP_vthrscD
-#define ML_VDSP_VTHRES  vDSP_vthresD
-#define ML_VDSP_VABS    vDSP_vabsD
-#define ML_VDSP_VSMUL   vDSP_vsmulD
-#define ML_VDSP_VSDIV   vDSP_vsdivD
-#define ML_VDSP_SVDIV   vDSP_svdivD
-#define ML_VDSP_VSADD   vDSP_vsaddD
-#define ML_VDSP_DOTPR   vDSP_dotprD
-#define ML_VDSP_VSQ     vDSP_vsqD
-#define ML_VDSP_VMUL    vDSP_vmulD
-#define ML_VDSP_VADD    vDSP_vaddD
-#define ML_VDSP_VSUB    vDSP_vsubD
-#define ML_VDSP_VDIV    vDSP_vdivD
-#define ML_VDSP_VMA		vDSP_vmaD
-#define ML_VDSP_VSMA    vDSP_vsmaD
-#define ML_VDSP_SVE		vDSP_sveD
-#define ML_VDSP_SVESQ   vDSP_svesqD
-#define ML_VDSP_VGATHRA vDSP_vgathraD
-#define ML_VDSP_SVE     vDSP_sveD
-#define ML_VDSP_DIST    vDSP_vdistD
-#define ML_VDSP_VGEN    vDSP_vgenD
-#define ML_VDSP_VFRAC   vDSP_vfracD
-#define ML_VDSP_VFLT32  vDSP_vflt32D
+#define ML_VCLR         vDSP_vclrD
+#define ML_VFILL        vDSP_vfillD
+#define ML_VCLIP        vDSP_vclipD
+#define ML_VICLIP       vDSP_viclipD
+#define ML_VTHR         vDSP_vthrD
+#define ML_VTHRSC       vDSP_vthrscD
+#define ML_VTHRES       vDSP_vthresD
+#define ML_VABS         vDSP_vabsD
+#define ML_VSMUL        vDSP_vsmulD
+#define ML_VSDIV        vDSP_vsdivD
+#define ML_SVDIV        vDSP_svdivD
+#define ML_VSADD        vDSP_vsaddD
+#define ML_DOTPR        vDSP_dotprD
+#define ML_VSQ          vDSP_vsqD
+#define ML_VMUL         vDSP_vmulD
+#define ML_VADD         vDSP_vaddD
+#define ML_VSUB         vDSP_vsubD
+#define ML_VDIV         vDSP_vdivD
+#define ML_VMA		    vDSP_vmaD
+#define ML_VSMA         vDSP_vsmaD
+#define ML_SVE		    vDSP_sveD
+#define ML_SVESQ        vDSP_svesqD
+#define ML_VGATHRA      vDSP_vgathraD
+#define ML_SVE          vDSP_sveD
+#define ML_DIST         vDSP_vdistD
+#define ML_VGEN         vDSP_vgenD
+#define ML_VFRAC        vDSP_vfracD
+#define ML_VFLT32       vDSP_vflt32D
  
 #define ML_VVEXP        vvexp
 #define ML_VVLOG        vvlog
@@ -87,34 +89,34 @@ typedef double          MLReal;
 
 typedef float           MLReal;
 
-#define ML_VDSP_VCLR    vDSP_vclr
-#define ML_VDSP_VFILL   vDSP_vfill
-#define ML_VDSP_VCLIP   vDSP_vclip
-#define ML_VDSP_VICLIP  vDSP_viclip
-#define ML_VDSP_VTHR    vDSP_vthr
-#define ML_VDSP_VTHRSC  vDSP_vthrsc
-#define ML_VDSP_VTHRES  vDSP_vthres
-#define ML_VDSP_VABS    vDSP_vabs
-#define ML_VDSP_VSMUL   vDSP_vsmul
-#define ML_VDSP_VSDIV   vDSP_vsdiv
-#define ML_VDSP_SVDIV   vDSP_svdiv
-#define ML_VDSP_VSADD   vDSP_vsadd
-#define ML_VDSP_DOTPR   vDSP_dotpr
-#define ML_VDSP_VSQ     vDSP_vsq
-#define ML_VDSP_VMUL    vDSP_vmul
-#define ML_VDSP_VADD    vDSP_vadd
-#define ML_VDSP_VSUB    vDSP_vsub
-#define ML_VDSP_VDIV    vDSP_vdiv
-#define ML_VDSP_VMA		vDSP_vma
-#define ML_VDSP_VSMA    vDSP_vsma
-#define ML_VDSP_SVE		vDSP_sve
-#define ML_VDSP_SVESQ   vDSP_svesq
-#define ML_VDSP_VGATHRA vDSP_vgathra
-#define ML_VDSP_SVE     vDSP_sve
-#define ML_VDSP_DIST    vDSP_vdist
-#define ML_VDSP_VGEN    vDSP_vgen
-#define ML_VDSP_VFRAC   vDSP_vfrac
-#define ML_VDSP_VFLT32  vDSP_vflt32
+#define ML_VCLR         vDSP_vclr
+#define ML_VFILL        vDSP_vfill
+#define ML_VCLIP        vDSP_vclip
+#define ML_VICLIP       vDSP_viclip
+#define ML_VTHR         vDSP_vthr
+#define ML_VTHRSC       vDSP_vthrsc
+#define ML_VTHRES       vDSP_vthres
+#define ML_VABS         vDSP_vabs
+#define ML_VSMUL        vDSP_vsmul
+#define ML_VSDIV        vDSP_vsdiv
+#define ML_SVDIV        vDSP_svdiv
+#define ML_VSADD        vDSP_vsadd
+#define ML_DOTPR        vDSP_dotpr
+#define ML_VSQ          vDSP_vsq
+#define ML_VMUL         vDSP_vmul
+#define ML_VADD         vDSP_vadd
+#define ML_VSUB         vDSP_vsub
+#define ML_VDIV         vDSP_vdiv
+#define ML_VMA		    vDSP_vma
+#define ML_VSMA         vDSP_vsma
+#define ML_SVE		    vDSP_sve
+#define ML_SVESQ        vDSP_svesq
+#define ML_VGATHRA      vDSP_vgathra
+#define ML_SVE          vDSP_sve
+#define ML_DIST         vDSP_vdist
+#define ML_VGEN         vDSP_vgen
+#define ML_VFRAC        vDSP_vfrac
+#define ML_VFLT32       vDSP_vflt32
 
 #define ML_VVEXP        vvexpf
 #define ML_VVLOG        vvlogf

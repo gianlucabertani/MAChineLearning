@@ -59,14 +59,14 @@ This is how you load your input data:
 
 ```obj-c
 // Clear the input buffer using vDSP
-ML_VDSP_VCLR(net.inputBuffer, 1, net.inputSize);
+ML_VCLR(net.inputBuffer, 1, net.inputSize);
 
 // Fill appropriate buffer elements
 net.inputBuffer[0]= 1.0;
 net.inputBuffer[2]= 0.5;
 ```
 
-To clear the buffer with vDSP you need the import of Accelerate, shown above. Here we use the `ML_VDSP_VCLR` macro, which is appropriately defined for type `nnREAL` in the `NeuralNetworkReal.h` file. Using Accelerate to clear the buffer is advised as it is quicker than a simple loop.
+To clear the buffer with vDSP you need the import of Accelerate, shown above. Here we use the `ML_VCLR` macro, which is appropriately defined for type `nnREAL` in the `NeuralNetworkReal.h` file. Using Accelerate to clear the buffer is advised as it is quicker than a simple loop.
 
 ### Computing the output
 
@@ -116,7 +116,7 @@ for (int i= 0; i < numberOfSets; i++) {
 	// ...
 
 	for (int i= 0; i < numberOfSamples; i++) {
-		ML_VDSP_VCLR(net.inputBuffer, 1, net.inputSize);
+		ML_VCLR(net.inputBuffer, 1, net.inputSize);
 
 		// Load the j-th training sample
 		net.inputBuffer[0]= 1.0;
@@ -153,7 +153,7 @@ for (int i= 0; i < numberOfSets; i++) {
 	// ...
 
 	for (int j= 0; j < numberOfSamples; j++) {
-		ML_VDSP_VCLR(net.inputBuffer, 1, net.inputSize);
+		ML_VCLR(net.inputBuffer, 1, net.inputSize);
 
 		// Load the j-th training sample
 		net.inputBuffer[0]= 1.0;

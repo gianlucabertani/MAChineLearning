@@ -39,8 +39,6 @@
 
 #import "MLAlloc.h"
 
-#import <Accelerate/Accelerate.h>
-
 #define DUMP_VECTOR(x) \
 	{ \
 		NSMutableString *dump= [[NSMutableString alloc] init]; \
@@ -107,19 +105,19 @@ static const MLReal __fourty=       40.0;
 - (void) dealloc {
 	
 	// Deallocate buffers
-	mlFreeRealBuffer(_outputBuffer);
+	MLFreeRealBuffer(_outputBuffer);
 	_outputBuffer= NULL;
 	
-	mlFreeRealBuffer(_deltaBuffer);
+	MLFreeRealBuffer(_deltaBuffer);
 	_deltaBuffer= NULL;
 
-	mlFreeRealBuffer(_errorBuffer);
+	MLFreeRealBuffer(_errorBuffer);
 	_errorBuffer= NULL;
 
-    mlFreeRealBuffer(_nextLayerWeightsBuffer);
+    MLFreeRealBuffer(_nextLayerWeightsBuffer);
     _nextLayerWeightsBuffer= NULL;
 
-    mlFreeRealBuffer(_nextLayerWeightsDeltaBuffer);
+    MLFreeRealBuffer(_nextLayerWeightsDeltaBuffer);
     _nextLayerWeightsDeltaBuffer= NULL;
 }
 
@@ -133,14 +131,14 @@ static const MLReal __fourty=       40.0;
 																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 	
 	// Allocate buffers
-    _outputBuffer= mlAllocRealBuffer(self.size);
-    _deltaBuffer= mlAllocRealBuffer(self.size);
-    _errorBuffer= mlAllocRealBuffer(self.size);
+    _outputBuffer= MLAllocRealBuffer(self.size);
+    _deltaBuffer= MLAllocRealBuffer(self.size);
+    _errorBuffer= MLAllocRealBuffer(self.size);
 	
 	// Clear and fill buffers as needed
-	ML_VDSP_VCLR(_outputBuffer, 1, self.size);
-	ML_VDSP_VCLR(_deltaBuffer, 1, self.size);
-	ML_VDSP_VCLR(_errorBuffer, 1, self.size);
+	ML_VCLR(_outputBuffer, 1, self.size);
+	ML_VCLR(_deltaBuffer, 1, self.size);
+	ML_VCLR(_errorBuffer, 1, self.size);
 
 	_neurons= [[NSMutableArray alloc] initWithCapacity:self.size];
 	
@@ -186,11 +184,11 @@ static const MLReal __fourty=       40.0;
 		// Prepare buffer for weights of next layer
 		MLNeuronLayer *nextLayer= (MLNeuronLayer *) self.nextLayer;
 		
-        _nextLayerWeightsBuffer= mlAllocRealBuffer(nextLayer.size);
-        _nextLayerWeightsDeltaBuffer= mlAllocRealBuffer(nextLayer.size);
+        _nextLayerWeightsBuffer= MLAllocRealBuffer(nextLayer.size);
+        _nextLayerWeightsDeltaBuffer= MLAllocRealBuffer(nextLayer.size);
 		
-		ML_VDSP_VCLR(_nextLayerWeightsBuffer, 1, nextLayer.size);
-		ML_VDSP_VCLR(_nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
+		ML_VCLR(_nextLayerWeightsBuffer, 1, nextLayer.size);
+		ML_VCLR(_nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
 	}
 }
 
@@ -217,8 +215,8 @@ static const MLReal __fourty=       40.0;
 																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 	
 	// Reset error and delta
-	ML_VDSP_VCLR(_deltaBuffer, 1, _size);
-	ML_VDSP_VCLR(_errorBuffer, 1, _size);
+	ML_VCLR(_deltaBuffer, 1, _size);
+	ML_VCLR(_errorBuffer, 1, _size);
 
 	// First step: compute dot product for each neuron,
 	// will fill the output buffer
@@ -234,41 +232,41 @@ static const MLReal __fourty=       40.0;
         }
 			
         case MLActivationFunctionTypeStep: {
-            MLReal *tempBuffer= mlAllocRealBuffer(self.size);
+            MLReal *tempBuffer= MLAllocRealBuffer(self.size);
 
 			// Apply formula: output[i] = (output[i] < 0.5 ? 0.0 : 1.0)
-			ML_VDSP_VTHRSC(_outputBuffer, 1, &__half, &__one, tempBuffer, 1, _size);
-			ML_VDSP_VTHRES(tempBuffer, 1, &__zero, _outputBuffer, 1, _size);
+			ML_VTHRSC(_outputBuffer, 1, &__half, &__one, tempBuffer, 1, _size);
+			ML_VTHRES(tempBuffer, 1, &__zero, _outputBuffer, 1, _size);
             
-            mlFreeRealBuffer(tempBuffer);
+            MLFreeRealBuffer(tempBuffer);
 			break;
         }
 			
 		case MLActivationFunctionTypeSigmoid: {
-            MLReal *tempBuffer= mlAllocRealBuffer(self.size);
+            MLReal *tempBuffer= MLAllocRealBuffer(self.size);
 			
 			// Apply clipping before the function to avoid NaNs
-			ML_VDSP_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
+			ML_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
 			
 			// An "int" size is needed by vvexp,
 			// the others still use _size
 			int size= (int) _size;
 			
 			// Apply formula: output[i] = 1 / (1 + exp(-output[i])
-			ML_VDSP_VSMUL(_outputBuffer, 1, &__minusOne, tempBuffer, 1, _size);
+			ML_VSMUL(_outputBuffer, 1, &__minusOne, tempBuffer, 1, _size);
 			ML_VVEXP(tempBuffer, tempBuffer, &size);
-			ML_VDSP_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
-			ML_VDSP_SVDIV(&__one, tempBuffer, 1, _outputBuffer, 1, _size);
+			ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
+			ML_SVDIV(&__one, tempBuffer, 1, _outputBuffer, 1, _size);
             
-            mlFreeRealBuffer(tempBuffer);
+            MLFreeRealBuffer(tempBuffer);
 			break;
 		}
 			
 		case MLActivationFunctionTypeTanh: {
-            MLReal *tempBuffer= mlAllocRealBuffer(self.size);
+            MLReal *tempBuffer= MLAllocRealBuffer(self.size);
 			
 			// Apply clipping before the function to avoid NaNs
-			ML_VDSP_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
+			ML_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
 
 			// An "int" size is needed by vvexp,
 			// the others still use _size
@@ -276,14 +274,14 @@ static const MLReal __fourty=       40.0;
 
 			// Apply formula: output[i] = (1 - exp(-2 * output[i])) / (1 + exp(-2 * output[i]))
 			// Equivalent to: output[i] = tanh(output[i])
-			ML_VDSP_VSMUL(_outputBuffer, 1, &__minusTwo, tempBuffer, 1, _size);
+			ML_VSMUL(_outputBuffer, 1, &__minusTwo, tempBuffer, 1, _size);
 			ML_VVEXP(tempBuffer, tempBuffer, &size);
-			ML_VDSP_VSADD(tempBuffer, 1, &__one, _outputBuffer, 1, _size);
-			ML_VDSP_VSMUL(tempBuffer, 1, &__minusOne, tempBuffer, 1, _size);
-			ML_VDSP_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
-			ML_VDSP_VDIV(_outputBuffer, 1, tempBuffer, 1, _outputBuffer, 1, _size);
+			ML_VSADD(tempBuffer, 1, &__one, _outputBuffer, 1, _size);
+			ML_VSMUL(tempBuffer, 1, &__minusOne, tempBuffer, 1, _size);
+			ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
+			ML_VDIV(_outputBuffer, 1, tempBuffer, 1, _outputBuffer, 1, _size);
             
-            mlFreeRealBuffer(tempBuffer);
+            MLFreeRealBuffer(tempBuffer);
 			break;
 		}
 	}
@@ -309,14 +307,14 @@ static const MLReal __fourty=       40.0;
 																					@"neuron": [NSNumber numberWithUnsignedInteger:neuron.index]}];
 			
 			// Gather next layer weights using vector gathering
-			ML_VDSP_VGATHRA((const MLReal **) neuron.nextLayerWeightPtrs, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
-			ML_VDSP_VGATHRA((const MLReal **) neuron.nextLayerWeightDeltaPtrs, 1, _nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
+			ML_VGATHRA((const MLReal **) neuron.nextLayerWeightPtrs, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
+			ML_VGATHRA((const MLReal **) neuron.nextLayerWeightDeltaPtrs, 1, _nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
 			
 			// Sum the delta
-			ML_VDSP_VADD(_nextLayerWeightsBuffer, 1, _nextLayerWeightsDeltaBuffer, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
+			ML_VADD(_nextLayerWeightsBuffer, 1, _nextLayerWeightsDeltaBuffer, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
 			
 			// Compute the dot product
-			ML_VDSP_DOTPR(nextLayer.deltaBuffer, 1, _nextLayerWeightsBuffer, 1, &_errorBuffer[neuron.index], nextLayer.size);
+			ML_DOTPR(nextLayer.deltaBuffer, 1, _nextLayerWeightsBuffer, 1, &_errorBuffer[neuron.index], nextLayer.size);
 		}
     }
 }
@@ -332,7 +330,7 @@ static const MLReal __fourty=       40.0;
         case MLActivationFunctionTypeLinear: {
 			
 			// Apply formula: delta[i] = error[i]
-			ML_VDSP_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
+			ML_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
 			break;
         }
 			
@@ -342,7 +340,7 @@ static const MLReal __fourty=       40.0;
 																		 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 			
 			// Apply formula: delta[i] = error[i]
-			ML_VDSP_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
+			ML_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
 			break;
         }
 			
@@ -351,20 +349,20 @@ static const MLReal __fourty=       40.0;
                 case MLCostFunctionTypeCrossEntropy: {
 					
 					// Apply formula: delta[i] = error[i]
-					ML_VDSP_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
+					ML_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
 					break;
                 }
 					
                 case MLCostFunctionTypeSquaredError: {
-                    MLReal *tempBuffer= mlAllocRealBuffer(self.size);
+                    MLReal *tempBuffer= MLAllocRealBuffer(self.size);
 			
 					// Apply formula: delta[i] = output[i] * (1 - output[i]) * error[i]
-					ML_VDSP_VSMUL(_outputBuffer, 1, &__minusOne, tempBuffer, 1, _size);
-					ML_VDSP_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
-					ML_VDSP_VMUL(tempBuffer, 1, _outputBuffer, 1, tempBuffer, 1, _size);
-					ML_VDSP_VMUL(tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
+					ML_VSMUL(_outputBuffer, 1, &__minusOne, tempBuffer, 1, _size);
+					ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
+					ML_VMUL(tempBuffer, 1, _outputBuffer, 1, tempBuffer, 1, _size);
+					ML_VMUL(tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
                     
-                    mlFreeRealBuffer(tempBuffer);
+                    MLFreeRealBuffer(tempBuffer);
 					break;
                 }
 			}
@@ -372,15 +370,15 @@ static const MLReal __fourty=       40.0;
         }
 			
         case MLActivationFunctionTypeTanh: {
-            MLReal *tempBuffer= mlAllocRealBuffer(self.size);
+            MLReal *tempBuffer= MLAllocRealBuffer(self.size);
 			
 			// Apply formula: delta[i] = (1 - (output[i] * output[i])) * error[i]
-			ML_VDSP_VSQ(_outputBuffer, 1, tempBuffer, 1, _size);
-			ML_VDSP_VSMUL(tempBuffer, 1, &__minusOne, tempBuffer, 1, _size);
-			ML_VDSP_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
-			ML_VDSP_VMUL(tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
+			ML_VSQ(_outputBuffer, 1, tempBuffer, 1, _size);
+			ML_VSMUL(tempBuffer, 1, &__minusOne, tempBuffer, 1, _size);
+			ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
+			ML_VMUL(tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
             
-            mlFreeRealBuffer(tempBuffer);
+            MLFreeRealBuffer(tempBuffer);
 			break;
         }
 	}

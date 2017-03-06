@@ -32,7 +32,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <Accelerate/Accelerate.h>
 #import <MAChineLearning/MAChineLearning.h>
 
 #import "MNISTDataset.h"
@@ -85,12 +84,12 @@ int main(int argc, const char * argv[]) {
                 for (int i= 0; i < trainingImageSet.items; i++) {
                     
                     // Fill the input buffer
-                    ML_VDSP_VCLR(net.inputBuffer, 1, net.inputSize);
-                    ML_VDSP_VADD([trainingImageSet itemAtIndex:i], 1, net.inputBuffer, 1, net.inputBuffer, 1, net.inputSize);
+                    ML_VCLR(net.inputBuffer, 1, net.inputSize);
+                    ML_VADD([trainingImageSet itemAtIndex:i], 1, net.inputBuffer, 1, net.inputBuffer, 1, net.inputSize);
                     
                     // Fill the expected output buffer
-                    ML_VDSP_VCLR(net.expectedOutputBuffer, 1, net.outputSize);
-                    ML_VDSP_VADD([trainingLabelSet itemAtIndex:i], 1, net.expectedOutputBuffer, 1, net.expectedOutputBuffer, 1, net.outputSize);
+                    ML_VCLR(net.expectedOutputBuffer, 1, net.outputSize);
+                    ML_VADD([trainingLabelSet itemAtIndex:i], 1, net.expectedOutputBuffer, 1, net.expectedOutputBuffer, 1, net.outputSize);
                     
                     // Run the network
                     [net feedForward];
@@ -146,8 +145,8 @@ int main(int argc, const char * argv[]) {
             for (int i= 0; i < testImageSet.items; i++) {
                 
                 // Fill the input buffer
-                ML_VDSP_VCLR(net.inputBuffer, 1, net.inputSize);
-                ML_VDSP_VADD([testImageSet itemAtIndex:i], 1, net.inputBuffer, 1, net.inputBuffer, 1, net.inputSize);
+                ML_VCLR(net.inputBuffer, 1, net.inputSize);
+                ML_VADD([testImageSet itemAtIndex:i], 1, net.inputBuffer, 1, net.inputBuffer, 1, net.inputSize);
                 
                 // Run the network
                 [net feedForward];

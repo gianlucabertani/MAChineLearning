@@ -37,8 +37,6 @@
 #import "MLReal.h"
 #import "MLAlloc.h"
 
-#import <Accelerate/Accelerate.h>
-
 
 #pragma mark -
 #pragma mark MLWordVectorMap extension
@@ -75,7 +73,7 @@
 		_freeOnDealloc= freeOnDealloc;
 
 		// Compute magnitude
-		ML_VDSP_SVESQ(_vector, 1, &_magnitude, _size);
+		ML_SVESQ(_vector, 1, &_magnitude, _size);
 		_magnitude= ML_SQRT(_magnitude);
 	}
 	
@@ -84,7 +82,7 @@
 
 - (void) dealloc {
 	if (_freeOnDealloc) {
-		mlFreeRealBuffer(_vector);
+		MLFreeRealBuffer(_vector);
 		_vector= NULL;
 	}
 }
@@ -102,10 +100,10 @@
 																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
 	
 	// Creation of sum vector
-	MLReal *sumVector= mlAllocRealBuffer(_size);
+	MLReal *sumVector= MLAllocRealBuffer(_size);
 	
 	// Sum of vectors
-	ML_VDSP_VADD(_vector, 1, vector.vector, 1, sumVector, 1, _size);
+	ML_VADD(_vector, 1, vector.vector, 1, sumVector, 1, _size);
 	
 	// Creation of vector object
 	return [[MLWordVector alloc] initWithVector:sumVector size:_size freeVectorOnDealloc:YES];
@@ -120,10 +118,10 @@
 																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
 	
 	// Creation of difference vector
-	MLReal *subVector= mlAllocRealBuffer(_size);
+	MLReal *subVector= MLAllocRealBuffer(_size);
 	
 	// Subtraction of vectors
-	ML_VDSP_VSUB(vector.vector, 1, _vector, 1, subVector, 1, _size);
+	ML_VSUB(vector.vector, 1, _vector, 1, subVector, 1, _size);
 	
 	// Creation of vector object
 	return [[MLWordVector alloc] initWithVector:subVector size:_size freeVectorOnDealloc:YES];
@@ -143,7 +141,7 @@
 	
 	// Dot product of vectors
 	MLReal dot= 0.0;
-	ML_VDSP_DOTPR(_vector, 1, vector.vector, 1, &dot, _size);
+	ML_DOTPR(_vector, 1, vector.vector, 1, &dot, _size);
 	
 	// Return cosine similarity
 	return dot / (_magnitude * vector.magnitude);
@@ -158,17 +156,17 @@
 																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
 	
 	// Allocate temp vector
-    MLReal *temp= mlAllocRealBuffer(_size);
+    MLReal *temp= MLAllocRealBuffer(_size);
 
 	// Subtraction of vectors
-	ML_VDSP_VSUB(vector.vector, 1, _vector, 1, temp, 1, _size);
+	ML_VSUB(vector.vector, 1, _vector, 1, temp, 1, _size);
 	
 	// Compute magnitude of vector difference
 	MLReal distance= 0.0;
-	ML_VDSP_SVESQ(temp, 1, &distance, _size);
+	ML_SVESQ(temp, 1, &distance, _size);
 	distance= ML_SQRT(distance);
     
-    mlFreeRealBuffer(temp);
+    MLFreeRealBuffer(temp);
 	
 	return distance;
 }
@@ -194,16 +192,16 @@
         return NO;
     
     // Allocate temp vector, if needed
-    MLReal *temp= mlAllocRealBuffer(_size);
+    MLReal *temp= MLAllocRealBuffer(_size);
     
     // Finally check the numbers, we subtract the vectors
     // and sum the results
-    ML_VDSP_VSUB(otherVector.vector, 1, _vector, 1, temp, 1, _size);
+    ML_VSUB(otherVector.vector, 1, _vector, 1, temp, 1, _size);
 
     MLReal sum= 0.0;
-    ML_VDSP_SVE(temp, 1, &sum, _size);
+    ML_SVE(temp, 1, &sum, _size);
     
-    mlFreeRealBuffer(temp);
+    MLFreeRealBuffer(temp);
 
     return (sum == 0.0);
 }
@@ -213,7 +211,7 @@
     // We sum the vector and form an hash box XOR-ing
     // the integer and fractional part projected to UINT_MAX
     MLReal sum= 0.0;
-    ML_VDSP_SVE(_vector, 1, &sum, _size);
+    ML_SVE(_vector, 1, &sum, _size);
     
     double integer= 0.0;
     double fraction= modf(sum, &integer);

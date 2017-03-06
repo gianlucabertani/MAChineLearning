@@ -36,11 +36,11 @@
 #import "MLReal.h"
 
 
-MLReal *mlAllocRealBuffer(NSUInteger size);
-void mlFreeRealBuffer(MLReal *buffer);
+MLReal *MLAllocRealBuffer(NSUInteger size);
+void MLFreeRealBuffer(MLReal *buffer);
 
-MLReal **mlAllocRealPointerBuffer(NSUInteger size);
-void mlFreeRealPointerBuffer(MLReal **buffer);
+MLReal **MLAllocRealPointerBuffer(NSUInteger size);
+void MLFreeRealPointerBuffer(MLReal **buffer);
 
-int *mlAllocIntBuffer(NSUInteger size);
-void mlFreeIntBuffer(int *buffer);
+int *MLAllocIntBuffer(NSUInteger size);
+void MLFreeIntBuffer(int *buffer);

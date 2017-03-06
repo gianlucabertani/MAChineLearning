@@ -36,8 +36,6 @@
 
 #import "MLAlloc.h"
 
-#import <Accelerate/Accelerate.h>
-
 
 #pragma mark -
 #pragma mark InputLayer extension
@@ -71,7 +69,7 @@
 - (void) dealloc {
 	
 	// Deallocate the input buffer
-	mlFreeRealBuffer(_inputBuffer);
+	MLFreeRealBuffer(_inputBuffer);
 	_inputBuffer= NULL;
 }
 
@@ -82,10 +80,10 @@
 - (void) setUp {
 	
 	// Allocate buffers
-    _inputBuffer= mlAllocRealBuffer(self.size);
+    _inputBuffer= MLAllocRealBuffer(self.size);
 	
 	// Clear and fill buffers as needed
-	ML_VDSP_VCLR(_inputBuffer, 1, self.size);
+	ML_VCLR(_inputBuffer, 1, self.size);
 }
 
 

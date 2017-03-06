@@ -37,8 +37,6 @@
 
 #import "MLAlloc.h"
 
-#import <Accelerate/Accelerate.h>
-
 
 @implementation MLWordDictionary
 
@@ -93,7 +91,7 @@
 }
 
 - (void) dealloc {
-    mlFreeRealBuffer(_idfWeights);
+    MLFreeRealBuffer(_idfWeights);
     _idfWeights= NULL;
 }
 
@@ -215,10 +213,10 @@
 		return _idfWeights;
 	
 	if (!_idfWeights)
-        _idfWeights= mlAllocRealBuffer(_dictionary.count);
+        _idfWeights= MLAllocRealBuffer(_dictionary.count);
 	
 	// Clear the IDF buffer
-	ML_VDSP_VCLR(_idfWeights, 1, _dictionary.count);
+	ML_VCLR(_idfWeights, 1, _dictionary.count);
 	
 	// Compute inverse document frequency
 	for (MLWordInfo *wordInfo in _dictionary) {

@@ -79,7 +79,7 @@
 
 - (void) testUniform {
 	@try {
-		MLReal *distribution= mlAllocRealBuffer(UNIFORM_TEST_SIZE);
+		MLReal *distribution= MLAllocRealBuffer(UNIFORM_TEST_SIZE);
 		
 		MLReal randomMin= [MLRandom nextUniformReal] * 0.5;
 		MLReal randomMax= 0.5 + [MLRandom nextUniformReal] * 0.5;
@@ -120,7 +120,7 @@
 
 - (void) testGaussian {
 	@try {
-		MLReal *distribution= mlAllocRealBuffer(GAUSSIAN_TEST_SIZE);
+		MLReal *distribution= MLAllocRealBuffer(GAUSSIAN_TEST_SIZE);
 		
 		MLReal randomMean= [MLRandom nextUniformReal] - 0.5;
 		MLReal randomSigma= [MLRandom nextUniformReal];

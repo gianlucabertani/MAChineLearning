@@ -33,8 +33,6 @@
 
 #import "MNISTDataset.h"
 
-#import <Accelerate/Accelerate.h>
-
 #define BASE_URL                      (@"http://yann.lecun.com/exdb/mnist/")
 
 
@@ -111,9 +109,9 @@
     
     // Deallocate buffers
     for (int i= 0; i < _items; i++)
-        mlFreeRealBuffer(_itemBuffers[i]);
+        MLFreeRealBuffer(_itemBuffers[i]);
     
-    mlFreeRealPointerBuffer(_itemBuffers);
+    MLFreeRealPointerBuffer(_itemBuffers);
 }
 
 
@@ -196,7 +194,7 @@
     _itemSize= rows * cols;
     
     // Allocate buffer
-    _itemBuffers= mlAllocRealPointerBuffer(_items);
+    _itemBuffers= MLAllocRealPointerBuffer(_items);
     
     // Read images
     for (int i= 0; i < _items; i++) {
@@ -204,7 +202,7 @@
             NSData *imageData= [handle readDataOfLength:_itemSize];
             UInt8 *image= (UInt8 *) [imageData bytes];
             
-            _itemBuffers[i]= mlAllocRealBuffer(_itemSize);
+            _itemBuffers[i]= MLAllocRealBuffer(_itemSize);
 
             for (int j= 0; j < _itemSize; j++)
                 _itemBuffers[i][j]= ((MLReal) image[j]) / 255.0;
@@ -221,7 +219,7 @@
     _itemSize= 10;
     
     // Allocate buffer
-    _itemBuffers= mlAllocRealPointerBuffer(_items);
+    _itemBuffers= MLAllocRealPointerBuffer(_items);
     
     // Read labels
     for (int i= 0; i < _items; i++) {
@@ -229,8 +227,8 @@
             NSData *labelData= [handle readDataOfLength:1];
             UInt8 label= * (UInt8 *) [labelData bytes];
             
-            _itemBuffers[i]= mlAllocRealBuffer(_itemSize);
-            ML_VDSP_VCLR(_itemBuffers[i], 1, _itemSize);
+            _itemBuffers[i]= MLAllocRealBuffer(_itemSize);
+            ML_VCLR(_itemBuffers[i], 1, _itemSize);
             _itemBuffers[i][label]= 1.0;
         }
     }

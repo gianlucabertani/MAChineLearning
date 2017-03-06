@@ -37,7 +37,7 @@
 #define ALLOC_EXCEPTION_NAME               (@"MLAllocException")
 
 
-void *mlAllocBuffer(NSUInteger itemSize, NSUInteger items, NSString *errorReason) {
+void *MLAllocBuffer(NSUInteger itemSize, NSUInteger items, NSString *errorReason) {
     void *buffer= NULL;
     
     int err= posix_memalign((void **) &buffer, BUFFER_MEMORY_ALIGNMENT, itemSize * items);
@@ -49,34 +49,34 @@ void *mlAllocBuffer(NSUInteger itemSize, NSUInteger items, NSString *errorReason
     return buffer;
 }
 
-void mlFreeBuffer(void *buffer) {
+void MLFreeBuffer(void *buffer) {
     if (!buffer)
         return;
     
     free(buffer);
 }
 
-MLReal *mlAllocRealBuffer(NSUInteger size) {
-    return mlAllocBuffer(sizeof(MLReal), size, @"Error while allocating a buffer of reals");
+MLReal *MLAllocRealBuffer(NSUInteger size) {
+    return MLAllocBuffer(sizeof(MLReal), size, @"Error while allocating a buffer of reals");
 }
 
-void mlFreeRealBuffer(MLReal *buffer) {
-    mlFreeBuffer(buffer);
+void MLFreeRealBuffer(MLReal *buffer) {
+    MLFreeBuffer(buffer);
 }
 
-MLReal **mlAllocRealPointerBuffer(NSUInteger size) {
-    return mlAllocBuffer(sizeof(MLReal *), size, @"Error while allocating a buffer of real pointes");
+MLReal **MLAllocRealPointerBuffer(NSUInteger size) {
+    return MLAllocBuffer(sizeof(MLReal *), size, @"Error while allocating a buffer of real pointes");
 }
 
-void mlFreeRealPointerBuffer(MLReal **buffer) {
-    mlFreeBuffer(buffer);
+void MLFreeRealPointerBuffer(MLReal **buffer) {
+    MLFreeBuffer(buffer);
 }
 
-int *mlAllocIntBuffer(NSUInteger size) {
-    return mlAllocBuffer(sizeof(int), size, @"Error while allocating a buffer of ints");
+int *MLAllocIntBuffer(NSUInteger size) {
+    return MLAllocBuffer(sizeof(int), size, @"Error while allocating a buffer of ints");
 }
 
-void mlFreeIntBuffer(int *buffer) {
-    mlFreeBuffer(buffer);
+void MLFreeIntBuffer(int *buffer) {
+    MLFreeBuffer(buffer);
 }
 

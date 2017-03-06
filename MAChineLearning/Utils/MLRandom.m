@@ -35,8 +35,6 @@
 
 #import "MLAlloc.h"
 
-#import <Accelerate/Accelerate.h>
-
 #define RANDOMIZATION_EXCEPTION_NAME          (@"MLRandomException")
 
 
@@ -95,7 +93,7 @@ static MLReal __spareGaussian=        0.0;
 + (void) fillVector:(MLReal *)vector size:(NSUInteger)size ofUniformRealsWithMin:(MLReal)min max:(MLReal)max {
 	
 	// Allocate and fill a temp integer vector
-    int *tempUniform= mlAllocIntBuffer(size);
+    int *tempUniform= MLAllocIntBuffer(size);
 	
 	int result= SecRandomCopyBytes(kSecRandomDefault, sizeof(int) * size, (uint8_t *) tempUniform);
     if (result != 0)
@@ -116,19 +114,19 @@ static MLReal __spareGaussian=        0.0;
 	vDSP_vsdivi(tempUniform, 1, &intDivisor, tempUniform, 1, size);
 	
 	// Convert the vector to floating point
-	ML_VDSP_VFLT32(tempUniform, 1, vector, 1, size);
+	ML_VFLT32(tempUniform, 1, vector, 1, size);
 	
 	// Scale randoms in range 0..1
 	MLReal factor= 1.0 / ((MLReal) ((1 << 23) - 1));
-	ML_VDSP_VSMUL(vector, 1, &factor, vector, 1, size);
+	ML_VSMUL(vector, 1, &factor, vector, 1, size);
 	
 	// Finally apply limits
 	MLReal delta= max - min;
-	ML_VDSP_VSMUL(vector, 1, &delta, vector, 1, size);
-	ML_VDSP_VSADD(vector, 1, &min, vector, 1, size);
+	ML_VSMUL(vector, 1, &delta, vector, 1, size);
+	ML_VSADD(vector, 1, &min, vector, 1, size);
 	
 	// Free the temp vector
-	mlFreeIntBuffer(tempUniform);
+	MLFreeIntBuffer(tempUniform);
 }
 
 + (MLReal) nextGaussianRealWithMean:(MLReal)mean sigma:(MLReal)sigma {
@@ -193,7 +191,7 @@ static MLReal __spareGaussian=        0.0;
 	NSUInteger oddStridedSize= (size % 2 == 0) ? evenStridedSize : (evenStridedSize -1);
 	
 	// Allocate and fill a temp vectors with uniform randoms
-    MLReal *tempGaussian1= mlAllocRealBuffer(size);
+    MLReal *tempGaussian1= MLAllocRealBuffer(size);
 
 	[MLRandom fillVector:tempGaussian1 size:size ofUniformRealsWithMin:0.0 max:1.0];
 	
@@ -201,20 +199,20 @@ static MLReal __spareGaussian=        0.0;
 		
 		// Copy even elements on odd elements, so that
 		// we have pairs of identical random numbers
-		ML_VDSP_VSMUL(tempGaussian1, 2, &__one, &tempGaussian1[1], 2, oddStridedSize);
+		ML_VSMUL(tempGaussian1, 2, &__one, &tempGaussian1[1], 2, oddStridedSize);
 	}
 	
-	MLReal *tempGaussian2= mlAllocRealBuffer(size);
+	MLReal *tempGaussian2= MLAllocRealBuffer(size);
 	
 	// Duplicate temp1 on temp2
-	ML_VDSP_VSMUL(tempGaussian1, 1, &__one, tempGaussian2, 1, size);
+	ML_VSMUL(tempGaussian1, 1, &__one, tempGaussian2, 1, size);
 	
 	// Now fill vector with uniform random numbers, and copy
 	// even elements on odd elements as we have done with temp1
 	[MLRandom fillVector:vector size:size ofUniformRealsWithMin:0.0 max:1.0];
 	
 	if (size > 1)
-		ML_VDSP_VSMUL(vector, 2, &__one, &vector[1], 2, oddStridedSize);
+		ML_VSMUL(vector, 2, &__one, &vector[1], 2, oddStridedSize);
 	
 	// Now we jave two sets of random numbers, with one set duplicated on
 	// two separate temp vectors, and both sets have numbers duplicated
@@ -226,31 +224,31 @@ static MLReal __spareGaussian=        0.0;
 	// Compute first term of Box-Muller transform
 	// directly on the vector
 	ML_VVLOG(vector, vector, &intSize);
-	ML_VDSP_VSMUL(vector, 1, &__minusTwo, vector, 1, size);
+	ML_VSMUL(vector, 1, &__minusTwo, vector, 1, size);
 	ML_VVSQRT(vector, vector, &intSize);
 	
 	// Compute the second term of Box-Muller transform
 	// on temp vectors, cosine for temp1 and sine for temp2
-	ML_VDSP_VSMUL(tempGaussian1, 1, &__pi, tempGaussian1, 1, size);
-	ML_VDSP_VSMUL(tempGaussian1, 1, &__two, tempGaussian1, 1, size);
+	ML_VSMUL(tempGaussian1, 1, &__pi, tempGaussian1, 1, size);
+	ML_VSMUL(tempGaussian1, 1, &__two, tempGaussian1, 1, size);
 	ML_VVCOS(tempGaussian1, tempGaussian1, &intSize);
 	
-	ML_VDSP_VSMUL(tempGaussian2, 1, &__pi, tempGaussian2, 1, size);
-	ML_VDSP_VSMUL(tempGaussian2, 1, &__two, tempGaussian2, 1, size);
+	ML_VSMUL(tempGaussian2, 1, &__pi, tempGaussian2, 1, size);
+	ML_VSMUL(tempGaussian2, 1, &__two, tempGaussian2, 1, size);
 	ML_VVSIN(tempGaussian2, tempGaussian2, &intSize);
 	
 	// Now form gaussian random numbers by multipling vector by temp1
 	// on even indexes and vector by temp2 on odd indexes
-	ML_VDSP_VMUL(vector, 2, tempGaussian1, 2, vector, 2, evenStridedSize);
-	ML_VDSP_VMUL(&vector[1], 2, tempGaussian2, 2, &vector[1], 2, oddStridedSize);
+	ML_VMUL(vector, 2, tempGaussian1, 2, vector, 2, evenStridedSize);
+	ML_VMUL(&vector[1], 2, tempGaussian2, 2, &vector[1], 2, oddStridedSize);
 	
 	// Finally apply limits
-	ML_VDSP_VSMUL(vector, 1, &sigma, vector, 1, size);
-	ML_VDSP_VSADD(vector, 1, &mean, vector, 1, size);
+	ML_VSMUL(vector, 1, &sigma, vector, 1, size);
+	ML_VSADD(vector, 1, &mean, vector, 1, size);
 	
 	// Free the temp vectors
-	mlFreeRealBuffer(tempGaussian1);
-	mlFreeRealBuffer(tempGaussian2);
+	MLFreeRealBuffer(tempGaussian1);
+	MLFreeRealBuffer(tempGaussian2);
 }
 
 

@@ -44,8 +44,6 @@
 
 #import "IOLineReader.h"
 
-#import <Accelerate/Accelerate.h>
-
 #define WORD2VEC_MAX_WORD_LENGTH            (200)
 
 
@@ -270,7 +268,7 @@
 			}
 			
 			// Creation of vector
-			MLReal *vector= mlAllocRealBuffer(_vectorSize);
+			MLReal *vector= MLAllocRealBuffer(_vectorSize);
 			
 			// Fill vector from array
 			NSUInteger i= 0;
@@ -288,10 +286,10 @@
 			
 			// Normalization of vector
 			MLReal normL2= 0.0;
-			ML_VDSP_SVESQ(vector, 1, &normL2, _vectorSize);
+			ML_SVESQ(vector, 1, &normL2, _vectorSize);
 			normL2= ML_SQRT(normL2);
 			
-			ML_VDSP_VSDIV(vector, 1, &normL2, vector, 1, _vectorSize);
+			ML_VSDIV(vector, 1, &normL2, vector, 1, _vectorSize);
 			
 			// Creation of vector wrapper
             MLWordVector *wordVector= [[MLWordVector alloc] initWithVector:vector
