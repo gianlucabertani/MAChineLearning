@@ -41,8 +41,6 @@
 		8C78C6E21B371F3A00245298 /* MLBiasNeuron.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C78C6E01B371F3A00245298 /* MLBiasNeuron.m */; };
 		8C7C131E1E632004000F92C3 /* MLAlloc.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C131D1E632004000F92C3 /* MLAlloc.m */; };
 		8C7C13201E632AA7000F92C3 /* MLAlloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C7C131F1E632018000F92C3 /* MLAlloc.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C7C13231E633752000F92C3 /* MLParallel.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C7C13211E633752000F92C3 /* MLParallel.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C7C13241E633752000F92C3 /* MLParallel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C13221E633752000F92C3 /* MLParallel.m */; };
 		8C7C132C1E63483C000F92C3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C132B1E63483C000F92C3 /* main.m */; };
 		8C7C133B1E634C2E000F92C3 /* MNISTDataset.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C133A1E634C2E000F92C3 /* MNISTDataset.m */; };
 		8C7C13431E634D67000F92C3 /* MAChineLearning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CEF181ADAC51200F1E139 /* MAChineLearning.framework */; };
@@ -157,8 +155,6 @@
 		8C78C6E01B371F3A00245298 /* MLBiasNeuron.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLBiasNeuron.m; sourceTree = "<group>"; };
 		8C7C131D1E632004000F92C3 /* MLAlloc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLAlloc.m; sourceTree = "<group>"; };
 		8C7C131F1E632018000F92C3 /* MLAlloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MLAlloc.h; sourceTree = "<group>"; };
-		8C7C13211E633752000F92C3 /* MLParallel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLParallel.h; sourceTree = "<group>"; };
-		8C7C13221E633752000F92C3 /* MLParallel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLParallel.m; sourceTree = "<group>"; };
 		8C7C13291E63483B000F92C3 /* MNIST */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MNIST; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C7C132B1E63483C000F92C3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8C7C13391E634C2E000F92C3 /* MNISTDataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNISTDataset.h; sourceTree = "<group>"; };
@@ -391,8 +387,6 @@
 				8CC9E4E21AE988AE002659EA /* MLReal.h */,
 				8C7C131F1E632018000F92C3 /* MLAlloc.h */,
 				8C7C131D1E632004000F92C3 /* MLAlloc.m */,
-				8C7C13211E633752000F92C3 /* MLParallel.h */,
-				8C7C13221E633752000F92C3 /* MLParallel.m */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -454,7 +448,6 @@
 				8CD4AD571B2DCAA8000091DA /* MLBackPropagationType.h in Headers */,
 				8C94CBFF1AE91C0800A0A328 /* MLFeatureNormalizationType.h in Headers */,
 				8C7C13201E632AA7000F92C3 /* MLAlloc.h in Headers */,
-				8C7C13231E633752000F92C3 /* MLParallel.h in Headers */,
 				8C1FE66D1B1EE6F300596278 /* MLMutableWordInfo.h in Headers */,
 				8CC9E4E61AE98DAE002659EA /* MLBagOfWordsException.h in Headers */,
 				8C58A31C1AECECC5006AB74D /* MLStopWords.h in Headers */,
@@ -628,7 +621,6 @@
 				8CF8D5531AFF732F008FA0AC /* MLWordDictionary.m in Sources */,
 				8CC07B511B1E11E8004D804B /* MLMutableWordDictionary.m in Sources */,
 				8C1251E81AE8D38E00FA493E /* MLNeuronLayer.m in Sources */,
-				8C7C13241E633752000F92C3 /* MLParallel.m in Sources */,
 				8C1FE6661B1ED91300596278 /* MLWordVectorMap.m in Sources */,
 				8C1251E21AE8D38E00FA493E /* MLNeuralNetworkException.m in Sources */,
 				8C58A30F1AECD275006AB74D /* MLTextFragment.m in Sources */,

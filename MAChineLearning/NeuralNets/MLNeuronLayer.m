@@ -38,7 +38,6 @@
 #import "MLNeuralNetworkException.h"
 
 #import "MLAlloc.h"
-#import "MLParallel.h"
 
 #import <Accelerate/Accelerate.h>
 
@@ -204,11 +203,8 @@ static const MLReal __fourty=       40.0;
 	MLReal beta= 0.7 * ML_POW(((MLReal) self.size), 1.0 / ((MLReal) self.previousLayer.size));
 
 	// Randomize each neuron
-    mlParallelFor(_neurons, ^(NSObject *element) {
-        MLNeuron *neuron= (MLNeuron *) element;
-        
+    for (MLNeuron *neuron in _neurons)
         [neuron randomizeWeightsWithBeta:beta];
-    });
 }
 
 
@@ -226,11 +222,8 @@ static const MLReal __fourty=       40.0;
 
 	// First step: compute dot product for each neuron,
 	// will fill the output buffer
-    mlParallelFor(_neurons, ^(NSObject *element) {
-        MLNeuron *neuron= (MLNeuron *) element;
-        
+    for (MLNeuron *neuron in _neurons)
 		[neuron feedForward];
-    });
 	
 	// Second step: apply activation function
 	switch (_funcType) {
@@ -303,9 +296,7 @@ static const MLReal __fourty=       40.0;
 	
 	MLNeuronLayer *nextLayer= (MLNeuronLayer *) self.nextLayer;
 	
-    mlParallelFor(_neurons, ^(NSObject *element) {
-        MLNeuron *neuron= (MLNeuron *) element;
-        
+    for (MLNeuron *neuron in _neurons) {
 		if ([neuron isKindOfClass:[MLBiasNeuron class]]) {
 			
 			// Bias neurons have constant output and don't backpropagate
@@ -327,7 +318,7 @@ static const MLReal __fourty=       40.0;
 			// Compute the dot product
 			ML_VDSP_DOTPR(nextLayer.deltaBuffer, 1, _nextLayerWeightsBuffer, 1, &_errorBuffer[neuron.index], nextLayer.size);
 		}
-    });
+    }
 }
 
 - (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType learningRate:(MLReal)learningRate costFunction:(MLCostFunctionType)costType {
@@ -395,11 +386,8 @@ static const MLReal __fourty=       40.0;
 	}
 	
 	// Second step: compute new weights for each neuron
-    mlParallelFor(_neurons, ^(NSObject *element) {
-        MLNeuron *neuron= (MLNeuron *) element;
-
+    for (MLNeuron *neuron in _neurons)
         [neuron backPropagateWithAlgorithm:backPropType learningRate:learningRate delta:_deltaBuffer[neuron.index]];
-    });
 }
 
 - (void) updateWeights {
@@ -408,11 +396,8 @@ static const MLReal __fourty=       40.0;
 																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
 	
 	// Second step: update weights for each neuron
-    mlParallelFor(_neurons, ^(NSObject *element) {
-        MLNeuron *neuron= (MLNeuron *) element;
-        
+    for (MLNeuron *neuron in _neurons)
 		[neuron updateWeights];
-    });
 }
 
 
