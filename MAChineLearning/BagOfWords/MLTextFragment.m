@@ -128,7 +128,7 @@
 }
 
 - (NSString *) description {
-    return [NSString stringWithFormat:@"<%.2f '%@' %lu:%lu>", _tokenIndex, _fragment, (unsigned long) _range.location, _range.length];
+    return [NSString stringWithFormat:@"<%.2f '%@' %lu:%lu>", _tokenIndex, _fragment, (unsigned long) _range.location, (unsigned long) _range.length];
 }
 
 

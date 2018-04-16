@@ -89,8 +89,8 @@
 	@try {
 		int result= 0;
 		
-		NSUInteger dictionarySize= 0;
-		NSUInteger vectorSize= 0;
+		unsigned long dictionarySize= 0;
+		unsigned long vectorSize= 0;
 
 		result= fscanf(f, "%lu", &dictionarySize);
 		if (result != 1)
