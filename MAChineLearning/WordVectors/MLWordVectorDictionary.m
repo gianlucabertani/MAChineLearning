@@ -263,9 +263,10 @@
                                   componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
             
             if (firstLine) {
-                
+                firstLine= NO;
+
                 // First line contains number of vectors and vector size
-                vectorSize= [[components objectAtIndex:1] unsignedIntegerValue];
+                vectorSize= [[components objectAtIndex:1] integerValue];
                 continue;
             }
             
@@ -275,8 +276,9 @@
                                                                    userInfo:@{@"filePath": vectorFilePath,
                                                                               @"lineNumber": [NSNumber numberWithUnsignedInteger:reader.lineNumber]}];
             
-            // Get the word
-            NSString *word= [components objectAtIndex:0];
+            // Get the word and convert to lowercase,
+            // since fastText is case sensitive
+            NSString *word= [[components objectAtIndex:0] lowercaseString];
             if ([word isEqualToString:@"</s>"])
                 continue;
             
@@ -289,8 +291,12 @@
                 [vector addObject:[NSNumber numberWithDouble:elem]];
             }
             
-            // Store the vector in the transitory dictionary
-            [vectorDictionary setObject:vector forKey:word];
+            // Store the vector in the transitory dictionary but
+            // avoid overwriting duplicates, since we want to keep
+            // the most frequent word in case of omographies with
+            // different cases (e.g. "us" vs "US")
+            if (![vectorDictionary objectForKey:word])
+                [vectorDictionary setObject:vector forKey:word];
             
         } while (YES);
         
@@ -435,8 +441,8 @@
 
 - (NSArray *) mostSimilarWordsToVector:(MLWordVector *)vector {
 	NSArray *sortedKeys= [[_vectors allKeys] sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
-		MLWordVector *otherVector1= [_vectors objectForKey:obj1];
-		MLWordVector *otherVector2= [_vectors objectForKey:obj2];
+        MLWordVector *otherVector1= [self->_vectors objectForKey:obj1];
+        MLWordVector *otherVector2= [self->_vectors objectForKey:obj2];
 		
 		MLReal similarity1= [vector similarityToVector:otherVector1];
 		MLReal similarity2= [vector similarityToVector:otherVector2];
@@ -454,8 +460,8 @@
 
 - (NSArray *) nearestWordsToVector:(MLWordVector *)vector {
     NSArray *sortedKeys= [[_vectors allKeys] sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
-		MLWordVector *otherVector1= [_vectors objectForKey:obj1];
-		MLWordVector *otherVector2= [_vectors objectForKey:obj2];
+        MLWordVector *otherVector1= [self->_vectors objectForKey:obj1];
+		MLWordVector *otherVector2= [self->_vectors objectForKey:obj2];
 		
 		MLReal distance1= [vector distanceToVector:otherVector1];
 		MLReal distance2= [vector distanceToVector:otherVector2];

@@ -65,6 +65,7 @@
 		8CC9E4E61AE98DAE002659EA /* MLBagOfWordsException.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC9E4E41AE98DAE002659EA /* MLBagOfWordsException.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC9E4E71AE98DAE002659EA /* MLBagOfWordsException.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC9E4E51AE98DAE002659EA /* MLBagOfWordsException.m */; };
 		8CD4AD571B2DCAA8000091DA /* MLBackPropagationType.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CD4AD561B2DC998000091DA /* MLBackPropagationType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CF7E54820853344002233FA /* FastText-sample.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CF7E54720853344002233FA /* FastText-sample.txt */; };
 		8CF8D52E1AFF3CD8008FA0AC /* IOLineReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D52C1AFF3CD8008FA0AC /* IOLineReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CF8D52F1AFF3CD8008FA0AC /* IOLineReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D52D1AFF3CD8008FA0AC /* IOLineReader.m */; };
 		8CF8D5321AFF3E76008FA0AC /* IOLineWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D5301AFF3E76008FA0AC /* IOLineWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -183,6 +184,7 @@
 		8CC9E4E41AE98DAE002659EA /* MLBagOfWordsException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLBagOfWordsException.h; sourceTree = "<group>"; };
 		8CC9E4E51AE98DAE002659EA /* MLBagOfWordsException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLBagOfWordsException.m; sourceTree = "<group>"; };
 		8CD4AD561B2DC998000091DA /* MLBackPropagationType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MLBackPropagationType.h; sourceTree = "<group>"; };
+		8CF7E54720853344002233FA /* FastText-sample.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "FastText-sample.txt"; sourceTree = "<group>"; };
 		8CF8D52C1AFF3CD8008FA0AC /* IOLineReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOLineReader.h; sourceTree = "<group>"; };
 		8CF8D52D1AFF3CD8008FA0AC /* IOLineReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOLineReader.m; sourceTree = "<group>"; };
 		8CF8D5301AFF3E76008FA0AC /* IOLineWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOLineWriter.h; sourceTree = "<group>"; };
@@ -423,6 +425,7 @@
 		8CFF56161C9585AC00D31A45 /* Sample Vectors */ = {
 			isa = PBXGroup;
 			children = (
+				8CF7E54720853344002233FA /* FastText-sample.txt */,
 				8CFF56121C9585A300D31A45 /* GloVe-sample.txt */,
 				8CFF56131C9585A300D31A45 /* Word2vec-sample.bin */,
 			);
@@ -603,6 +606,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8CFF56141C9585A300D31A45 /* GloVe-sample.txt in Resources */,
+				8CF7E54820853344002233FA /* FastText-sample.txt in Resources */,
 				8CFF56151C9585A300D31A45 /* Word2vec-sample.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

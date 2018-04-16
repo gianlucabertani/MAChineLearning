@@ -282,6 +282,52 @@
     }
 }
 
+- (void) testFastText {
+    @try {
+        NSBundle *bundle= [NSBundle bundleForClass:[self class]];
+        NSString *fastTextSamplePath= [bundle pathForResource:@"FastText-sample" ofType:@"txt"];
+        XCTAssertNotNil(fastTextSamplePath);
+        
+        // Here we use a pre-trained sample vector file of 1000 words, obtained from the
+        // pretrained vector library availble at https://github.com/facebookresearch/fastText,
+        // we then test the vector map with known working equivalences
+        MLWordVectorDictionary *map= [MLWordVectorDictionary createFromFastTextFile:fastTextSamplePath];
+        XCTAssertNotNil(map);
+        
+        // Capital to nation
+        [self checkEquivalenceOf:@"washington" to:@"u.s." with:@"london" to:@"uk" on:map];
+        
+        // Masculine to feminine
+        [self checkEquivalenceOf:@"he" to:@"she" with:@"his" to:@"her" on:map];
+        
+        // Adjective to adverb
+        [self checkEquivalenceOf:@"real" to:@"really" with:@"general" to:@"generally" on:map];
+        
+        // Infinitive to gerund
+        [self checkEquivalenceOf:@"run" to:@"running" with:@"live" to:@"living" on:map];
+        [self checkEquivalenceOf:@"read" to:@"reading" with:@"give" to:@"giving" on:map];
+        
+        // Nation to nationality
+        [self checkEquivalenceOf:@"europe" to:@"european" with:@"america" to:@"american" on:map];
+        [self checkEquivalenceOf:@"france" to:@"french" with:@"germany" to:@"german" on:map];
+        [self checkEquivalenceOf:@"china" to:@"chinese" with:@"england" to:@"english" on:map];
+
+        // Gerund to past
+        [self checkEquivalenceOf:@"taking" to:@"took" with:@"writing" to:@"wrote" on:map];
+        
+        // Singular to plurarl
+        [self checkEquivalenceOf:@"problem" to:@"problems" with:@"point" to:@"points" on:map];
+        [self checkEquivalenceOf:@"book" to:@"books" with:@"day" to:@"days" on:map];
+        [self checkEquivalenceOf:@"man" to:@"men" with:@"woman" to:@"women" on:map];
+        
+        // First person to third person
+        [self checkEquivalenceOf:@"work" to:@"works" with:@"say" to:@"says" on:map];
+
+    } @catch (NSException *e) {
+        XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
+    }
+}
+
 
 #pragma mark -
 #pragma mark Internal
