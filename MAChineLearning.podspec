@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
   s.name         = "MAChineLearning"
-  s.version      = "1.0.0"
+  s.version      = "1.0.1"
   s.summary      = "Machine Learning for the Mac."
 
   s.description  = <<-DESC
@@ -37,7 +37,8 @@ Pod::Spec.new do |s|
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
-  s.platform     = :osx, "10.9"
+  s.macos.deployment_target   = "10.9"
+  s.ios.deployment_target     = "8.0"
 
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

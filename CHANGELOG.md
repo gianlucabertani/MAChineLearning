@@ -1,5 +1,14 @@
 # MAChineLearning Change Log
 
+
+## 1.0.1
+
+Minor changes:
+
+- Fixed bugs with fastText word vector dictionary loading
+- Added unit test for fastText word vectors
+
+
 ## 1.0
 
 Major changes:

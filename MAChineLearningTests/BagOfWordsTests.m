@@ -31,7 +31,12 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
+#if TARGET_OS_MAC
+#import <Cocoa/Cocoa.h>
+#else // !TARGET_OS_MAC
 #import <Foundation/Foundation.h>
+#endif // TARGET_OS_MAC
+
 #import <XCTest/XCTest.h>
 #import <MAChineLearning/MAChineLearning.h>
 
@@ -276,7 +281,7 @@
 		// Bag of words for topic classification uses the (slow) linguistic tagger, removing
 		// stop words, verbs and adjectives, but keeping composite nouns and names
 		MLBagOfWords *bag= [MLBagOfWords bagOfWordsForTopicClassificationWithText:ARTICLE_EXTRACT
-																		   documentID:@"article1"
+                                                                       documentID:@"article1"
 																	   dictionary:dictionary
 																		 language:@"en"
 															 featureNormalization:MLFeatureNormalizationTypeNone];

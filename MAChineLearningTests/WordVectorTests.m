@@ -31,7 +31,12 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
+#if TARGET_OS_MAC
 #import <Cocoa/Cocoa.h>
+#else // !TARGET_OS_MAC
+#import <Foundation/Foundation.h>
+#endif // TARGET_OS_MAC
+
 #import <XCTest/XCTest.h>
 #import <MAChineLearning/MAChineLearning.h>
 

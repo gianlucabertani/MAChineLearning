@@ -178,7 +178,7 @@
 	
 	NSArray *wordInfos= [_dictionary allValues];
 	for (MLWordInfo *wordInfo in wordInfos)
-		[descr appendFormat:@"\t'%@': %lu (%lu)\n", wordInfo.word, wordInfo.totalOccurrencies, wordInfo.documentOccurrencies];
+        [descr appendFormat:@"\t'%@': %lu (%lu)\n", wordInfo.word, (unsigned long) wordInfo.totalOccurrencies, wordInfo.documentOccurrencies];
 	
 	[descr appendString:@"}"];
 	
