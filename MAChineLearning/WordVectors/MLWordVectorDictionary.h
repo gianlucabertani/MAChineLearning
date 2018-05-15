@@ -33,6 +33,10 @@
 
 #import <Foundation/Foundation.h>
 
+#import "MLReal.h"
+#import "MLWordExtractorType.h"
+#import "MLWordExtractorOption.h"
+
 
 @class MLNeuralNetwork;
 @class MLWordDictionary;
@@ -52,7 +56,7 @@
 
 
 #pragma mark -
-#pragma mark Map lookup
+#pragma mark Word lookup and comparison
 
 - (BOOL) containsWord:(NSString *)word;
 - (MLWordVector *) vectorForWord:(NSString *)word;
@@ -62,6 +66,14 @@
 
 - (NSArray *) mostSimilarWordsToVector:(MLWordVector *)vector;
 - (NSArray *) nearestWordsToVector:(MLWordVector *)vector;
+
+
+#pragma mark -
+#pragma mark Sentence lookup
+
+- (MLWordVector *) vectorForSentence:(NSString *)sentence;
+- (MLWordVector *) vectorForSentence:(NSString *)sentence withLanguage:(NSString *)languageCode;
+- (MLWordVector *) vectorForSentence:(NSString *)sentence withLanguage:(NSString *)languageCode extractorType:(MLWordExtractorType)extractorType options:(MLWordExtractorOption)options wordNotFound:(void (^)(NSString *))wordNotFoundHandler;
 
 
 #pragma mark -
