@@ -9,16 +9,18 @@ Machine Learning for the Mac
 
 Currently the framework supports:
 
-- [Neural Networks](#Neural Networks)
-- [Bag of Words](#Bag of Words)
-- [Word Vectors](#Word Vectors)
+- [Neural Networks](#Neural-Networks)
+- [Bag of Words](#Bag-of-Words)
+- [Word Vectors](#Word-Vectors)
 
 Differently than many other machine learning libraries for macOS and iOS, MAChineLearning includes full training implementation for its neural networks. You don't need a separate language or another framework to train the network, you have all you need here.
 
 
 ### Use on iOS
 
-While targeted at macOS, the framework should easily recompile and work on iOS too. Training the network should also work correctly on iOS.
+The framework has been tested on iOS and it is compatible with it. Moreover, the framework is now distributed via CocoaPods and its targets are both macOS and iOS.
+
+Have fun training your neural networks directly on your device!
 
 
 ## Neural Networks
@@ -154,22 +156,22 @@ A typical training loop is the following:
 BOOL finished= NO;
 do {
 
-	// Load the sample set
-	// ...
+    // Load the sample set
+    // ...
 
     MLReal error= 0.0;
-	for (int i= 0; i < numberOfSamples; i++) {
+    for (int i= 0; i < numberOfSamples; i++) {
 
-	    // Clear the input buffer with vDSP
-		ML_VCLR(net.inputBuffer, 1, net.inputSize);
+        // Clear the input buffer with vDSP
+        ML_VCLR(net.inputBuffer, 1, net.inputSize);
 
-		// Load the i-th sample
-		net.inputBuffer[0]= 1.0;
-		net.inputBuffer[2]= 0.5;
-		// ...
+        // Load the i-th sample
+        net.inputBuffer[0]= 1.0;
+        net.inputBuffer[2]= 0.5;
+        // ...
 
         // Feed the network and compute the output
-		[net feedForward];
+        [net feedForward];
 
         // Set the expected output for the i-th sample
         net.expectedOutputBuffer[0]= 0.5;
@@ -182,13 +184,13 @@ do {
 
         // Update weights
         [net updateWeights];
-	}
+    }
 
-	// Compute the average error
-	error /= (MLReal) numberOfSamples;
+    // Compute the average error
+    error /= (MLReal) numberOfSamples;
 
-	// Check if average error is below the expected threshold
-	finished= (error < 0.0001);
+    // Check if average error is below the expected threshold
+    finished= (error < 0.0001);
 
 } while (!finished);
 ```
@@ -199,22 +201,22 @@ While a training loop with **batch updates** is the following:
 BOOL finished= NO;
 do {
 
-	// Load the sample set
-	// ...
+    // Load the sample set
+    // ...
 
     MLReal error= 0.0;
-	for (int i= 0; i < numberOfSamples; i++) {
+    for (int i= 0; i < numberOfSamples; i++) {
 
-	    // Clear the input buffer with vDSP
-		ML_VCLR(net.inputBuffer, 1, net.inputSize);
+        // Clear the input buffer with vDSP
+        ML_VCLR(net.inputBuffer, 1, net.inputSize);
 
-		// Load the i-th sample
-		net.inputBuffer[0]= 1.0;
-		net.inputBuffer[2]= 0.5;
-		// ...
+        // Load the i-th sample
+        net.inputBuffer[0]= 1.0;
+        net.inputBuffer[2]= 0.5;
+        // ...
 
         // Feed the network and compute the output
-		[net feedForward];
+        [net feedForward];
 
         // Set the expected output for the i-th sample
         net.expectedOutputBuffer[0]= 0.5;
@@ -227,16 +229,16 @@ do {
 
         if ((i +1) % 10 == 0) {
 
-        	// Update weights for this batch
-        	[net updateWeights];
+            // Update weights for this batch
+            [net updateWeights];
         }
     }
 
-	// Compute the average error
-	error /= (MLReal) numberOfSamples;
+    // Compute the average error
+    error /= (MLReal) numberOfSamples;
 
-	// Check if average error is below the expected threshold
-	finished= (error < 0.0001);
+    // Check if average error is below the expected threshold
+    finished= (error < 0.0001);
 
 } while (!finished);
 ```
@@ -309,20 +311,20 @@ NSArray *movieReviews= // ...
 
 for (NSString *movieReview in movieReviews) {
 
-	// Extract the bag of words for the current text
-	MLBagOfWords *bag= [MLBagOfWords bagOfWordsForSentimentAnalysisWithText:movieReview
-						  									     documentID:nil
-														         dictionary:dictionary
-															       language:@"en"
-												       featureNormalization:FeatureNormalizationTypeNone];
+    // Extract the bag of words for the current text
+    MLBagOfWords *bag= [MLBagOfWords bagOfWordsForSentimentAnalysisWithText:movieReview
+                                                                 documentID:nil
+                                                                 dictionary:dictionary
+                                                                   language:@"en"
+                                                       featureNormalization:FeatureNormalizationTypeNone];
 
-	// Dump the extracted words and their occurrences
-	for (NSString *word in bag.words) {
-	    MLWordInfo *info= [dictionary infoForWord:word];
-		MLReal occurrencies= net.outputBuffer[info.position];
+    // Dump the extracted words and their occurrences
+    for (NSString *word in bag.words) {
+        MLWordInfo *info= [dictionary infoForWord:word];
+        MLReal occurrencies= net.outputBuffer[info.position];
 
-		NSLog(@"Occurrences for word '%@': %.0f", word, occurrencies);
-	}
+        NSLog(@"Occurrences for word '%@': %.0f", word, occurrencies);
+    }
 }
 ```
 
@@ -353,19 +355,19 @@ In most of use cases, Bag of Words vectors are submitted as input to a neural ne
 ```obj-c
 for (NSString *movieReview in movieReviews) {
 
-	// Extract the bag of words for the current text
-	MLBagOfWords *bag= [MLBagOfWords bagOfWordsForSentimentAnalysisWithText:movieReview
-						  									     documentID:nil
-															     dictionary:dictionary
-															       language:@"en"
-												       featureNormalization:MLFeatureNormalizationTypeNone
-														       outputBuffer:net.inputBuffer]; // Use network input buffer
+    // Extract the bag of words for the current text
+    MLBagOfWords *bag= [MLBagOfWords bagOfWordsForSentimentAnalysisWithText:movieReview
+                                                                 documentID:nil
+                                                                 dictionary:dictionary
+                                                                   language:@"en"
+                                                       featureNormalization:MLFeatureNormalizationTypeNone
+                                                               outputBuffer:net.inputBuffer]; // Use network input buffer
 
-	// You may run the network immediately
-	[net feedForward];
+    // You may run the network immediately
+    [net feedForward];
 
-	// Evaluate the result
-	// ...
+    // Evaluate the result
+    // ...
 }
 ```
 
@@ -377,7 +379,7 @@ The MLBagOfWords class provides two factory methods preconfigured for sentiment 
 There are 2 kinds of tokenizer:
 
 - The **simple tokenizer** splits the text by white spaces and new lines.
-- The **linguistic tagger** uses the iOS/OS X integrated linguistic tagger, which provides more in-depth knowledge on each token found.
+- The **linguistic tagger** uses the iOS/macOS integrated linguistic tagger, which provides more in-depth knowledge on each token found.
 
 The latter is of course better, but it is also much slower.
 
@@ -414,14 +416,14 @@ The most extended version of the MLBagOfWords factory method includes parameters
 
 ```obj-c
 MLBagOfWords *bag= [MLBagOfWords bagOfWordsWithText:text
-									     documentID:documentID
-									     dictionary:dictionary
-							        buildDictionary:YES
-									       language:@"en"
-								      wordExtractor:WordExtractorTypeLinguisticTagger
-							       extractorOptions:WordExtractorOptionOmitStopWords | WordExtractorOptionKeepNounNounCombos | WordExtractorOptionKeep2WordNames | WordExtractorOptionKeep3WordNames
-						       featureNormalization:FeatureNormalizationTypeNone
-								       outputBuffer:net.inputBuffer];
+                                         documentID:documentID
+                                         dictionary:dictionary
+                                    buildDictionary:YES
+                                           language:@"en"
+                                      wordExtractor:MLWordExtractorTypeLinguisticTagger
+                                   extractorOptions:MLWordExtractorOptionOmitStopWords | MLWordExtractorOptionKeepNounNounCombos | MLWordExtractorOptionKeep2WordNames | MLWordExtractorOptionKeep3WordNames
+                               featureNormalization:FeatureNormalizationTypeNone
+                                       outputBuffer:net.inputBuffer];
 ```
 
 Default configurations are the following:
