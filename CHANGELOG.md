@@ -1,6 +1,14 @@
 # MAChineLearning Change Log
 
 
+## 1.0.2
+
+Minor changes:
+
+- Added sentence vectorization in MLWordVectorDictionary
+- Improved memory consumption of MLWordVectorDictionary
+
+
 ## 1.0.1
 
 Minor changes:
