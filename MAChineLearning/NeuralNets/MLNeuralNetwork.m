@@ -521,7 +521,7 @@ static const MLReal __one=                    1.0;
         [sizes addObject:@(layer.size - (hasBiasNeuron ? 1 : 0))];
     }
     
-    config[CONFIG_PARAM_LAYER_SIZES] = sizes;
+    config[CONFIG_PARAM_LAYER_SIZES]= sizes;
     
     // Save weights for each non-input layer
     for (int i= 1; i < _layers.count; i++) {
@@ -537,13 +537,13 @@ static const MLReal __one=                    1.0;
                 [weights addObject:@(neuron.weights[k])];
             
             NSMutableDictionary<NSString *, id> *neuronConfig= [[NSMutableDictionary alloc] initWithCapacity:1];
-            neuronConfig[CONFIG_PARAM_WEIGHTS] = weights;
+            neuronConfig[CONFIG_PARAM_WEIGHTS]= weights;
             
             [layerConfig addObject:neuronConfig];
         }
         
         NSString *layerParam= [NSString stringWithFormat:CONFIG_PARAM_LAYER, i];
-        config[layerParam] = layerConfig;
+        config[layerParam]= layerConfig;
     }
     
     return config;

@@ -163,10 +163,10 @@
     NSLog(@"  - Expanding file at path: %@...", filePath);
     
     // Expand using gunzip
-    NSTask *task = [[NSTask alloc] init];
+    NSTask *task= [[NSTask alloc] init];
     task.currentDirectoryPath= path;
-    task.launchPath = @"/usr/bin/gunzip";
-    task.arguments = @[[fileName stringByAppendingPathExtension:@"gz"]];
+    task.launchPath= @"/usr/bin/gunzip";
+    task.arguments= @[[fileName stringByAppendingPathExtension:@"gz"]];
     
     [task launch];
     [task waitUntilExit];

@@ -225,7 +225,7 @@
             [net feedForward];
             
             MLReal computedOutput= net.outputBuffer[0];
-            net.expectedOutputBuffer[0] = sum;
+            net.expectedOutputBuffer[0]= sum;
             MLReal delta= ABS(sum - computedOutput);
             
             if (i <= BACKPROPAGATION_TEST_TRAIN_CYCLES) {
