@@ -41,35 +41,35 @@
 #pragma Initialization
 
 - (instancetype) initWithWord:(NSString *)word position:(NSUInteger)position {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_word= word;
-		_position= position;
-		
-		_totalOccurrencies= 0;
-		_documentOccurrencies= 0;
-		
-		_documentIDs= [[NSMutableSet alloc] init];
-	}
-	
-	return self;
+    if ((self = [super init])) {
+        
+        // Initialization
+        _word= word;
+        _position= position;
+        
+        _totalOccurrencies= 0;
+        _documentOccurrencies= 0;
+        
+        _documentIDs= [[NSMutableSet alloc] init];
+    }
+    
+    return self;
 }
 
 - (instancetype) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_word= wordInfo.word;
-		_position= newPosition;
-		
-		_totalOccurrencies= wordInfo.totalOccurrencies;
-		_documentOccurrencies= wordInfo.documentOccurrencies;
-		
-		_documentIDs= [[NSMutableSet alloc] initWithSet:wordInfo.documentIDs];
-	}
-	
-	return self;
+    if ((self = [super init])) {
+        
+        // Initialization
+        _word= wordInfo.word;
+        _position= newPosition;
+        
+        _totalOccurrencies= wordInfo.totalOccurrencies;
+        _documentOccurrencies= wordInfo.documentOccurrencies;
+        
+        _documentIDs= [[NSMutableSet alloc] initWithSet:wordInfo.documentIDs];
+    }
+    
+    return self;
 }
 
 

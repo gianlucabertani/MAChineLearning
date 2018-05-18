@@ -44,21 +44,21 @@
 #pragma mark Capitalization checks
 
 - (BOOL) isCapitalizedString {
-	return (([self length] >= 2) &&
-			[[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:0]] &&
-			[[NSCharacterSet lowercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:1]]);
+    return ((self.length >= 2) &&
+            [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:0]] &&
+            [[NSCharacterSet lowercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:1]]);
 }
 
 - (BOOL) isAcronym {
-	return (([self length] >= 2) &&
-			([self length] <= 7) &&
-			[[self uppercaseString] isEqualToString:self]);
+    return ((self.length >= 2) &&
+            (self.length <= 7) &&
+            [self.uppercaseString isEqualToString:self]);
 }
 
 - (BOOL) isNameInitial {
-	return ((([self length] == 1) && [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:0]]) ||
-			(([self length] == 2) && [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:0]] &&
-			 [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:1]]));
+    return (((self.length == 1) && [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:0]]) ||
+            ((self.length == 2) && [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:0]] &&
+             [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:1]]));
 }
 
 

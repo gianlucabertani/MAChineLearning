@@ -52,7 +52,7 @@
     NSUInteger _wordCount;
     NSUInteger _vectorSize;
     
-	NSMutableDictionary<NSString *, MLWordVector *> *_vectors;
+    NSMutableDictionary<NSString *, MLWordVector *> *_vectors;
 }
 
 @end
@@ -68,43 +68,43 @@
 #pragma mark Initialization
 
 + (MLWordVectorDictionary *) createFromWord2vecFile:(NSString *)vectorFilePath binary:(BOOL)binary {
-	
-	// Checks
-	NSFileManager *fileManger= [NSFileManager defaultManager];
-	if (![fileManger fileExistsAtPath:vectorFilePath])
-		@throw [MLWordVectorException wordVectorExceptionWithReason:@"File does not exist"
-														   userInfo:@{@"filePath": vectorFilePath}];
-	
-	// Use ANSI C APIs to read the file, to ensure compatibility
-	const char *filePath= [vectorFilePath cStringUsingEncoding:NSUTF8StringEncoding];
-	
-	FILE *f= fopen(filePath, "r");
-	if (!f)
-		@throw [MLWordVectorException wordVectorExceptionWithReason:@"File access denied"
-														   userInfo:@{@"filePath": vectorFilePath}];
-	NSMutableDictionary<NSString *, NSArray<NSNumber *> *> *vectorDictionary= nil;
+    
+    // Checks
+    NSFileManager *fileManger= [NSFileManager defaultManager];
+    if (![fileManger fileExistsAtPath:vectorFilePath])
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"File does not exist"
+                                                           userInfo:@{@"filePath": vectorFilePath}];
+    
+    // Use ANSI C APIs to read the file, to ensure compatibility
+    const char *filePath= [vectorFilePath cStringUsingEncoding:NSUTF8StringEncoding];
+    
+    FILE *f= fopen(filePath, "r");
+    if (!f)
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"File access denied"
+                                                           userInfo:@{@"filePath": vectorFilePath}];
+    NSMutableDictionary<NSString *, NSArray<NSNumber *> *> *vectorDictionary= nil;
 
-	@try {
-		int result= 0;
-		
-		unsigned long dictionarySize= 0;
-		unsigned long vectorSize= 0;
+    @try {
+        int result= 0;
+        
+        unsigned long dictionarySize= 0;
+        unsigned long vectorSize= 0;
 
-		result= fscanf(f, "%lu", &dictionarySize);
-		if (result != 1)
-			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading the dictionary size"
-															   userInfo:@{@"result": [NSNumber numberWithInt:result]}];
-		
-		result= fscanf(f, "%lu", &vectorSize);
-		if (result != 1)
-			@throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading the vector size"
-															   userInfo:@{@"result": [NSNumber numberWithInt:result]}];
-		
-		// Prepare the transitory dictionary
-		vectorDictionary= [[NSMutableDictionary alloc] initWithCapacity:dictionarySize];
+        result= fscanf(f, "%lu", &dictionarySize);
+        if (result != 1)
+            @throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading the dictionary size"
+                                                               userInfo:@{@"result": @(result)}];
+        
+        result= fscanf(f, "%lu", &vectorSize);
+        if (result != 1)
+            @throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading the vector size"
+                                                               userInfo:@{@"result": @(result)}];
+        
+        // Prepare the transitory dictionary
+        vectorDictionary= [[NSMutableDictionary alloc] initWithCapacity:dictionarySize];
 
-		// Loop for all the words
-		for (NSUInteger i= 0; i < dictionarySize; i++) {
+        // Loop for all the words
+        for (NSUInteger i= 0; i < dictionarySize; i++) {
             @autoreleasepool {
                 
                 // Read the word
@@ -112,7 +112,7 @@
                 result= fscanf(f, "%s ", wordStr);
                 if (result != 1)
                     @throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading the next word"
-                                                                       userInfo:@{@"result": [NSNumber numberWithInt:result]}];
+                                                                       userInfo:@{@"result": @(result)}];
                 
                 // Prepare the vector
                 NSMutableArray<NSNumber *> *vector= [[NSMutableArray alloc] initWithCapacity:vectorSize];
@@ -126,9 +126,9 @@
                         result= (int) fread(&elem, sizeof(float), 1, f);
                         if (result != 1)
                             @throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading a vector element"
-                                                                               userInfo:@{@"result": [NSNumber numberWithInt:result]}];
+                                                                               userInfo:@{@"result": @(result)}];
                         
-                        [vector addObject:[NSNumber numberWithFloat:elem]];
+                        [vector addObject:@(elem)];
                         
                     } else {
                         double elem= 0.0;
@@ -136,9 +136,9 @@
                         result= fscanf(f, "%lf", &elem);
                         if (result != 1)
                             @throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading a vector element"
-                                                                               userInfo:@{@"result": [NSNumber numberWithInt:result]}];
+                                                                               userInfo:@{@"result": @(result)}];
                         
-                        [vector addObject:[NSNumber numberWithDouble:elem]];
+                        [vector addObject:@(elem)];
                     }
                 }
                 
@@ -147,18 +147,18 @@
                 if ([word isEqualToString:@"</s>"])
                     continue;
                 
-                [vectorDictionary setObject:vector forKey:word];
+                vectorDictionary[word] = vector;
             }
-		}
-		
-	} @catch (NSException *e) {
-		@throw e;
-		
-	} @finally {
-		fclose(f);
-	}
-	
-	return [[MLWordVectorDictionary alloc] initWithDictionary:vectorDictionary];
+        }
+        
+    } @catch (NSException *e) {
+        @throw e;
+        
+    } @finally {
+        fclose(f);
+    }
+    
+    return [[MLWordVectorDictionary alloc] initWithDictionary:vectorDictionary];
 }
 
 + (MLWordVectorDictionary *) createFromGloVeFile:(NSString *)vectorFilePath {
@@ -200,11 +200,11 @@
                     if ((components.count -1) != vectorSize)
                         @throw [MLWordVectorException wordVectorExceptionWithReason:@"Vector size mismatch"
                                                                            userInfo:@{@"filePath": vectorFilePath,
-                                                                                      @"lineNumber": [NSNumber numberWithUnsignedInteger:reader.lineNumber]}];
+                                                                                      @"lineNumber": @(reader.lineNumber)}];
                 }
                 
                 // Get the word
-                NSString *word= [components objectAtIndex:0];
+                NSString *word= components[0];
                 if ([word isEqualToString:@"<unk>"])
                     continue;
                 
@@ -213,12 +213,12 @@
                 for (NSUInteger j= 1; j <= vectorSize; j++) {
                     
                     // Store the vector element
-                    double elem= [[components objectAtIndex:j] doubleValue];
-                    [vector addObject:[NSNumber numberWithDouble:elem]];
+                    double elem= components[j].doubleValue;
+                    [vector addObject:@(elem)];
                 }
                 
                 // Store the vector in the transitory dictionary
-                [vectorDictionary setObject:vector forKey:word];
+                vectorDictionary[word] = vector;
             }
             
         } while (YES);
@@ -269,7 +269,7 @@
                     firstLine= NO;
 
                     // First line contains number of vectors and vector size
-                    vectorSize= [[components objectAtIndex:1] integerValue];
+                    vectorSize= components[1].integerValue;
                     continue;
                 }
                 
@@ -277,11 +277,11 @@
                 if ((components.count -1) != vectorSize)
                     @throw [MLWordVectorException wordVectorExceptionWithReason:@"Vector size mismatch"
                                                                        userInfo:@{@"filePath": vectorFilePath,
-                                                                                  @"lineNumber": [NSNumber numberWithUnsignedInteger:reader.lineNumber]}];
+                                                                                  @"lineNumber": @(reader.lineNumber)}];
                 
                 // Get the word and convert to lowercase,
                 // since fastText is case sensitive
-                NSString *word= [[components objectAtIndex:0] lowercaseString];
+                NSString *word= components[0].lowercaseString;
                 if ([word isEqualToString:@"</s>"])
                     continue;
                 
@@ -290,16 +290,16 @@
                 for (NSUInteger j= 1; j <= vectorSize; j++) {
                     
                     // Store the vector element
-                    double elem= [[components objectAtIndex:j] doubleValue];
-                    [vector addObject:[NSNumber numberWithDouble:elem]];
+                    double elem= components[j].doubleValue;
+                    [vector addObject:@(elem)];
                 }
                 
                 // Store the vector in the transitory dictionary but
                 // avoid overwriting duplicates, since we want to keep
                 // the most frequent word in case of omographies with
                 // different cases (e.g. "us" vs "US")
-                if (![vectorDictionary objectForKey:word])
-                    [vectorDictionary setObject:vector forKey:word];
+                if (!vectorDictionary[word])
+                    vectorDictionary[word]= vector;
             }
             
         } while (YES);
@@ -314,14 +314,19 @@
     return [[MLWordVectorDictionary alloc] initWithDictionary:vectorDictionary];
 }
 
+- (instancetype) init {
+    @throw [MLWordVectorException wordVectorExceptionWithReason:@"MLWordVectorDictionary class must be initialized properly"
+                                                       userInfo:nil];
+}
+
 - (instancetype) initWithDictionary:(NSDictionary<NSString *, NSArray<NSNumber *> *> *)vectorDictionary {
-	if ((self = [super init])) {
-	
-		// Initialization
-		_vectors= [[NSMutableDictionary alloc] initWithCapacity:vectorDictionary.count];
-		
-		_vectorSize= 0;
-		for (NSString *word in [vectorDictionary allKeys]) {
+    if ((self = [super init])) {
+    
+        // Initialization
+        _vectors= [[NSMutableDictionary alloc] initWithCapacity:vectorDictionary.count];
+        
+        _vectorSize= 0;
+        for (NSString *word in vectorDictionary.allKeys) {
             @autoreleasepool {
                 NSArray<NSNumber *> *vectorArray= vectorDictionary[word];
                 
@@ -330,14 +335,14 @@
                     
                     if (!_vectorSize)
                         @throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must contain at least a number"
-                                                                           userInfo:@{@"vectorSize": [NSNumber numberWithUnsignedInteger:_vectorSize],
+                                                                           userInfo:@{@"vectorSize": @(_vectorSize),
                                                                                       @"word": word}];
                 
                 } else {
                     if (vectorArray.count != _vectorSize)
                         @throw [MLWordVectorException wordVectorExceptionWithReason:@"Vector size mismatch"
-                                                                           userInfo:@{@"expectedVectorSize": [NSNumber numberWithUnsignedInteger:_vectorSize],
-                                                                                      @"actualVectorSize": [NSNumber numberWithUnsignedInteger:vectorArray.count],
+                                                                           userInfo:@{@"expectedVectorSize": @(_vectorSize),
+                                                                                      @"actualVectorSize": @(vectorArray.count),
                                                                                       @"word": word}];
                 }
                 
@@ -351,10 +356,10 @@
                         @throw [MLWordVectorException wordVectorExceptionWithReason:@"Dictionary values must be arrays of numbers"
                                                                            userInfo:@{@"vectorElement": elemObj,
                                                                                       @"word": word,
-                                                                                      @"index": [NSNumber numberWithUnsignedInteger:i]}];
+                                                                                      @"index": @(i)}];
 
                     NSNumber *elem= (NSNumber *) elemObj;
-                    vector[i]= (MLReal) [elem doubleValue];
+                    vector[i]= (MLReal) elem.doubleValue;
                     i++;
                 }
                 
@@ -370,15 +375,15 @@
                                                                           size:_vectorSize
                                                            freeVectorOnDealloc:YES];
 
-                NSString *lowercaseWord= [word lowercaseString];
-                [_vectors setObject:wordVector forKey:lowercaseWord];
+                NSString *lowercaseWord= word.lowercaseString;
+                _vectors[lowercaseWord]= wordVector;
             }
-		}
+        }
         
         _wordCount= _vectors.count;
-	}
-	
-	return self;
+    }
+    
+    return self;
 }
 
 
@@ -386,91 +391,91 @@
 #pragma mark Word lookup and comparison
 
 - (BOOL) containsWord:(NSString *)word {
-	NSString *lowercaseWord= [word lowercaseString];
-	
-	return ([_vectors objectForKey:lowercaseWord] != nil);
+    NSString *lowercaseWord= word.lowercaseString;
+    
+    return (_vectors[lowercaseWord] != nil);
 }
 
 - (MLWordVector *) vectorForWord:(NSString *)word {
-	NSString *lowercaseWord= [word lowercaseString];
-	
-	return [_vectors objectForKey:lowercaseWord];
+    NSString *lowercaseWord= word.lowercaseString;
+    
+    return _vectors[lowercaseWord];
 }
 
 - (NSString *) mostSimilarWordToVector:(MLWordVector *)vector {
-	NSString *mostSimilarWord= nil;
-	MLReal bestSimilarity= -INFINITY;
-	
-	// We use a sequential scan for now, slow but secure;
-	// an improved search (based on clusters) will follow
-	for (NSString *word in [_vectors allKeys]) {
-		MLWordVector *otherVector= [_vectors objectForKey:word];
+    NSString *mostSimilarWord= nil;
+    MLReal bestSimilarity= -INFINITY;
+    
+    // We use a sequential scan for now, slow but secure;
+    // an improved search (based on clusters) will follow
+    for (NSString *word in _vectors.allKeys) {
+        MLWordVector *otherVector= _vectors[word];
         
-		MLReal similarity= [vector similarityToVector:otherVector];
-		if (similarity > bestSimilarity) {
-			bestSimilarity= similarity;
-			mostSimilarWord= word;
-		}
-	}
-	
-	return mostSimilarWord;
+        MLReal similarity= [vector similarityToVector:otherVector];
+        if (similarity > bestSimilarity) {
+            bestSimilarity= similarity;
+            mostSimilarWord= word;
+        }
+    }
+    
+    return mostSimilarWord;
 }
 
 - (NSString *) nearestWordToVector:(MLWordVector *)vector {
-	NSString *nearestWord= nil;
-	MLReal minorDistance= INFINITY;
-	
-	// We use a sequential scan for now, slow but secure;
-	// an improved search (based on clusters) will follow
-	for (NSString *word in [_vectors allKeys]) {
-		MLWordVector *otherVector= [_vectors objectForKey:word];
+    NSString *nearestWord= nil;
+    MLReal minorDistance= INFINITY;
+    
+    // We use a sequential scan for now, slow but secure;
+    // an improved search (based on clusters) will follow
+    for (NSString *word in _vectors.allKeys) {
+        MLWordVector *otherVector= _vectors[word];
         
-		MLReal distance= [vector distanceToVector:otherVector];
-		if (distance < minorDistance) {
-			minorDistance= distance;
-			nearestWord= word;
-		}
-	}
-	
-	return nearestWord;
+        MLReal distance= [vector distanceToVector:otherVector];
+        if (distance < minorDistance) {
+            minorDistance= distance;
+            nearestWord= word;
+        }
+    }
+    
+    return nearestWord;
 }
 
 - (NSArray<NSString *> *) mostSimilarWordsToVector:(MLWordVector *)vector {
-	NSArray<NSString *> *sortedKeys= [[_vectors allKeys] sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
-        MLWordVector *otherVector1= [self->_vectors objectForKey:obj1];
-        MLWordVector *otherVector2= [self->_vectors objectForKey:obj2];
-		
-		MLReal similarity1= [vector similarityToVector:otherVector1];
-		MLReal similarity2= [vector similarityToVector:otherVector2];
-		
-		if (similarity1 < similarity2)
-			return NSOrderedDescending;
-		else if (similarity1 > similarity2)
-			return NSOrderedAscending;
-		else
-			return NSOrderedSame;
-	}];
-	
-	return sortedKeys;
+    NSArray<NSString *> *sortedKeys= [_vectors.allKeys sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
+        MLWordVector *otherVector1= self->_vectors[obj1];
+        MLWordVector *otherVector2= self->_vectors[obj2];
+        
+        MLReal similarity1= [vector similarityToVector:otherVector1];
+        MLReal similarity2= [vector similarityToVector:otherVector2];
+        
+        if (similarity1 < similarity2)
+            return NSOrderedDescending;
+        else if (similarity1 > similarity2)
+            return NSOrderedAscending;
+        else
+            return NSOrderedSame;
+    }];
+    
+    return sortedKeys;
 }
 
 - (NSArray<NSString *> *) nearestWordsToVector:(MLWordVector *)vector {
-    NSArray<NSString *> *sortedKeys= [[_vectors allKeys] sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
-        MLWordVector *otherVector1= [self->_vectors objectForKey:obj1];
-		MLWordVector *otherVector2= [self->_vectors objectForKey:obj2];
-		
-		MLReal distance1= [vector distanceToVector:otherVector1];
-		MLReal distance2= [vector distanceToVector:otherVector2];
-		
-		if (distance1 < distance2)
-			return NSOrderedAscending;
-		else if (distance1 > distance2)
-			return NSOrderedDescending;
-		else
-			return NSOrderedSame;
-	}];
-	
-	return sortedKeys;
+    NSArray<NSString *> *sortedKeys= [_vectors.allKeys sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
+        MLWordVector *otherVector1= self->_vectors[obj1];
+        MLWordVector *otherVector2= self->_vectors[obj2];
+        
+        MLReal distance1= [vector distanceToVector:otherVector1];
+        MLReal distance2= [vector distanceToVector:otherVector2];
+        
+        if (distance1 < distance2)
+            return NSOrderedAscending;
+        else if (distance1 > distance2)
+            return NSOrderedDescending;
+        else
+            return NSOrderedSame;
+    }];
+    
+    return sortedKeys;
 }
 
 #pragma mark -

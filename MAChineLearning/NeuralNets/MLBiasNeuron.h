@@ -45,7 +45,8 @@
                                  index:(NSUInteger)index
                           outputBuffer:(nonnull MLReal *)outputBuffer
                              inputSize:(NSUInteger)inputSize
-                           inputBuffer:(nonnull MLReal *)inputBuffer;
+                           inputBuffer:(nonnull MLReal *)inputBuffer
+                                       NS_DESIGNATED_INITIALIZER;
 
 
 @end

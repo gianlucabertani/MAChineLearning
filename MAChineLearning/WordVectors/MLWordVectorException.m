@@ -43,18 +43,23 @@
 #pragma mark Initialization
 
 + (MLWordVectorException *) wordVectorExceptionWithReason:(NSString *)reason userInfo:(NSDictionary<NSString *, id> *)userInfo {
-	MLWordVectorException *exception= [[MLWordVectorException alloc] initWithReason:reason userInfo:userInfo];
-	
-	return exception;
+    MLWordVectorException *exception= [[MLWordVectorException alloc] initWithReason:reason userInfo:userInfo];
+    
+    return exception;
+}
+
+- (instancetype) initWithName:(NSExceptionName)aName reason:(NSString *)aReason userInfo:(NSDictionary *)aUserInfo {
+    @throw [MLWordVectorException wordVectorExceptionWithReason:@"MLWordVectorException must be initialized properly"
+                                                       userInfo:nil];
 }
 
 - (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary<NSString *, id> *)userInfo {
-	if ((self = [super initWithName:WORD_VECTOR_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
-		
-		// Nothing to do
-	}
-	
-	return self;
+    if ((self = [super initWithName:WORD_VECTOR_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
+        
+        // Nothing to do
+    }
+    
+    return self;
 }
 
 

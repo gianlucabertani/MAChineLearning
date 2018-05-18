@@ -47,11 +47,14 @@
 #pragma mark -
 #pragma mark Initialization
 
+- (nonnull instancetype) init NS_UNAVAILABLE;
+
 - (nonnull instancetype) initWithLayer:(nonnull MLNeuronLayer *)layer
                                  index:(NSUInteger)index
                           outputBuffer:(nonnull MLReal *)outputBuffer
                              inputSize:(NSUInteger)inputSize
-                           inputBuffer:(nonnull MLReal *)inputBuffer;
+                           inputBuffer:(nonnull MLReal *)inputBuffer
+                                       NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark -

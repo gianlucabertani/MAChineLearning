@@ -41,7 +41,7 @@
 #pragma mark InputLayer extension
 
 @interface MLInputLayer () {
-	MLReal *_inputBuffer;
+    MLReal *_inputBuffer;
 }
 
 
@@ -58,19 +58,19 @@
 #pragma mark Initialization
 
 - (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size {
-	if ((self = [super initWithIndex:index size:size])) {
-		
-		// Nothing to do
-	}
-	
-	return self;
+    if ((self = [super initWithIndex:index size:size])) {
+        
+        // Nothing to do
+    }
+    
+    return self;
 }
 
 - (void) dealloc {
-	
-	// Deallocate the input buffer
-	MLFreeRealBuffer(_inputBuffer);
-	_inputBuffer= NULL;
+    
+    // Deallocate the input buffer
+    MLFreeRealBuffer(_inputBuffer);
+    _inputBuffer= NULL;
 }
 
 
@@ -78,12 +78,12 @@
 #pragma mark Setup
 
 - (void) setUp {
-	
-	// Allocate buffers
+    
+    // Allocate buffers
     _inputBuffer= MLAllocRealBuffer(self.size);
-	
-	// Clear and fill buffers as needed
-	ML_VCLR(_inputBuffer, 1, self.size);
+    
+    // Clear and fill buffers as needed
+    ML_VCLR(_inputBuffer, 1, self.size);
 }
 
 

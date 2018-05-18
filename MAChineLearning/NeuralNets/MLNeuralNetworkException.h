@@ -43,8 +43,14 @@
 + (nonnull MLNeuralNetworkException *) neuralNetworkExceptionWithReason:(nonnull NSString *)reason
                                                                userInfo:(nullable NSDictionary<NSString *, id> *)userInfo;
 
+- (nonnull instancetype) initWithName:(NSExceptionName)aName
+                               reason:(NSString *)aReason
+                             userInfo:(NSDictionary *)aUserInfo
+                                      NS_UNAVAILABLE;
+
 - (nonnull instancetype) initWithReason:(nonnull NSString *)reason
-                               userInfo:(nullable NSDictionary<NSString *, id> *)userInfo;
+                               userInfo:(nullable NSDictionary<NSString *, id> *)userInfo
+                                        NS_DESIGNATED_INITIALIZER;
 
 
 @end

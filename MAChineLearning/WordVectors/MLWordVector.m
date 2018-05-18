@@ -42,12 +42,12 @@
 #pragma mark MLWordVector extension
 
 @interface MLWordVector () {
-	MLReal *_vector;
-	NSUInteger _size;
+    MLReal *_vector;
+    NSUInteger _size;
 
-	BOOL _freeOnDealloc;
+    BOOL _freeOnDealloc;
 
-	MLReal _magnitude;
+    MLReal _magnitude;
 }
 
 
@@ -63,28 +63,33 @@
 #pragma -
 #pragma Initialization
 
-- (instancetype) initWithVector:(MLReal *)vector size:(NSUInteger)size freeVectorOnDealloc:(BOOL)freeOnDealloc {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_vector= vector;
-		_size= size;
-		
-		_freeOnDealloc= freeOnDealloc;
+- (nonnull instancetype) init {
+    @throw [MLWordVectorException wordVectorExceptionWithReason:@"MLWordVector class must be initialized properly"
+                                                       userInfo:nil];
+}
 
-		// Compute magnitude
-		ML_SVESQ(_vector, 1, &_magnitude, _size);
-		_magnitude= ML_SQRT(_magnitude);
-	}
-	
-	return self;
+- (instancetype) initWithVector:(MLReal *)vector size:(NSUInteger)size freeVectorOnDealloc:(BOOL)freeOnDealloc {
+    if ((self = [super init])) {
+        
+        // Initialization
+        _vector= vector;
+        _size= size;
+        
+        _freeOnDealloc= freeOnDealloc;
+
+        // Compute magnitude
+        ML_SVESQ(_vector, 1, &_magnitude, _size);
+        _magnitude= ML_SQRT(_magnitude);
+    }
+    
+    return self;
 }
 
 - (void) dealloc {
-	if (_freeOnDealloc) {
-		MLFreeRealBuffer(_vector);
-		_vector= NULL;
-	}
+    if (_freeOnDealloc) {
+        MLFreeRealBuffer(_vector);
+        _vector= NULL;
+    }
 }
 
 
@@ -92,83 +97,83 @@
 #pragma Vector algebra and comparison
 
 - (MLWordVector *) addVector:(MLWordVector *)vector {
-	
-	// Checks
-	if (_size != vector.size)
-		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must have the same size"
-														   userInfo:@{@"size": [NSNumber numberWithUnsignedInteger:_size],
-																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
-	
-	// Creation of sum vector
-	MLReal *sumVector= MLAllocRealBuffer(_size);
-	
-	// Sum of vectors
-	ML_VADD(_vector, 1, vector.vector, 1, sumVector, 1, _size);
-	
-	// Creation of vector object
-	return [[MLWordVector alloc] initWithVector:sumVector size:_size freeVectorOnDealloc:YES];
+    
+    // Checks
+    if (_size != vector.size)
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must have the same size"
+                                                           userInfo:@{@"size": @(_size),
+                                                                      @"vectorSize": @(vector.size)}];
+    
+    // Creation of sum vector
+    MLReal *sumVector= MLAllocRealBuffer(_size);
+    
+    // Sum of vectors
+    ML_VADD(_vector, 1, vector.vector, 1, sumVector, 1, _size);
+    
+    // Creation of vector object
+    return [[MLWordVector alloc] initWithVector:sumVector size:_size freeVectorOnDealloc:YES];
 }
 
 - (MLWordVector *) subtractVector:(MLWordVector *)vector {
-	
-	// Checks
-	if (_size != vector.size)
-		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must have the same size"
-														   userInfo:@{@"size": [NSNumber numberWithUnsignedInteger:_size],
-																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
-	
-	// Creation of difference vector
-	MLReal *subVector= MLAllocRealBuffer(_size);
-	
-	// Subtraction of vectors
-	ML_VSUB(vector.vector, 1, _vector, 1, subVector, 1, _size);
-	
-	// Creation of vector object
-	return [[MLWordVector alloc] initWithVector:subVector size:_size freeVectorOnDealloc:YES];
+    
+    // Checks
+    if (_size != vector.size)
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must have the same size"
+                                                           userInfo:@{@"size": @(_size),
+                                                                      @"vectorSize": @(vector.size)}];
+    
+    // Creation of difference vector
+    MLReal *subVector= MLAllocRealBuffer(_size);
+    
+    // Subtraction of vectors
+    ML_VSUB(vector.vector, 1, _vector, 1, subVector, 1, _size);
+    
+    // Creation of vector object
+    return [[MLWordVector alloc] initWithVector:subVector size:_size freeVectorOnDealloc:YES];
 }
 
 - (MLReal) similarityToVector:(MLWordVector *)vector {
-	
-	// Checks
-	if (_size != vector.size)
-		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must have the same size"
-														   userInfo:@{@"size": [NSNumber numberWithUnsignedInteger:_size],
-																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
-	
-	// If one of magnitues is 0 return 0 (i.e. orthogonality)
-	if ((_magnitude * vector.magnitude) == 0.0)
-		return 0.0;
-	
-	// Dot product of vectors
-	MLReal dot= 0.0;
-	ML_DOTPR(_vector, 1, vector.vector, 1, &dot, _size);
-	
-	// Return cosine similarity
-	return dot / (_magnitude * vector.magnitude);
+    
+    // Checks
+    if (_size != vector.size)
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must have the same size"
+                                                           userInfo:@{@"size": @(_size),
+                                                                      @"vectorSize": @(vector.size)}];
+    
+    // If one of magnitues is 0 return 0 (i.e. orthogonality)
+    if ((_magnitude * vector.magnitude) == 0.0)
+        return 0.0;
+    
+    // Dot product of vectors
+    MLReal dot= 0.0;
+    ML_DOTPR(_vector, 1, vector.vector, 1, &dot, _size);
+    
+    // Return cosine similarity
+    return dot / (_magnitude * vector.magnitude);
 }
 
 - (MLReal) distanceToVector:(MLWordVector *)vector {
-	
-	// Checks
-	if (_size != vector.size)
-		@throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must have the same size"
-														   userInfo:@{@"size": [NSNumber numberWithUnsignedInteger:_size],
-																	  @"vectorSize": [NSNumber numberWithUnsignedInteger:vector.size]}];
-	
-	// Allocate temp vector
+    
+    // Checks
+    if (_size != vector.size)
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must have the same size"
+                                                           userInfo:@{@"size": @(_size),
+                                                                      @"vectorSize": @(vector.size)}];
+    
+    // Allocate temp vector
     MLReal *temp= MLAllocRealBuffer(_size);
 
-	// Subtraction of vectors
-	ML_VSUB(vector.vector, 1, _vector, 1, temp, 1, _size);
-	
-	// Compute magnitude of vector difference
-	MLReal distance= 0.0;
-	ML_SVESQ(temp, 1, &distance, _size);
-	distance= ML_SQRT(distance);
+    // Subtraction of vectors
+    ML_VSUB(vector.vector, 1, _vector, 1, temp, 1, _size);
+    
+    // Compute magnitude of vector difference
+    MLReal distance= 0.0;
+    ML_SVESQ(temp, 1, &distance, _size);
+    distance= ML_SQRT(distance);
     
     MLFreeRealBuffer(temp);
-	
-	return distance;
+    
+    return distance;
 }
 
 

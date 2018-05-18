@@ -35,18 +35,21 @@
 
 
 @interface MLLayer : NSObject {
-	
+    
 @protected
-	NSUInteger _index;
-	NSUInteger _size;
+    NSUInteger _index;
+    NSUInteger _size;
 }
 
 
 #pragma mark -
 #pragma mark Initialization
 
+- (nonnull instancetype) init NS_UNAVAILABLE;
+
 - (nonnull instancetype) initWithIndex:(NSUInteger)index
-                                  size:(NSUInteger)size;
+                                  size:(NSUInteger)size
+                                       NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark -

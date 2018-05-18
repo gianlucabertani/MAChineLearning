@@ -33,13 +33,15 @@
 
 #import "MLLayer.h"
 
+#import "MLNeuralNetworkException.h"
+
 
 #pragma mark -
 #pragma mark Layer extension
 
-@interface MLLayer () {	
-	MLLayer __weak *_previousLayer;
-	MLLayer __weak *_nextLayer;
+@interface MLLayer () {    
+    MLLayer __weak *_previousLayer;
+    MLLayer __weak *_nextLayer;
 }
 
 
@@ -55,15 +57,20 @@
 #pragma mark -
 #pragma mark Initialization
 
+- (instancetype) init {
+    @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"MLLayer class must be initialized properly"
+                                                             userInfo:nil];
+}
+
 - (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_index= index;
-		_size= size;
-	}
-	
-	return self;
+    if ((self = [super init])) {
+        
+        // Initialization
+        _index= index;
+        _size= size;
+    }
+    
+    return self;
 }
 
 
@@ -71,8 +78,8 @@
 #pragma mark Setup
 
 - (void) setUp {
-	
-	// Nothing to do
+    
+    // Nothing to do
 }
 
 

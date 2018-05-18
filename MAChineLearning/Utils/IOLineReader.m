@@ -44,15 +44,15 @@
 #pragma mark LineReader extension
 
 @interface IOLineReader () {
-	NSFileHandle *_file;
-	unsigned long long _fileSize;
+    NSFileHandle *_file;
+    unsigned long long _fileSize;
 
-	NSMutableString *_buffer;
-	NSCondition *_lock;
-	
-	NSUInteger _lastLocation;
-	NSUInteger _lineNumber;
-	BOOL _eof;
+    NSMutableString *_buffer;
+    NSCondition *_lock;
+    
+    NSUInteger _lastLocation;
+    NSUInteger _lineNumber;
+    BOOL _eof;
 }
 
 @end
@@ -68,74 +68,80 @@
 #pragma mark Initialization
 
 + (IOLineReader *) lineReaderWithFilePath:(NSString *)filePath {
-	IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:filePath];
-	
-	return reader;
+    IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:filePath];
+    
+    return reader;
+}
+
+- (instancetype) init {
+    @throw [NSException exceptionWithName:LINE_READER_EXCEPTION_NAME
+                                   reason:@"IOLineReader class must be initialized properly"
+                                 userInfo:nil];
 }
 
 - (instancetype) initWithFilePath:(NSString *)filePath {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_file= [NSFileHandle fileHandleForReadingAtPath:filePath];
-		
-		_buffer= [[NSMutableString alloc] initWithCapacity:BUFFER_SIZE];
-		_lock= [[NSCondition alloc] init];
-		
-		_lastLocation= 0;
-		_lineNumber= 0;
-		_eof= NO;
-		
-		// Get file size (we have no other way to check for EOF)
-		unsigned long long fileSize= ULONG_LONG_MAX;
-		NSDictionary<NSFileAttributeKey, id> *attribures= [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
-		if (attribures)
-			fileSize= [attribures fileSize];
-		
-		// Prepare locals to avoid capturing self
-		NSFileHandle __weak *file= _file;
-		NSCondition __weak *lock= _lock;
-		NSMutableString __weak *buffer= _buffer;
-		BOOL *eof= &_eof;
+    if ((self = [super init])) {
+        
+        // Initialization
+        _file= [NSFileHandle fileHandleForReadingAtPath:filePath];
+        
+        _buffer= [[NSMutableString alloc] initWithCapacity:BUFFER_SIZE];
+        _lock= [[NSCondition alloc] init];
+        
+        _lastLocation= 0;
+        _lineNumber= 0;
+        _eof= NO;
+        
+        // Get file size (we have no other way to check for EOF)
+        unsigned long long fileSize= ULONG_LONG_MAX;
+        NSDictionary<NSFileAttributeKey, id> *attribures= [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
+        if (attribures)
+            fileSize= [attribures fileSize];
+        
+        // Prepare locals to avoid capturing self
+        NSFileHandle __weak *file= _file;
+        NSCondition __weak *lock= _lock;
+        NSMutableString __weak *buffer= _buffer;
+        BOOL *eof= &_eof;
 
-		// Attach asynchronous reading block
-		_file.readabilityHandler= ^(NSFileHandle *handle) {
-			
-			// Read next chunk
-			NSData *inputData= [handle readDataOfLength:CHUNK_SIZE];
-			
-			@try {
-				[lock lock];
-				
-				// Check if the reader has been closed
-				if (!buffer)
-					return;
-				
-				// Apped line to buffer
-				NSString *inputString= [[NSString alloc] initWithData:inputData encoding:NSUTF8StringEncoding];
-				if (inputString)
-					[buffer appendString:inputString];
-				
-				// Check if we are at EOF
-				*eof= (file.offsetInFile == fileSize);
-				
-				// Signal the user's thread new data is available
-				[lock broadcast];
-				
-				if (buffer.length >= BUFFER_SIZE) {
-				
-					// Wait for some room in the buffer
-					// before freeing the handler
-					[lock wait];
-				}
+        // Attach asynchronous reading block
+        _file.readabilityHandler= ^(NSFileHandle *handle) {
+            
+            // Read next chunk
+            NSData *inputData= [handle readDataOfLength:CHUNK_SIZE];
+            
+            @try {
+                [lock lock];
+                
+                // Check if the reader has been closed
+                if (!buffer)
+                    return;
+                
+                // Apped line to buffer
+                NSString *inputString= [[NSString alloc] initWithData:inputData encoding:NSUTF8StringEncoding];
+                if (inputString)
+                    [buffer appendString:inputString];
+                
+                // Check if we are at EOF
+                *eof= (file.offsetInFile == fileSize);
+                
+                // Signal the user's thread new data is available
+                [lock broadcast];
+                
+                if (buffer.length >= BUFFER_SIZE) {
+                
+                    // Wait for some room in the buffer
+                    // before freeing the handler
+                    [lock wait];
+                }
 
-			} @finally {
-				[lock unlock];
-			}
-		};
-	}
-	
-	return self;
+            } @finally {
+                [lock unlock];
+            }
+        };
+    }
+    
+    return self;
 }
 
 
@@ -143,52 +149,52 @@
 #pragma mark Reading
 
 - (NSString *) readLine {
-	@try {
-		[_lock lock];
+    @try {
+        [_lock lock];
 
-		if (!_buffer)
-			@throw [NSException exceptionWithName:LINE_READER_EXCEPTION_NAME
-										   reason:@"Reader is closed"
-										 userInfo:nil];
+        if (!_buffer)
+            @throw [NSException exceptionWithName:LINE_READER_EXCEPTION_NAME
+                                           reason:@"Reader is closed"
+                                         userInfo:nil];
 
-		NSRange newLinePos;
-		do {
-			
-			// Look for and end-of-line
-			newLinePos= [_buffer rangeOfString:@"\n" options:0 range:NSMakeRange(_lastLocation, [_buffer length] - _lastLocation)];
-			if (newLinePos.location != NSNotFound)
-				break;
-			
-			// Check if we are at end of file
-			if (_eof)
-				return nil;
-			
-			// Wait for a signal from reading thread
-			[_lock wait];
-			
-		} while (YES);
-		
-		// Extract substring and update location
-		NSRange substringRange= NSMakeRange(_lastLocation, newLinePos.location +1 - _lastLocation);
-		NSString *line= [_buffer substringWithRange:substringRange];
-		_lastLocation= newLinePos.location +1;
-		
-		// If we have moved past 7/8 of the initial buffer size,
-		// remove the consumed part of the buffer
-		if (_lastLocation > MAX_FILL_THRESHOLD) {
-			[_buffer deleteCharactersInRange:NSMakeRange(0, _lastLocation)];
-			_lastLocation= 0;
-			
-			// Signal the reading thread there's room for new data
-			[_lock broadcast];
-		}
-		
-		_lineNumber++;
-		return line;
-		
-	} @finally {
-		[_lock unlock];
-	}
+        NSRange newLinePos;
+        do {
+            
+            // Look for and end-of-line
+            newLinePos= [_buffer rangeOfString:@"\n" options:0 range:NSMakeRange(_lastLocation, _buffer.length - _lastLocation)];
+            if (newLinePos.location != NSNotFound)
+                break;
+            
+            // Check if we are at end of file
+            if (_eof)
+                return nil;
+            
+            // Wait for a signal from reading thread
+            [_lock wait];
+            
+        } while (YES);
+        
+        // Extract substring and update location
+        NSRange substringRange= NSMakeRange(_lastLocation, newLinePos.location +1 - _lastLocation);
+        NSString *line= [_buffer substringWithRange:substringRange];
+        _lastLocation= newLinePos.location +1;
+        
+        // If we have moved past 7/8 of the initial buffer size,
+        // remove the consumed part of the buffer
+        if (_lastLocation > MAX_FILL_THRESHOLD) {
+            [_buffer deleteCharactersInRange:NSMakeRange(0, _lastLocation)];
+            _lastLocation= 0;
+            
+            // Signal the reading thread there's room for new data
+            [_lock broadcast];
+        }
+        
+        _lineNumber++;
+        return line;
+        
+    } @finally {
+        [_lock unlock];
+    }
 }
 
 
@@ -196,19 +202,19 @@
 #pragma mark Other operations
 
 - (void) close {
-	@try {
-		[_lock lock];
+    @try {
+        [_lock lock];
 
-		_buffer= nil;
-		
-		_file.readabilityHandler= nil;
-		[_file closeFile];
-		
-		[_lock broadcast];
-		
-	} @finally {
-		[_lock unlock];
-	}
+        _buffer= nil;
+        
+        _file.readabilityHandler= nil;
+        [_file closeFile];
+        
+        [_lock broadcast];
+        
+    } @finally {
+        [_lock unlock];
+    }
 }
 
 

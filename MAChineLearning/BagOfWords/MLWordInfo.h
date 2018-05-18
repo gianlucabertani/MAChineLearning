@@ -35,15 +35,15 @@
 
 
 @interface MLWordInfo : NSObject {
-	
+    
 @protected
-	NSString *_word;
-	NSUInteger _position;
-	
-	NSUInteger _totalOccurrencies;
-	NSUInteger _documentOccurrencies;
-	
-	NSMutableSet *_documentIDs;
+    NSString *_word;
+    NSUInteger _position;
+    
+    NSUInteger _totalOccurrencies;
+    NSUInteger _documentOccurrencies;
+    
+    NSMutableSet *_documentIDs;
 }
 
 
@@ -51,7 +51,8 @@
 #pragma Initialization
 
 - (nonnull instancetype) initWithWord:(nonnull NSString *)word
-                             position:(NSUInteger)position;
+                             position:(NSUInteger)position
+                                      NS_DESIGNATED_INITIALIZER;
 
 - (nonnull instancetype) initWithWordInfo:(nonnull MLWordInfo *)wordInfo
                               newPosition:(NSUInteger)newPosition;

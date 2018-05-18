@@ -45,7 +45,8 @@
 #pragma mark Initialization
 
 - (nonnull instancetype) initWithIndex:(NSUInteger)index
-                                  size:(NSUInteger)size;
+                                  size:(NSUInteger)size
+                                       NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark -

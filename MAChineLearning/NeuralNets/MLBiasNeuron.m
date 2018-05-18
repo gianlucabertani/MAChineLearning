@@ -50,12 +50,12 @@ static const MLReal __one=                    1.0;
 #pragma mark Initialization
 
 - (instancetype) initWithLayer:(MLNeuronLayer *)layer index:(NSUInteger)index outputBuffer:(MLReal *)outputBuffer inputSize:(NSUInteger)inputSize inputBuffer:(MLReal *)inputBuffer {
-	if ((self = [super initWithLayer:layer index:index outputBuffer:outputBuffer inputSize:inputSize inputBuffer:inputBuffer])) {
-		
-		// Nothing to do
-	}
-	
-	return self;
+    if ((self = [super initWithLayer:layer index:index outputBuffer:outputBuffer inputSize:inputSize inputBuffer:inputBuffer])) {
+        
+        // Nothing to do
+    }
+    
+    return self;
 }
 
 
@@ -63,14 +63,14 @@ static const MLReal __one=                    1.0;
 #pragma mark Setup and randomization
 
 - (void) setUpForBackpropagationWithAlgorithm:(MLBackPropagationType)backPropType {
-	
-	// Use setup for basic backpropagation, to avoid wasting buffers for RPROP
-	[super setUpForBackpropagationWithAlgorithm:MLBackPropagationTypeStandard];
+    
+    // Use setup for basic backpropagation, to avoid wasting buffers for RPROP
+    [super setUpForBackpropagationWithAlgorithm:MLBackPropagationTypeStandard];
 }
 
 - (void) randomizeWeights {
-	
-	// Nothing to do, weights remain 0
+    
+    // Nothing to do, weights remain 0
 }
 
 
@@ -78,19 +78,19 @@ static const MLReal __one=                    1.0;
 #pragma mark Operations
 
 - (void) feedForward {
-	
-	// Output is constantly 1
-	self.outputBuffer[self.index]= __one;
+    
+    // Output is constantly 1
+    self.outputBuffer[self.index]= __one;
 }
 
 - (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType learningRate:(MLReal)learningRate delta:(MLReal)delta {
-	
-	// Nothing to do, weights remain 0
+    
+    // Nothing to do, weights remain 0
 }
 
 - (void) updateWeights {
-	
-	// Nothing to do, weights remain 0
+    
+    // Nothing to do, weights remain 0
 }
 
 

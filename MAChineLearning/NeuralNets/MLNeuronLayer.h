@@ -51,8 +51,13 @@
 
 - (nonnull instancetype) initWithIndex:(NSUInteger)index
                                   size:(NSUInteger)size
+                                       NS_UNAVAILABLE;
+
+- (nonnull instancetype) initWithIndex:(NSUInteger)index
+                                  size:(NSUInteger)size
                                useBias:(BOOL)useBias
-                activationFunctionType:(MLActivationFunctionType)funcType;
+                activationFunctionType:(MLActivationFunctionType)funcType
+                                       NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark -

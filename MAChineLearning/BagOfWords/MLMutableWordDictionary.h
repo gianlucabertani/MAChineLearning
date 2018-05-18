@@ -44,7 +44,7 @@
 
 + (nonnull MLMutableWordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize;
 
-- (nonnull instancetype) initWithMaxSize:(NSUInteger)maxSize;
+- (nonnull instancetype) initWithMaxSize:(NSUInteger)maxSize NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark -

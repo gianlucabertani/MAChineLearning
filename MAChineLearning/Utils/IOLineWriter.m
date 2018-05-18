@@ -42,9 +42,9 @@
 #pragma mark LineWriter extension
 
 @interface IOLineWriter () {
-	NSFileHandle *_file;
-	NSMutableString *_buffer;
-	NSCondition *_lock;
+    NSFileHandle *_file;
+    NSMutableString *_buffer;
+    NSCondition *_lock;
 }
 
 @end
@@ -60,72 +60,78 @@
 #pragma mark Initialization
 
 + (IOLineWriter *) lineWriterWithFilePath:(NSString *)filePath append:(BOOL)append {
-	IOLineWriter *writer= [[IOLineWriter alloc] initWithFilePath:filePath append:append];
-	
-	return writer;
+    IOLineWriter *writer= [[IOLineWriter alloc] initWithFilePath:filePath append:append];
+    
+    return writer;
+}
+
+- (instancetype) init {
+    @throw [NSException exceptionWithName:LINE_WRITER_EXCEPTION_NAME
+                                   reason:@"IOLineWriter class must be initialized properly"
+                                 userInfo:nil];
 }
 
 - (instancetype) initWithFilePath:(NSString *)filePath append:(BOOL)append {
-	if ((self = [super init])) {
-		
-		// Initialization
-		NSFileManager *fileManager= [NSFileManager defaultManager];
-		
-		BOOL isDirectory= NO;
-		BOOL fileExists= [fileManager fileExistsAtPath:filePath isDirectory:&isDirectory];
-		if (fileExists && isDirectory)
-			@throw [NSException exceptionWithName:LINE_WRITER_EXCEPTION_NAME
-										   reason:@"File at path already exists and is a directory"
-										 userInfo:@{@"filePath": filePath}];
-		
-		if (!fileExists)
-			[fileManager createFileAtPath:filePath contents:[NSData data] attributes:nil];
+    if ((self = [super init])) {
+        
+        // Initialization
+        NSFileManager *fileManager= [NSFileManager defaultManager];
+        
+        BOOL isDirectory= NO;
+        BOOL fileExists= [fileManager fileExistsAtPath:filePath isDirectory:&isDirectory];
+        if (fileExists && isDirectory)
+            @throw [NSException exceptionWithName:LINE_WRITER_EXCEPTION_NAME
+                                           reason:@"File at path already exists and is a directory"
+                                         userInfo:@{@"filePath": filePath}];
+        
+        if (!fileExists)
+            [fileManager createFileAtPath:filePath contents:[NSData data] attributes:nil];
 
-		_file= [NSFileHandle fileHandleForWritingAtPath:filePath];
-		if (!_file)
-			@throw [NSException exceptionWithName:LINE_WRITER_EXCEPTION_NAME
-										   reason:@"File at path is read-only"
-										 userInfo:@{@"filePath": filePath}];
-		
-		if (append)
-			[_file seekToEndOfFile];
+        _file= [NSFileHandle fileHandleForWritingAtPath:filePath];
+        if (!_file)
+            @throw [NSException exceptionWithName:LINE_WRITER_EXCEPTION_NAME
+                                           reason:@"File at path is read-only"
+                                         userInfo:@{@"filePath": filePath}];
+        
+        if (append)
+            [_file seekToEndOfFile];
 
-		_buffer= [[NSMutableString alloc] initWithCapacity:BUFFER_SIZE];
-		_lock= [[NSCondition alloc] init];
+        _buffer= [[NSMutableString alloc] initWithCapacity:BUFFER_SIZE];
+        _lock= [[NSCondition alloc] init];
 
-		// Prepare locals to avoid capturing self
-		NSCondition __weak *lock= _lock;
-		NSMutableString __weak *buffer= _buffer;
-		
-		// Attach asynchronous writing block
-		_file.writeabilityHandler= ^(NSFileHandle *handle) {
-			@try {
-				[lock lock];
-				
-				if (buffer.length == 0) {
-					
-					// Wait for a signal from writing thread
-					[lock wait];
-					
-					// Check if the writer has been closed
-					if (!buffer)
-						return;
-				}
-				
-				// Write the buffer and clear it
-				NSData *outputData= [buffer dataUsingEncoding:NSUTF8StringEncoding];
-				[handle writeData:outputData];
-				[handle synchronizeFile];
-				
-				[buffer setString:@""];
-				
-			} @finally {
-				[lock unlock];
-			}
-		};
-	}
-	
-	return self;
+        // Prepare locals to avoid capturing self
+        NSCondition __weak *lock= _lock;
+        NSMutableString __weak *buffer= _buffer;
+        
+        // Attach asynchronous writing block
+        _file.writeabilityHandler= ^(NSFileHandle *handle) {
+            @try {
+                [lock lock];
+                
+                if (buffer.length == 0) {
+                    
+                    // Wait for a signal from writing thread
+                    [lock wait];
+                    
+                    // Check if the writer has been closed
+                    if (!buffer)
+                        return;
+                }
+                
+                // Write the buffer and clear it
+                NSData *outputData= [buffer dataUsingEncoding:NSUTF8StringEncoding];
+                [handle writeData:outputData];
+                [handle synchronizeFile];
+                
+                [buffer setString:@""];
+                
+            } @finally {
+                [lock unlock];
+            }
+        };
+    }
+    
+    return self;
 }
 
 
@@ -133,53 +139,53 @@
 #pragma mark Writing
 
 - (void) write:(NSString *)format, ... {
-	
-	// Variable arguments formatting
-	va_list arguments;
-	va_start(arguments, format);
-	NSString *text= [[NSString alloc] initWithFormat:format arguments:arguments];
-	va_end(arguments);
-	
-	// Append string and signal the writing block
-	[_lock lock];
-	
-	[_buffer appendString:text];
-	
-	[_lock signal];
-	[_lock unlock];
+    
+    // Variable arguments formatting
+    va_list arguments;
+    va_start(arguments, format);
+    NSString *text= [[NSString alloc] initWithFormat:format arguments:arguments];
+    va_end(arguments);
+    
+    // Append string and signal the writing block
+    [_lock lock];
+    
+    [_buffer appendString:text];
+    
+    [_lock signal];
+    [_lock unlock];
 }
 
 - (void) writeLine:(NSString *)format, ... {
-	NSMutableString *line= [NSMutableString string];
-	
-	// Variable arguments formatting
-	va_list arguments;
-	va_start(arguments, format);
-	NSString *text= [[NSString alloc] initWithFormat:format arguments:arguments];
-	va_end(arguments);
-	
-	// Append new-line and write to output stream
-	[line appendString:text];
-	[line appendString:@"\n"];
-	
-	// Append string and signal the writing block
-	[_lock lock];
-	
-	[_buffer appendString:line];
-	
-	[_lock signal];
-	[_lock unlock];
+    NSMutableString *line= [NSMutableString string];
+    
+    // Variable arguments formatting
+    va_list arguments;
+    va_start(arguments, format);
+    NSString *text= [[NSString alloc] initWithFormat:format arguments:arguments];
+    va_end(arguments);
+    
+    // Append new-line and write to output stream
+    [line appendString:text];
+    [line appendString:@"\n"];
+    
+    // Append string and signal the writing block
+    [_lock lock];
+    
+    [_buffer appendString:line];
+    
+    [_lock signal];
+    [_lock unlock];
 }
 
 - (void) writeLine {
-	
-	// Append linefeed and signal the writing block
-	[_lock lock];
-	
-	[_buffer appendString:@"\n"];
-	
-	[_lock signal];
-	[_lock unlock];
+    
+    // Append linefeed and signal the writing block
+    [_lock lock];
+    
+    [_buffer appendString:@"\n"];
+    
+    [_lock signal];
+    [_lock unlock];
 }
 
 
@@ -187,20 +193,20 @@
 #pragma mark Other operations
 
 - (void) close {
-	@try {
-		[_lock lock];
-		
-		_buffer= nil;
-		
-		_file.writeabilityHandler= nil;
-		[_file synchronizeFile];
-		[_file closeFile];
+    @try {
+        [_lock lock];
+        
+        _buffer= nil;
+        
+        _file.writeabilityHandler= nil;
+        [_file synchronizeFile];
+        [_file closeFile];
 
-		[_lock broadcast];
-		
-	} @finally {
-		[_lock unlock];
-	}
+        [_lock broadcast];
+        
+    } @finally {
+        [_lock unlock];
+    }
 }
 
 

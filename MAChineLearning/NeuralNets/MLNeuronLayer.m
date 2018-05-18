@@ -40,30 +40,30 @@
 #import "MLAlloc.h"
 
 #define DUMP_VECTOR(x) \
-	{ \
-		NSMutableString *dump= [[NSMutableString alloc] init]; \
-		for (int i= 0; i < _size; i++) \
-			[dump appendFormat:@" %+8.2f |", x[i]]; \
-		NSLog(@"%20s: %@", #x, dump); \
-	}
+    { \
+        NSMutableString *dump= [[NSMutableString alloc] init]; \
+        for (int i= 0; i < _size; i++) \
+            [dump appendFormat:@" %+8.2f |", x[i]]; \
+        NSLog(@"%20s: %@", #x, dump); \
+    }
 
 
 #pragma mark -
 #pragma mark NeuronLayer extension
 
 @interface MLNeuronLayer () {
-	MLActivationFunctionType _funcType;
+    MLActivationFunctionType _funcType;
 
-	MLReal *_outputBuffer;
-	
-	MLReal *_deltaBuffer;
-	MLReal *_errorBuffer;
-	
-	MLReal *_nextLayerWeightsBuffer;
-	MLReal *_nextLayerWeightsDeltaBuffer;
+    MLReal *_outputBuffer;
+    
+    MLReal *_deltaBuffer;
+    MLReal *_errorBuffer;
+    
+    MLReal *_nextLayerWeightsBuffer;
+    MLReal *_nextLayerWeightsDeltaBuffer;
 
-	BOOL _usingBias;
-	NSMutableArray<MLNeuron *> *_neurons;
+    BOOL _usingBias;
+    NSMutableArray<MLNeuron *> *_neurons;
 }
 
 
@@ -91,28 +91,33 @@ static const MLReal __fourty=       40.0;
 #pragma mark -
 #pragma mark Initialization
 
+- (nonnull instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size {
+    @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"MLNeuronLayer class must be initialized properly"
+                                                             userInfo:nil];
+}
+
 - (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size useBias:(BOOL)useBias activationFunctionType:(MLActivationFunctionType)funcType {
-	if ((self = [super initWithIndex:index size:(useBias ? (size +1) : size)])) {
-		
-		// Initialization
-		_funcType= funcType;
-		_usingBias= useBias;
-	}
-	
-	return self;
+    if ((self = [super initWithIndex:index size:(useBias ? (size +1) : size)])) {
+        
+        // Initialization
+        _funcType= funcType;
+        _usingBias= useBias;
+    }
+    
+    return self;
 }
 
 - (void) dealloc {
-	
-	// Deallocate buffers
-	MLFreeRealBuffer(_outputBuffer);
-	_outputBuffer= NULL;
-	
-	MLFreeRealBuffer(_deltaBuffer);
-	_deltaBuffer= NULL;
+    
+    // Deallocate buffers
+    MLFreeRealBuffer(_outputBuffer);
+    _outputBuffer= NULL;
+    
+    MLFreeRealBuffer(_deltaBuffer);
+    _deltaBuffer= NULL;
 
-	MLFreeRealBuffer(_errorBuffer);
-	_errorBuffer= NULL;
+    MLFreeRealBuffer(_errorBuffer);
+    _errorBuffer= NULL;
 
     MLFreeRealBuffer(_nextLayerWeightsBuffer);
     _nextLayerWeightsBuffer= NULL;
@@ -126,81 +131,81 @@ static const MLReal __fourty=       40.0;
 #pragma mark Setup and randomization
 
 - (void) setUp {
-	if (_neurons)
-		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer already set up"
-																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
-	
-	// Allocate buffers
+    if (_neurons)
+        @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer already set up"
+                                                                 userInfo:@{@"layer": @(self.index)}];
+    
+    // Allocate buffers
     _outputBuffer= MLAllocRealBuffer(self.size);
     _deltaBuffer= MLAllocRealBuffer(self.size);
     _errorBuffer= MLAllocRealBuffer(self.size);
-	
-	// Clear and fill buffers as needed
-	ML_VCLR(_outputBuffer, 1, self.size);
-	ML_VCLR(_deltaBuffer, 1, self.size);
-	ML_VCLR(_errorBuffer, 1, self.size);
+    
+    // Clear and fill buffers as needed
+    ML_VCLR(_outputBuffer, 1, self.size);
+    ML_VCLR(_deltaBuffer, 1, self.size);
+    ML_VCLR(_errorBuffer, 1, self.size);
 
-	_neurons= [[NSMutableArray alloc] initWithCapacity:self.size];
-	
-	for (int i= 0; i < self.size; i++) {
-		MLReal *inputBuffer= NULL;
+    _neurons= [[NSMutableArray alloc] initWithCapacity:self.size];
+    
+    for (int i= 0; i < self.size; i++) {
+        MLReal *inputBuffer= NULL;
 
-		if ([self.previousLayer isKindOfClass:[MLInputLayer class]]) {
-			inputBuffer= [(MLInputLayer *) self.previousLayer inputBuffer];
+        if ([self.previousLayer isKindOfClass:[MLInputLayer class]]) {
+            inputBuffer= ((MLInputLayer *) self.previousLayer).inputBuffer;
 
-		} else if ([self.previousLayer isKindOfClass:[MLNeuronLayer class]]) {
-			inputBuffer= [(MLNeuronLayer *) self.previousLayer outputBuffer];
-		
-		} else
-			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Unknown type of layer found as previous layer"
-																	 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index],
-																				@"previousLayer": [NSNumber numberWithUnsignedInteger:self.previousLayer.index]}];
+        } else if ([self.previousLayer isKindOfClass:[MLNeuronLayer class]]) {
+            inputBuffer= ((MLNeuronLayer *) self.previousLayer).outputBuffer;
+        
+        } else
+            @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Unknown type of layer found as previous layer"
+                                                                     userInfo:@{@"layer": @(self.index),
+                                                                                @"previousLayer": @(self.previousLayer.index)}];
 
-		MLNeuron *neuron= nil;
-		if (_usingBias && (i == (self.size -1))) {
-			
-			// Create a bias neurson
-			neuron= [[MLBiasNeuron alloc] initWithLayer:self
-												  index:i
-										   outputBuffer:self.outputBuffer
-											  inputSize:self.previousLayer.size
-											inputBuffer:inputBuffer];
-			
-		} else {
-			
-			// Create standard neuron
-			neuron= [[MLNeuron alloc] initWithLayer:self
-											  index:i
-									   outputBuffer:self.outputBuffer
-										  inputSize:self.previousLayer.size
-										inputBuffer:inputBuffer];
-		}
-		
-		[_neurons addObject:neuron];
-	}
+        MLNeuron *neuron= nil;
+        if (_usingBias && (i == (self.size -1))) {
+            
+            // Create a bias neurson
+            neuron= [[MLBiasNeuron alloc] initWithLayer:self
+                                                  index:i
+                                           outputBuffer:self.outputBuffer
+                                              inputSize:self.previousLayer.size
+                                            inputBuffer:inputBuffer];
+            
+        } else {
+            
+            // Create standard neuron
+            neuron= [[MLNeuron alloc] initWithLayer:self
+                                              index:i
+                                       outputBuffer:self.outputBuffer
+                                          inputSize:self.previousLayer.size
+                                        inputBuffer:inputBuffer];
+        }
+        
+        [_neurons addObject:neuron];
+    }
 
-	if (self.nextLayer) {
-		
-		// Prepare buffer for weights of next layer
-		MLNeuronLayer *nextLayer= (MLNeuronLayer *) self.nextLayer;
-		
+    if (self.nextLayer) {
+        
+        // Prepare buffer for weights of next layer
+        MLNeuronLayer *nextLayer= (MLNeuronLayer *) self.nextLayer;
+        
         _nextLayerWeightsBuffer= MLAllocRealBuffer(nextLayer.size);
         _nextLayerWeightsDeltaBuffer= MLAllocRealBuffer(nextLayer.size);
-		
-		ML_VCLR(_nextLayerWeightsBuffer, 1, nextLayer.size);
-		ML_VCLR(_nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
-	}
+        
+        ML_VCLR(_nextLayerWeightsBuffer, 1, nextLayer.size);
+        ML_VCLR(_nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
+    }
 }
 
 - (void) randomizeWeights {
-	if (!_neurons)
-		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
+    if (!_neurons)
+        @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
+                                                                 userInfo:@{@"layer": @(self.index)}];
 
-	// Compute beta for Nguyen-Widrow randomization
-	MLReal beta= 0.7 * ML_POW(((MLReal) self.size), 1.0 / ((MLReal) self.previousLayer.size));
+    // Compute beta for Nguyen-Widrow randomization
+    MLReal beta= 0.7 * ML_POW(((MLReal) self.size), 1.0 / ((MLReal) self.previousLayer.size));
 
-	// Randomize each neuron
+    // Randomize each neuron
     for (MLNeuron *neuron in _neurons)
         [neuron randomizeWeightsWithBeta:beta];
 }
@@ -210,27 +215,27 @@ static const MLReal __fourty=       40.0;
 #pragma mark Operations
 
 - (void) feedForward {
-	if (!_neurons)
-		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
-	
-	// Reset error and delta
-	ML_VCLR(_deltaBuffer, 1, _size);
-	ML_VCLR(_errorBuffer, 1, _size);
+    if (!_neurons)
+        @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
+                                                                 userInfo:@{@"layer": @(self.index)}];
+    
+    // Reset error and delta
+    ML_VCLR(_deltaBuffer, 1, _size);
+    ML_VCLR(_errorBuffer, 1, _size);
 
-	// First step: compute dot product for each neuron,
-	// will fill the output buffer
+    // First step: compute dot product for each neuron,
+    // will fill the output buffer
     for (MLNeuron *neuron in _neurons)
-		[neuron feedForward];
-	
-	// Second step: apply activation function
-	switch (_funcType) {
+        [neuron feedForward];
+    
+    // Second step: apply activation function
+    switch (_funcType) {
         case MLActivationFunctionTypeLinear: {
-			
-			// Apply formula: output[i] = output[i]
-			break;
+            
+            // Apply formula: output[i] = output[i]
+            break;
         }
-			
+            
         case MLActivationFunctionTypeRectifiedLinear: {
             
             // Apply formula: output[i] = (output[i] < 0.0 ? 0.0 : output[i])
@@ -241,106 +246,106 @@ static const MLReal __fourty=       40.0;
         case MLActivationFunctionTypeStep: {
             MLReal *tempBuffer= MLAllocRealBuffer(self.size);
 
-			// Apply formula: output[i] = (output[i] < 0.5 ? 0.0 : 1.0)
-			ML_VTHRSC(_outputBuffer, 1, &__half, &__one, tempBuffer, 1, _size);
-			ML_VTHRES(tempBuffer, 1, &__zero, _outputBuffer, 1, _size);
+            // Apply formula: output[i] = (output[i] < 0.5 ? 0.0 : 1.0)
+            ML_VTHRSC(_outputBuffer, 1, &__half, &__one, tempBuffer, 1, _size);
+            ML_VTHRES(tempBuffer, 1, &__zero, _outputBuffer, 1, _size);
             
             MLFreeRealBuffer(tempBuffer);
-			break;
+            break;
         }
-			
-		case MLActivationFunctionTypeSigmoid: {
+            
+        case MLActivationFunctionTypeSigmoid: {
             MLReal *tempBuffer= MLAllocRealBuffer(self.size);
-			
-			// Apply clipping before the function to avoid NaNs
-			ML_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
-			
-			// An "int" size is needed by vvexp,
-			// the others still use _size
-			int size= (int) _size;
-			
-			// Apply formula: output[i] = 1 / (1 + exp(-output[i])
-			ML_VSMUL(_outputBuffer, 1, &__minusOne, tempBuffer, 1, _size);
-			ML_VVEXP(tempBuffer, tempBuffer, &size);
-			ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
-			ML_SVDIV(&__one, tempBuffer, 1, _outputBuffer, 1, _size);
+            
+            // Apply clipping before the function to avoid NaNs
+            ML_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
+            
+            // An "int" size is needed by vvexp,
+            // the others still use _size
+            int size= (int) _size;
+            
+            // Apply formula: output[i] = 1 / (1 + exp(-output[i])
+            ML_VSMUL(_outputBuffer, 1, &__minusOne, tempBuffer, 1, _size);
+            ML_VVEXP(tempBuffer, tempBuffer, &size);
+            ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
+            ML_SVDIV(&__one, tempBuffer, 1, _outputBuffer, 1, _size);
             
             MLFreeRealBuffer(tempBuffer);
-			break;
-		}
-			
-		case MLActivationFunctionTypeTanH: {
+            break;
+        }
+            
+        case MLActivationFunctionTypeTanH: {
             MLReal *tempBuffer= MLAllocRealBuffer(self.size);
-			
-			// Apply clipping before the function to avoid NaNs
-			ML_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
+            
+            // Apply clipping before the function to avoid NaNs
+            ML_VCLIP(_outputBuffer, 1, &__minusFourty, &__fourty, _outputBuffer, 1, _size);
 
-			// An "int" size is needed by vvexp,
-			// the others still use _size
-			int size= (int) _size;
+            // An "int" size is needed by vvexp,
+            // the others still use _size
+            int size= (int) _size;
 
-			// Apply formula: output[i] = (1 - exp(-2 * output[i])) / (1 + exp(-2 * output[i]))
-			// Equivalent to: output[i] = tanh(output[i])
-			ML_VSMUL(_outputBuffer, 1, &__minusTwo, tempBuffer, 1, _size);
-			ML_VVEXP(tempBuffer, tempBuffer, &size);
-			ML_VSADD(tempBuffer, 1, &__one, _outputBuffer, 1, _size);
-			ML_VSMUL(tempBuffer, 1, &__minusOne, tempBuffer, 1, _size);
-			ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
-			ML_VDIV(_outputBuffer, 1, tempBuffer, 1, _outputBuffer, 1, _size);
+            // Apply formula: output[i] = (1 - exp(-2 * output[i])) / (1 + exp(-2 * output[i]))
+            // Equivalent to: output[i] = tanh(output[i])
+            ML_VSMUL(_outputBuffer, 1, &__minusTwo, tempBuffer, 1, _size);
+            ML_VVEXP(tempBuffer, tempBuffer, &size);
+            ML_VSADD(tempBuffer, 1, &__one, _outputBuffer, 1, _size);
+            ML_VSMUL(tempBuffer, 1, &__minusOne, tempBuffer, 1, _size);
+            ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
+            ML_VDIV(_outputBuffer, 1, tempBuffer, 1, _outputBuffer, 1, _size);
             
             MLFreeRealBuffer(tempBuffer);
-			break;
-		}
-	}
+            break;
+        }
+    }
 }
 
 - (void) fetchErrorFromNextLayer {
-	if (!_neurons)
-		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
-	
-	MLNeuronLayer *nextLayer= (MLNeuronLayer *) self.nextLayer;
-	
+    if (!_neurons)
+        @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
+                                                                 userInfo:@{@"layer": @(self.index)}];
+    
+    MLNeuronLayer *nextLayer= (MLNeuronLayer *) self.nextLayer;
+    
     for (MLNeuron *neuron in _neurons) {
-		if ([neuron isKindOfClass:[MLBiasNeuron class]]) {
-			
-			// Bias neurons have constant output and don't backpropagate
-			_errorBuffer[neuron.index]= __zero;
-			
-		} else {
-			if ((!neuron.nextLayerWeightPtrs) || (!neuron.nextLayerWeightDeltaPtrs))
-				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron not yet set up"
-																		 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index],
-																					@"neuron": [NSNumber numberWithUnsignedInteger:neuron.index]}];
-			
-			// Gather next layer weights using vector gathering
-			ML_VGATHRA((const MLReal **) neuron.nextLayerWeightPtrs, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
-			ML_VGATHRA((const MLReal **) neuron.nextLayerWeightDeltaPtrs, 1, _nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
-			
-			// Sum the delta
-			ML_VADD(_nextLayerWeightsBuffer, 1, _nextLayerWeightsDeltaBuffer, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
-			
-			// Compute the dot product
-			ML_DOTPR(nextLayer.deltaBuffer, 1, _nextLayerWeightsBuffer, 1, &_errorBuffer[neuron.index], nextLayer.size);
-		}
+        if ([neuron isKindOfClass:[MLBiasNeuron class]]) {
+            
+            // Bias neurons have constant output and don't backpropagate
+            _errorBuffer[neuron.index]= __zero;
+            
+        } else {
+            if ((!neuron.nextLayerWeightPtrs) || (!neuron.nextLayerWeightDeltaPtrs))
+                @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron not yet set up"
+                                                                         userInfo:@{@"layer": @(self.index),
+                                                                                    @"neuron": @(neuron.index)}];
+            
+            // Gather next layer weights using vector gathering
+            ML_VGATHRA((const MLReal **) neuron.nextLayerWeightPtrs, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
+            ML_VGATHRA((const MLReal **) neuron.nextLayerWeightDeltaPtrs, 1, _nextLayerWeightsDeltaBuffer, 1, nextLayer.size);
+            
+            // Sum the delta
+            ML_VADD(_nextLayerWeightsBuffer, 1, _nextLayerWeightsDeltaBuffer, 1, _nextLayerWeightsBuffer, 1, nextLayer.size);
+            
+            // Compute the dot product
+            ML_DOTPR(nextLayer.deltaBuffer, 1, _nextLayerWeightsBuffer, 1, &_errorBuffer[neuron.index], nextLayer.size);
+        }
     }
 }
 
 - (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType learningRate:(MLReal)learningRate costFunction:(MLCostFunctionType)costType {
-	if (!_neurons)
-		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
-	
-	// First step: compute the delta with
-	// activation function derivative
-	switch (_funcType) {
+    if (!_neurons)
+        @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
+                                                                 userInfo:@{@"layer": @(self.index)}];
+    
+    // First step: compute the delta with
+    // activation function derivative
+    switch (_funcType) {
         case MLActivationFunctionTypeLinear: {
-			
-			// Apply formula: delta[i] = error[i]
-			ML_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
-			break;
+            
+            // Apply formula: delta[i] = error[i]
+            ML_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
+            break;
         }
-			
+            
         case MLActivationFunctionTypeRectifiedLinear: {
             
             // Apply formula: delta[i] = (error[i] < 0.0 ? 0.0 : error[i])
@@ -350,67 +355,67 @@ static const MLReal __fourty=       40.0;
         }
 
         case MLActivationFunctionTypeStep: {
-			if (self.nextLayer)
-				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Can't backpropagate in a hidden layer with step function"
-																		 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
-			
-			// Apply formula: delta[i] = error[i]
-			ML_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
-			break;
+            if (self.nextLayer)
+                @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Can't backpropagate in a hidden layer with step function"
+                                                                         userInfo:@{@"layer": @(self.index)}];
+            
+            // Apply formula: delta[i] = error[i]
+            ML_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
+            break;
         }
-			
+            
         case MLActivationFunctionTypeSigmoid: {
-			switch (costType) {
+            switch (costType) {
                 case MLCostFunctionTypeCrossEntropy: {
-					
-					// Apply formula: delta[i] = error[i]
-					ML_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
-					break;
+                    
+                    // Apply formula: delta[i] = error[i]
+                    ML_VSMUL(_errorBuffer, 1, &__one, _deltaBuffer, 1, _size);
+                    break;
                 }
-					
+                    
                 case MLCostFunctionTypeSquaredError: {
                     MLReal *tempBuffer= MLAllocRealBuffer(self.size);
-			
-					// Apply formula: delta[i] = output[i] * (1 - output[i]) * error[i]
-					ML_VSMUL(_outputBuffer, 1, &__minusOne, tempBuffer, 1, _size);
-					ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
-					ML_VMUL(tempBuffer, 1, _outputBuffer, 1, tempBuffer, 1, _size);
-					ML_VMUL(tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
+            
+                    // Apply formula: delta[i] = output[i] * (1 - output[i]) * error[i]
+                    ML_VSMUL(_outputBuffer, 1, &__minusOne, tempBuffer, 1, _size);
+                    ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
+                    ML_VMUL(tempBuffer, 1, _outputBuffer, 1, tempBuffer, 1, _size);
+                    ML_VMUL(tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
                     
                     MLFreeRealBuffer(tempBuffer);
-					break;
+                    break;
                 }
-			}
-			break;
+            }
+            break;
         }
-			
+            
         case MLActivationFunctionTypeTanH: {
             MLReal *tempBuffer= MLAllocRealBuffer(self.size);
-			
-			// Apply formula: delta[i] = (1 - (output[i] * output[i])) * error[i]
-			ML_VSQ(_outputBuffer, 1, tempBuffer, 1, _size);
-			ML_VSMUL(tempBuffer, 1, &__minusOne, tempBuffer, 1, _size);
-			ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
-			ML_VMUL(tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
+            
+            // Apply formula: delta[i] = (1 - (output[i] * output[i])) * error[i]
+            ML_VSQ(_outputBuffer, 1, tempBuffer, 1, _size);
+            ML_VSMUL(tempBuffer, 1, &__minusOne, tempBuffer, 1, _size);
+            ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _size);
+            ML_VMUL(tempBuffer, 1, _errorBuffer, 1, _deltaBuffer, 1, _size);
             
             MLFreeRealBuffer(tempBuffer);
-			break;
+            break;
         }
-	}
-	
-	// Second step: compute new weights for each neuron
+    }
+    
+    // Second step: compute new weights for each neuron
     for (MLNeuron *neuron in _neurons)
         [neuron backPropagateWithAlgorithm:backPropType learningRate:learningRate delta:_deltaBuffer[neuron.index]];
 }
 
 - (void) updateWeights {
-	if (!_neurons)
-		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
-																 userInfo:@{@"layer": [NSNumber numberWithUnsignedInteger:self.index]}];
-	
-	// Second step: update weights for each neuron
+    if (!_neurons)
+        @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Neuron layer not yet set up"
+                                                                 userInfo:@{@"layer": @(self.index)}];
+    
+    // Second step: update weights for each neuron
     for (MLNeuron *neuron in _neurons)
-		[neuron updateWeights];
+        [neuron updateWeights];
 }
 
 

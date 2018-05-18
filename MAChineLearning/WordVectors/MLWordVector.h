@@ -44,9 +44,12 @@
 #pragma -
 #pragma Initialization
 
+- (nonnull instancetype) init NS_UNAVAILABLE;
+
 - (nonnull instancetype) initWithVector:(nonnull MLReal *)vector
                                    size:(NSUInteger)size
-                    freeVectorOnDealloc:(BOOL)freeOnDealloc;
+                    freeVectorOnDealloc:(BOOL)freeOnDealloc
+                                        NS_DESIGNATED_INITIALIZER;
 
 
 #pragma -

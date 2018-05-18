@@ -43,18 +43,23 @@
 #pragma mark Initialization
 
 + (MLBagOfWordsException *) bagOfWordsExceptionWithReason:(NSString *)reason userInfo:(NSDictionary<NSString *, id> *)userInfo {
-	MLBagOfWordsException *exception= [[MLBagOfWordsException alloc] initWithReason:reason userInfo:userInfo];
-	
-	return exception;
+    MLBagOfWordsException *exception= [[MLBagOfWordsException alloc] initWithReason:reason userInfo:userInfo];
+    
+    return exception;
+}
+
+- (instancetype) initWithName:(NSExceptionName)aName reason:(NSString *)aReason userInfo:(NSDictionary *)aUserInfo {
+    @throw [MLBagOfWordsException bagOfWordsExceptionWithReason:@"MLBagOfWordsException class must be initialized properly"
+                                                        userInfo:nil];
 }
 
 - (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary<NSString *, id> *)userInfo {
-	if ((self = [super initWithName:BAG_OF_WORDS_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
-		
-		// Nothing to do
-	}
-	
-	return self;
+    if ((self = [super initWithName:BAG_OF_WORDS_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
+        
+        // Nothing to do
+    }
+    
+    return self;
 }
 
 

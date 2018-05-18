@@ -40,7 +40,7 @@
 #pragma mark MLMutableWordDictionary extension
 
 @interface MLMutableWordDictionary () {
-	NSUInteger _maxSize;
+    NSUInteger _maxSize;
 }
 
 
@@ -57,17 +57,17 @@
 #pragma mark Initialization
 
 + (MLMutableWordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize {
-	return [[MLMutableWordDictionary alloc] initWithMaxSize:maxSize];
+    return [[MLMutableWordDictionary alloc] initWithMaxSize:maxSize];
 }
 
 - (instancetype) initWithMaxSize:(NSUInteger)maxSize {
-	if ((self = [super init])) {
-		
-		// Initialization
-		_maxSize= maxSize;
-	}
-	
-	return self;
+    if ((self = [super init])) {
+        
+        // Initialization
+        _maxSize= maxSize;
+    }
+    
+    return self;
 }
 
 
@@ -75,27 +75,27 @@
 #pragma mark Dictionary building
 
 - (void) countOccurrenceForWord:(NSString *)word documentID:(NSString *)documentID {
-	NSString *lowercaseWord= [word lowercaseString];
-	
-	MLMutableWordInfo *wordInfo= (MLMutableWordInfo *) [_dictionary objectForKey:lowercaseWord];
-	if (!wordInfo) {
-		if (_dictionary.count >= _maxSize)
-			return;
-		
-		wordInfo= [[MLMutableWordInfo alloc] initWithWord:word position:_dictionary.count];
-		[_dictionary setObject:wordInfo forKey:lowercaseWord];
-	}
-	
-	[wordInfo countOccurrenceForDocumentID:documentID];
-	
-	if (documentID && (![_documentIDs containsObject:documentID])) {
-		[_documentIDs addObject:documentID];
-		_totalDocuments++;
-	}
-	
-	_totalWords++;
-	
-	_idfWeightsDirty= YES;
+    NSString *lowercaseWord= word.lowercaseString;
+    
+    MLMutableWordInfo *wordInfo= (MLMutableWordInfo *) _dictionary[lowercaseWord];
+    if (!wordInfo) {
+        if (_dictionary.count >= _maxSize)
+            return;
+        
+        wordInfo= [[MLMutableWordInfo alloc] initWithWord:word position:_dictionary.count];
+        _dictionary[lowercaseWord]= wordInfo;
+    }
+    
+    [wordInfo countOccurrenceForDocumentID:documentID];
+    
+    if (documentID && (![_documentIDs containsObject:documentID])) {
+        [_documentIDs addObject:documentID];
+        _totalDocuments++;
+    }
+    
+    _totalWords++;
+    
+    _idfWeightsDirty= YES;
 }
 
 

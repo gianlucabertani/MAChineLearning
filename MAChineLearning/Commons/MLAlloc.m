@@ -44,7 +44,7 @@ void *MLAllocBuffer(NSUInteger itemSize, NSUInteger items, NSString *errorReason
     if (err != 0)
         @throw [NSException exceptionWithName:ALLOC_EXCEPTION_NAME
                                        reason:errorReason
-                                     userInfo:@{@"error": [NSNumber numberWithInt:err]}];
+                                     userInfo:@{@"error": @(err)}];
     
     return buffer;
 }

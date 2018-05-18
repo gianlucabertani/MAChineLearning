@@ -55,7 +55,9 @@ typedef void (^MLWordNotFoundHanlder)(NSString * _Nonnull word);
 + (nonnull MLWordVectorDictionary *) createFromGloVeFile:(nonnull NSString *)vectorFilePath;
 + (nonnull MLWordVectorDictionary *) createFromFastTextFile:(nonnull NSString *)vectorFilePath;
 
-- (nonnull instancetype) initWithDictionary:(nonnull NSDictionary<NSString *, NSArray<NSNumber *> *> *)vectorDictionary;
+- (nonnull instancetype) init NS_UNAVAILABLE;
+
+- (nonnull instancetype) initWithDictionary:(nonnull NSDictionary<NSString *, NSArray<NSNumber *> *> *)vectorDictionary NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark -

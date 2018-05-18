@@ -43,18 +43,23 @@
 #pragma mark Initialization
 
 + (MLNeuralNetworkException *) neuralNetworkExceptionWithReason:(NSString *)reason userInfo:(NSDictionary<NSString *, id> *)userInfo {
-	MLNeuralNetworkException *exception= [[MLNeuralNetworkException alloc] initWithReason:reason userInfo:userInfo];
-	
-	return exception;
+    MLNeuralNetworkException *exception= [[MLNeuralNetworkException alloc] initWithReason:reason userInfo:userInfo];
+    
+    return exception;
+}
+
+- (instancetype) initWithName:(NSExceptionName)aName reason:(NSString *)aReason userInfo:(NSDictionary *)aUserInfo {
+    @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"MLNeuralNetworkException class must be initialized properly"
+                                                             userInfo:nil];
 }
 
 - (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary<NSString *, id> *)userInfo {
-	if ((self = [super initWithName:NEURAL_NET_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
-		
-		// Nothing to do
-	}
-	
-	return self;
+    if ((self = [super initWithName:NEURAL_NET_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
+        
+        // Nothing to do
+    }
+    
+    return self;
 }
 
 

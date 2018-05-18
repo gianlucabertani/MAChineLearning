@@ -43,8 +43,11 @@
 + (nonnull IOLineWriter *) lineWriterWithFilePath:(nonnull NSString *)filePath
                                            append:(BOOL)append;
 
+- (nonnull instancetype) init NS_UNAVAILABLE;
+
 - (nonnull instancetype) initWithFilePath:(nonnull NSString *)filePath
-                                   append:(BOOL)append;
+                                   append:(BOOL)append
+                                          NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark -

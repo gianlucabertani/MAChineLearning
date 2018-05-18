@@ -78,6 +78,8 @@
                           featureNormalization:(MLFeatureNormalizationType)normalizationType
                                   outputBuffer:(nullable MLReal *)outputBuffer;
 
+- (nonnull instancetype) init NS_UNAVAILABLE;
+
 - (nonnull instancetype) initWithText:(nonnull NSString *)text
                            documentID:(nullable NSString *)documentID
                            dictionary:(nonnull MLWordDictionary *)dictionary
@@ -86,25 +88,27 @@
                         wordExtractor:(MLWordExtractorType)extractorType
                      extractorOptions:(MLWordExtractorOption)extractorOptions
                  featureNormalization:(MLFeatureNormalizationType)normalizationType
-                         outputBuffer:(nullable MLReal *)outputBuffer;
+                         outputBuffer:(nullable MLReal *)outputBuffer
+                                      NS_DESIGNATED_INITIALIZER;
 
 - (nonnull instancetype) initWithWords:(nonnull NSArray<NSString *> *)words
                             documentID:(nullable NSString *)documentID
                             dictionary:(nonnull MLWordDictionary *)dictionary
                        buildDictionary:(BOOL)buildDictionary
                   featureNormalization:(MLFeatureNormalizationType)normalizationType
-                          outputBuffer:(nullable MLReal *)outputBuffer;
+                          outputBuffer:(nullable MLReal *)outputBuffer
+                                       NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark -
 #pragma mark Dictionary building
 
 + (void) buildDictionaryWithText:(nonnull NSString *)text
-					  documentID:(nullable NSString *)documentID
-					  dictionary:(nonnull MLMutableWordDictionary *)dictionary
-						language:(nonnull NSString *)languageCode
-				   wordExtractor:(MLWordExtractorType)extractorType
-				extractorOptions:(MLWordExtractorOption)extractorOptions;
+                      documentID:(nullable NSString *)documentID
+                      dictionary:(nonnull MLMutableWordDictionary *)dictionary
+                        language:(nonnull NSString *)languageCode
+                   wordExtractor:(MLWordExtractorType)extractorType
+                extractorOptions:(MLWordExtractorOption)extractorOptions;
 
 
 #pragma mark -

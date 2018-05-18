@@ -42,7 +42,9 @@
 
 + (nonnull IOLineReader *) lineReaderWithFilePath:(nonnull NSString *)filePath;
 
-- (nonnull instancetype) initWithFilePath:(nonnull NSString *)filePath;
+- (nonnull instancetype) init NS_UNAVAILABLE;
+
+- (nonnull instancetype) initWithFilePath:(nonnull NSString *)filePath NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark -
