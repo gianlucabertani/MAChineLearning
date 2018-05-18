@@ -57,7 +57,7 @@ typedef void (^MLWordNotFoundHanlder)(NSString * _Nonnull word);
 
 - (nonnull instancetype) init NS_UNAVAILABLE;
 
-- (nonnull instancetype) initWithDictionary:(nonnull NSDictionary<NSString *, NSArray<NSNumber *> *> *)vectorDictionary NS_DESIGNATED_INITIALIZER;
+- (nonnull instancetype) initWithDictionary:(nonnull NSDictionary<NSString *, MLWordVector *> *)vectorDictionary NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark -

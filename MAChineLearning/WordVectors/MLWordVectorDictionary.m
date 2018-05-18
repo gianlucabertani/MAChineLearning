@@ -52,7 +52,7 @@
     NSUInteger _wordCount;
     NSUInteger _vectorSize;
     
-    NSMutableDictionary<NSString *, MLWordVector *> *_vectors;
+    NSDictionary<NSString *, MLWordVector *> *_vectors;
 }
 
 @end
@@ -82,8 +82,8 @@
     if (!f)
         @throw [MLWordVectorException wordVectorExceptionWithReason:@"File access denied"
                                                            userInfo:@{@"filePath": vectorFilePath}];
-    NSMutableDictionary<NSString *, NSArray<NSNumber *> *> *vectorDictionary= nil;
 
+    NSMutableDictionary<NSString *, MLWordVector *> *vectorDictionary= nil;
     @try {
         int result= 0;
         
@@ -100,7 +100,7 @@
             @throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading the vector size"
                                                                userInfo:@{@"result": @(result)}];
         
-        // Prepare the transitory dictionary
+        // Prepare the dictionary
         vectorDictionary= [[NSMutableDictionary alloc] initWithCapacity:dictionarySize];
 
         // Loop for all the words
@@ -114,12 +114,11 @@
                     @throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading the next word"
                                                                        userInfo:@{@"result": @(result)}];
                 
-                // Prepare the vector
-                NSMutableArray<NSNumber *> *vector= [[NSMutableArray alloc] initWithCapacity:vectorSize];
-                
+                // Read the vector values
+                NSMutableArray<NSNumber *> *vectorValues= [[NSMutableArray alloc] initWithCapacity:vectorSize];
                 for (NSUInteger j= 0; j < vectorSize; j++) {
                     
-                    // Read and store the vector element
+                    // Read and store the vector value
                     if (binary) {
                         float elem= 0.0;
 
@@ -128,7 +127,7 @@
                             @throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading a vector element"
                                                                                userInfo:@{@"result": @(result)}];
                         
-                        [vector addObject:@(elem)];
+                        [vectorValues addObject:@(elem)];
                         
                     } else {
                         double elem= 0.0;
@@ -138,16 +137,44 @@
                             @throw [MLWordVectorException wordVectorExceptionWithReason:@"Error while reading a vector element"
                                                                                userInfo:@{@"result": @(result)}];
                         
-                        [vector addObject:@(elem)];
+                        [vectorValues addObject:@(elem)];
                     }
                 }
                 
-                // Store the vector in the transitory dictionary
+                // Get the word and skip the end-of-sentece word
                 NSString *word= [[NSString alloc] initWithCString:wordStr encoding:NSUTF8StringEncoding];
                 if ([word isEqualToString:@"</s>"])
                     continue;
                 
-                vectorDictionary[word] = vector;
+                // Creation of vector
+                MLReal *vector= MLAllocRealBuffer(vectorSize);
+                
+                // Fill vector values
+                NSUInteger i= 0;
+                for (NSNumber *value in vectorValues) {
+                    vector[i]= (MLReal) value.doubleValue;
+                    i++;
+                }
+                
+                // Normalization of vector
+                MLReal normL2= 0.0;
+                ML_SVESQ(vector, 1, &normL2, vectorSize);
+                normL2= ML_SQRT(normL2);
+                
+                ML_VSDIV(vector, 1, &normL2, vector, 1, vectorSize);
+                
+                // Creation of vector wrapper
+                MLWordVector *wordVector= [[MLWordVector alloc] initWithVector:vector
+                                                                          size:vectorSize
+                                                           freeVectorOnDealloc:YES];
+                
+                // Store the vector in the dictionary but avoid
+                // overwriting duplicates, since we want to keep
+                // the most frequent word in case of omographies with
+                // different cases (e.g. "us" vs "US")
+                NSString *lowercaseWord= word.lowercaseString;
+                if (!vectorDictionary[lowercaseWord])
+                    vectorDictionary[lowercaseWord]= wordVector;
             }
         }
         
@@ -173,10 +200,10 @@
     IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:vectorFilePath];
 
     NSUInteger vectorSize= 0;
-    NSMutableDictionary<NSString *, NSArray<NSNumber *> *> *vectorDictionary= nil;
+    NSMutableDictionary<NSString *, MLWordVector *> *vectorDictionary= nil;
     @try {
         
-        // Prepare the transitory dictionary
+        // Prepare the dictionary
         vectorDictionary= [[NSMutableDictionary alloc] init];
         
         // Loop until the end of file
@@ -203,22 +230,39 @@
                                                                                       @"lineNumber": @(reader.lineNumber)}];
                 }
                 
-                // Get the word
+                // Get the word and skip unknown words
                 NSString *word= components[0];
                 if ([word isEqualToString:@"<unk>"])
                     continue;
                 
-                // Prepare the vector
-                NSMutableArray<NSNumber *> *vector= [[NSMutableArray alloc] initWithCapacity:components.count -1];
+                // Creation of vector
+                MLReal *vector= MLAllocRealBuffer(vectorSize);
+                
+                // Fill vector values
                 for (NSUInteger j= 1; j <= vectorSize; j++) {
-                    
-                    // Store the vector element
-                    double elem= components[j].doubleValue;
-                    [vector addObject:@(elem)];
+                    NSString *value= components[j];
+                    vector[j -1]= (MLReal) value.doubleValue;
                 }
                 
-                // Store the vector in the transitory dictionary
-                vectorDictionary[word] = vector;
+                // Normalization of vector
+                MLReal normL2= 0.0;
+                ML_SVESQ(vector, 1, &normL2, vectorSize);
+                normL2= ML_SQRT(normL2);
+                
+                ML_VSDIV(vector, 1, &normL2, vector, 1, vectorSize);
+                
+                // Creation of vector wrapper
+                MLWordVector *wordVector= [[MLWordVector alloc] initWithVector:vector
+                                                                          size:vectorSize
+                                                           freeVectorOnDealloc:YES];
+                
+                // Store the vector in the dictionary but avoid
+                // overwriting duplicates, since we want to keep
+                // the most frequent word in case of omographies with
+                // different cases (e.g. "us" vs "US")
+                NSString *lowercaseWord= word.lowercaseString;
+                if (!vectorDictionary[lowercaseWord])
+                    vectorDictionary[lowercaseWord]= wordVector;
             }
             
         } while (YES);
@@ -245,10 +289,10 @@
     IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:vectorFilePath];
     
     NSUInteger vectorSize= 0;
-    NSMutableDictionary<NSString *, NSArray<NSNumber *> *> *vectorDictionary= nil;
+    NSMutableDictionary<NSString *, MLWordVector *> *vectorDictionary= nil;
     @try {
         
-        // Prepare the transitory dictionary
+        // Prepare the dictionary
         vectorDictionary= [[NSMutableDictionary alloc] init];
         
         // Loop until the end of file
@@ -279,27 +323,39 @@
                                                                        userInfo:@{@"filePath": vectorFilePath,
                                                                                   @"lineNumber": @(reader.lineNumber)}];
                 
-                // Get the word and convert to lowercase,
-                // since fastText is case sensitive
-                NSString *word= components[0].lowercaseString;
+                // Get the word and and skip the end-of-sentence word
+                NSString *word= components[0];
                 if ([word isEqualToString:@"</s>"])
                     continue;
                 
-                // Prepare the vector
-                NSMutableArray<NSNumber *> *vector= [[NSMutableArray alloc] initWithCapacity:components.count -1];
+                // Creation of vector
+                MLReal *vector= MLAllocRealBuffer(vectorSize);
+                
+                // Fill vector values
                 for (NSUInteger j= 1; j <= vectorSize; j++) {
-                    
-                    // Store the vector element
-                    double elem= components[j].doubleValue;
-                    [vector addObject:@(elem)];
+                    NSString *value= components[j];
+                    vector[j -1]= (MLReal) value.doubleValue;
                 }
                 
-                // Store the vector in the transitory dictionary but
-                // avoid overwriting duplicates, since we want to keep
+                // Normalization of vector
+                MLReal normL2= 0.0;
+                ML_SVESQ(vector, 1, &normL2, vectorSize);
+                normL2= ML_SQRT(normL2);
+                
+                ML_VSDIV(vector, 1, &normL2, vector, 1, vectorSize);
+                
+                // Creation of vector wrapper
+                MLWordVector *wordVector= [[MLWordVector alloc] initWithVector:vector
+                                                                          size:vectorSize
+                                                           freeVectorOnDealloc:YES];
+                
+                // Store the vector in the dictionary but avoid
+                // overwriting duplicates, since we want to keep
                 // the most frequent word in case of omographies with
                 // different cases (e.g. "us" vs "US")
-                if (!vectorDictionary[word])
-                    vectorDictionary[word]= vector;
+                NSString *lowercaseWord= word.lowercaseString;
+                if (!vectorDictionary[lowercaseWord])
+                    vectorDictionary[lowercaseWord]= wordVector;
             }
             
         } while (YES);
@@ -319,67 +375,12 @@
                                                        userInfo:nil];
 }
 
-- (instancetype) initWithDictionary:(NSDictionary<NSString *, NSArray<NSNumber *> *> *)vectorDictionary {
+- (instancetype) initWithDictionary:(NSDictionary<NSString *, MLWordVector *> *)vectorDictionary {
     if ((self = [super init])) {
     
         // Initialization
-        _vectors= [[NSMutableDictionary alloc] initWithCapacity:vectorDictionary.count];
-        
-        _vectorSize= 0;
-        for (NSString *word in vectorDictionary.allKeys) {
-            @autoreleasepool {
-                NSArray<NSNumber *> *vectorArray= vectorDictionary[word];
-                
-                if (!_vectorSize) {
-                    _vectorSize= vectorArray.count;
-                    
-                    if (!_vectorSize)
-                        @throw [MLWordVectorException wordVectorExceptionWithReason:@"Vectors must contain at least a number"
-                                                                           userInfo:@{@"vectorSize": @(_vectorSize),
-                                                                                      @"word": word}];
-                
-                } else {
-                    if (vectorArray.count != _vectorSize)
-                        @throw [MLWordVectorException wordVectorExceptionWithReason:@"Vector size mismatch"
-                                                                           userInfo:@{@"expectedVectorSize": @(_vectorSize),
-                                                                                      @"actualVectorSize": @(vectorArray.count),
-                                                                                      @"word": word}];
-                }
-                
-                // Creation of vector
-                MLReal *vector= MLAllocRealBuffer(_vectorSize);
-                
-                // Fill vector from array
-                NSUInteger i= 0;
-                for (NSObject *elemObj in vectorArray) {
-                    if (![elemObj isKindOfClass:[NSNumber class]])
-                        @throw [MLWordVectorException wordVectorExceptionWithReason:@"Dictionary values must be arrays of numbers"
-                                                                           userInfo:@{@"vectorElement": elemObj,
-                                                                                      @"word": word,
-                                                                                      @"index": @(i)}];
-
-                    NSNumber *elem= (NSNumber *) elemObj;
-                    vector[i]= (MLReal) elem.doubleValue;
-                    i++;
-                }
-                
-                // Normalization of vector
-                MLReal normL2= 0.0;
-                ML_SVESQ(vector, 1, &normL2, _vectorSize);
-                normL2= ML_SQRT(normL2);
-                
-                ML_VSDIV(vector, 1, &normL2, vector, 1, _vectorSize);
-                
-                // Creation of vector wrapper
-                MLWordVector *wordVector= [[MLWordVector alloc] initWithVector:vector
-                                                                          size:_vectorSize
-                                                           freeVectorOnDealloc:YES];
-
-                NSString *lowercaseWord= word.lowercaseString;
-                _vectors[lowercaseWord]= wordVector;
-            }
-        }
-        
+        _vectors= vectorDictionary;
+        _vectorSize= vectorDictionary.allValues.firstObject.size;
         _wordCount= _vectors.count;
     }
     
