@@ -42,7 +42,7 @@
 #pragma -
 #pragma Occurrencies counting
 
-- (void) countOccurrenceForDocumentID:(NSString *)documentID;
+- (void) countOccurrenceForDocumentID:(nonnull NSString *)documentID;
 
 
 @end

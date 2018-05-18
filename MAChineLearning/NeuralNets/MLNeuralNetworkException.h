@@ -40,9 +40,11 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLNeuralNetworkException *) neuralNetworkExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
++ (nonnull MLNeuralNetworkException *) neuralNetworkExceptionWithReason:(nonnull NSString *)reason
+                                                               userInfo:(nullable NSDictionary<NSString *, id> *)userInfo;
 
-- (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
+- (nonnull instancetype) initWithReason:(nonnull NSString *)reason
+                               userInfo:(nullable NSDictionary<NSString *, id> *)userInfo;
 
 
 @end

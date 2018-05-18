@@ -44,13 +44,14 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size;
+- (nonnull instancetype) initWithIndex:(NSUInteger)index
+                                  size:(NSUInteger)size;
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) MLReal *inputBuffer;
+@property (nonatomic, readonly, nonnull) MLReal *inputBuffer;
 
 
 @end

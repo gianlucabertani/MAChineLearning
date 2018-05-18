@@ -47,7 +47,11 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithLayer:(MLNeuronLayer *)layer index:(NSUInteger)index outputBuffer:(MLReal *)outputBuffer inputSize:(NSUInteger)inputSize inputBuffer:(MLReal *)inputBuffer;
+- (nonnull instancetype) initWithLayer:(nonnull MLNeuronLayer *)layer
+                                 index:(NSUInteger)index
+                          outputBuffer:(nonnull MLReal *)outputBuffer
+                             inputSize:(NSUInteger)inputSize
+                           inputBuffer:(nonnull MLReal *)inputBuffer;
 
 
 #pragma mark -
@@ -61,26 +65,30 @@
 #pragma mark Operations
 
 - (void) feedForward;
-- (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType learningRate:(MLReal)learningRate delta:(MLReal)delta;
+
+- (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType
+                       learningRate:(MLReal)learningRate
+                              delta:(MLReal)delta;
+
 - (void) updateWeights;
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) MLNeuronLayer *layer;
+@property (nonatomic, readonly, nonnull) MLNeuronLayer *layer;
 
 @property (nonatomic, readonly) NSUInteger index;
-@property (nonatomic, readonly) MLReal *outputBuffer;
+@property (nonatomic, readonly, nonnull) MLReal *outputBuffer;
 
 @property (nonatomic, readonly) NSUInteger inputSize;
-@property (nonatomic, readonly) MLReal *inputBuffer;
+@property (nonatomic, readonly, nonnull) MLReal *inputBuffer;
 
-@property (nonatomic, readonly) MLReal *weights;
-@property (nonatomic, readonly) MLReal *weightsDelta;
+@property (nonatomic, readonly, nonnull) MLReal *weights;
+@property (nonatomic, readonly, nonnull) MLReal *weightsDelta;
 
-@property (nonatomic, readonly) MLReal **nextLayerWeightPtrs;
-@property (nonatomic, readonly) MLReal **nextLayerWeightDeltaPtrs;
+@property (nonatomic, readonly) MLReal * _Nonnull *nextLayerWeightPtrs;
+@property (nonatomic, readonly) MLReal * _Nonnull *nextLayerWeightDeltaPtrs;
 
 @property (nonatomic, readonly) MLReal error;
 @property (nonatomic, readonly) MLReal delta;

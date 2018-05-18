@@ -63,7 +63,7 @@
 	MLReal *_nextLayerWeightsDeltaBuffer;
 
 	BOOL _usingBias;
-	NSMutableArray *_neurons;
+	NSMutableArray<MLNeuron *> *_neurons;
 }
 
 

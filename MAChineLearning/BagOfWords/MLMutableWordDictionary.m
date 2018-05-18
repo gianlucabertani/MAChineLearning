@@ -77,7 +77,7 @@
 - (void) countOccurrenceForWord:(NSString *)word documentID:(NSString *)documentID {
 	NSString *lowercaseWord= [word lowercaseString];
 	
-	MLMutableWordInfo *wordInfo= [_dictionary objectForKey:lowercaseWord];
+	MLMutableWordInfo *wordInfo= (MLMutableWordInfo *) [_dictionary objectForKey:lowercaseWord];
 	if (!wordInfo) {
 		if (_dictionary.count >= _maxSize)
 			return;

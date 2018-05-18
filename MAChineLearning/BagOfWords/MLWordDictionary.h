@@ -49,7 +49,7 @@ typedef MLWordFilterOutcome (^MLWordFilter)(MLWordInfo *wordInfo);
 @interface MLWordDictionary : NSObject {
 	
 @protected
-	NSMutableDictionary *_dictionary;
+	NSMutableDictionary<NSString *, MLWordInfo *> *_dictionary;
 	
 	NSUInteger _totalWords;
 	NSUInteger _totalDocuments;
@@ -64,26 +64,26 @@ typedef MLWordFilterOutcome (^MLWordFilter)(MLWordInfo *wordInfo);
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithDictionary:(MLWordDictionary *)dictionary;
-- (instancetype) initWithWordInfos:(NSArray *)wordInfos;
+- (nonnull instancetype) initWithDictionary:(nonnull MLWordDictionary *)dictionary;
+- (nonnull instancetype) initWithWordInfos:(nonnull NSArray<MLWordInfo *> *)wordInfos;
 
 
 #pragma mark -
 #pragma mark Dictionary access
 
-- (BOOL) containsWord:(NSString *)word;
-- (MLWordInfo *) infoForWord:(NSString *)word;
+- (BOOL) containsWord:(nonnull NSString *)word;
+- (nullable MLWordInfo *) infoForWord:(nonnull NSString *)word;
 
 
 #pragma mark -
 #pragma mark Dictionary filtering
 
-- (MLWordDictionary *) keepWordsWithHighestOccurrenciesUpToSize:(NSUInteger)size;
+- (nonnull MLWordDictionary *) keepWordsWithHighestOccurrenciesUpToSize:(NSUInteger)size;
 
-- (MLWordDictionary *) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies;
-- (MLWordDictionary *) discardWordsWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies;
+- (nonnull MLWordDictionary *) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies;
+- (nonnull MLWordDictionary *) discardWordsWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies;
 
-- (MLWordDictionary *) filterWordsWith:(MLWordFilter)filter;
+- (nonnull MLWordDictionary *) filterWordsWith:(MLWordFilter)filter;
 
 
 #pragma mark -
@@ -91,14 +91,14 @@ typedef MLWordFilterOutcome (^MLWordFilter)(MLWordInfo *wordInfo);
 
 @property (nonatomic, readonly) NSUInteger size;
 
-@property (nonatomic, readonly) NSArray *wordInfos;
+@property (nonatomic, readonly, nonnull) NSArray<MLWordInfo *> *wordInfos;
 
 @property (nonatomic, readonly) NSUInteger totalWords;
 @property (nonatomic, readonly) NSUInteger totalDocuments;
 
-@property (nonatomic, readonly) NSSet *documentIDs;
+@property (nonatomic, readonly, nonnull) NSSet *documentIDs;
 
-@property (nonatomic, readonly) MLReal *idfWeights;
+@property (nonatomic, readonly, nonnull) MLReal *idfWeights;
 
 
 @end

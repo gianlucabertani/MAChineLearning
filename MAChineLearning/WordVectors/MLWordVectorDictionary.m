@@ -52,7 +52,7 @@
     NSUInteger _wordCount;
     NSUInteger _vectorSize;
     
-	NSMutableDictionary *_vectors;
+	NSMutableDictionary<NSString *, MLWordVector *> *_vectors;
 }
 
 @end
@@ -82,7 +82,7 @@
 	if (!f)
 		@throw [MLWordVectorException wordVectorExceptionWithReason:@"File access denied"
 														   userInfo:@{@"filePath": vectorFilePath}];
-	NSMutableDictionary *vectorDictionary= nil;
+	NSMutableDictionary<NSString *, NSArray<NSNumber *> *> *vectorDictionary= nil;
 
 	@try {
 		int result= 0;
@@ -115,7 +115,7 @@
                                                                        userInfo:@{@"result": [NSNumber numberWithInt:result]}];
                 
                 // Prepare the vector
-                NSMutableArray *vector= [[NSMutableArray alloc] initWithCapacity:vectorSize];
+                NSMutableArray<NSNumber *> *vector= [[NSMutableArray alloc] initWithCapacity:vectorSize];
                 
                 for (NSUInteger j= 0; j < vectorSize; j++) {
                     
@@ -173,7 +173,7 @@
     IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:vectorFilePath];
 
     NSUInteger vectorSize= 0;
-    NSMutableDictionary *vectorDictionary= nil;
+    NSMutableDictionary<NSString *, NSArray<NSNumber *> *> *vectorDictionary= nil;
     @try {
         
         // Prepare the transitory dictionary
@@ -189,8 +189,8 @@
                     break;
                 
                 // Split the line
-                NSArray *components= [[line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                      componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                NSArray<NSString *> *components= [[line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                                  componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
                 
                 // Check vector size
                 if (!vectorSize) {
@@ -209,7 +209,7 @@
                     continue;
                 
                 // Prepare the vector
-                NSMutableArray *vector= [[NSMutableArray alloc] initWithCapacity:components.count -1];
+                NSMutableArray<NSNumber *> *vector= [[NSMutableArray alloc] initWithCapacity:components.count -1];
                 for (NSUInteger j= 1; j <= vectorSize; j++) {
                     
                     // Store the vector element
@@ -245,7 +245,7 @@
     IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:vectorFilePath];
     
     NSUInteger vectorSize= 0;
-    NSMutableDictionary *vectorDictionary= nil;
+    NSMutableDictionary<NSString *, NSArray<NSNumber *> *> *vectorDictionary= nil;
     @try {
         
         // Prepare the transitory dictionary
@@ -262,8 +262,8 @@
                     break;
                 
                 // Split the line
-                NSArray *components= [[line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                      componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                NSArray<NSString *> *components= [[line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                                  componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
                 
                 if (firstLine) {
                     firstLine= NO;
@@ -286,7 +286,7 @@
                     continue;
                 
                 // Prepare the vector
-                NSMutableArray *vector= [[NSMutableArray alloc] initWithCapacity:components.count -1];
+                NSMutableArray<NSNumber *> *vector= [[NSMutableArray alloc] initWithCapacity:components.count -1];
                 for (NSUInteger j= 1; j <= vectorSize; j++) {
                     
                     // Store the vector element
@@ -314,26 +314,16 @@
     return [[MLWordVectorDictionary alloc] initWithDictionary:vectorDictionary];
 }
 
-- (instancetype) initWithDictionary:(NSDictionary *)vectorDictionary {
+- (instancetype) initWithDictionary:(NSDictionary<NSString *, NSArray<NSNumber *> *> *)vectorDictionary {
 	if ((self = [super init])) {
 	
 		// Initialization
 		_vectors= [[NSMutableDictionary alloc] initWithCapacity:vectorDictionary.count];
 		
 		_vectorSize= 0;
-		for (NSObject *key in [vectorDictionary allKeys]) {
+		for (NSString *word in [vectorDictionary allKeys]) {
             @autoreleasepool {
-                if (![key isKindOfClass:[NSString class]])
-                    @throw [MLWordVectorException wordVectorExceptionWithReason:@"Dictionary keys must be strings"
-                                                                       userInfo:@{@"dictionaryKey": key}];
-                
-                NSObject *vectorObj= [vectorDictionary objectForKey:key];
-                if (![vectorObj isKindOfClass:[NSArray class]])
-                    @throw [MLWordVectorException wordVectorExceptionWithReason:@"Dictionary values must be arrays of numbers"
-                                                                       userInfo:@{@"dictionaryValue": vectorObj}];
-                
-                NSString *word= (NSString *) key;
-                NSArray *vectorArray= (NSArray *) vectorObj;
+                NSArray<NSNumber *> *vectorArray= vectorDictionary[word];
                 
                 if (!_vectorSize) {
                     _vectorSize= vectorArray.count;
@@ -445,8 +435,8 @@
 	return nearestWord;
 }
 
-- (NSArray *) mostSimilarWordsToVector:(MLWordVector *)vector {
-	NSArray *sortedKeys= [[_vectors allKeys] sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
+- (NSArray<NSString *> *) mostSimilarWordsToVector:(MLWordVector *)vector {
+	NSArray<NSString *> *sortedKeys= [[_vectors allKeys] sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
         MLWordVector *otherVector1= [self->_vectors objectForKey:obj1];
         MLWordVector *otherVector2= [self->_vectors objectForKey:obj2];
 		
@@ -464,8 +454,8 @@
 	return sortedKeys;
 }
 
-- (NSArray *) nearestWordsToVector:(MLWordVector *)vector {
-    NSArray *sortedKeys= [[_vectors allKeys] sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
+- (NSArray<NSString *> *) nearestWordsToVector:(MLWordVector *)vector {
+    NSArray<NSString *> *sortedKeys= [[_vectors allKeys] sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
         MLWordVector *otherVector1= [self->_vectors objectForKey:obj1];
 		MLWordVector *otherVector2= [self->_vectors objectForKey:obj2];
 		

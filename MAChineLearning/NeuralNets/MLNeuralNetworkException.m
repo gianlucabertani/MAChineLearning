@@ -42,13 +42,13 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLNeuralNetworkException *) neuralNetworkExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
++ (MLNeuralNetworkException *) neuralNetworkExceptionWithReason:(NSString *)reason userInfo:(NSDictionary<NSString *, id> *)userInfo {
 	MLNeuralNetworkException *exception= [[MLNeuralNetworkException alloc] initWithReason:reason userInfo:userInfo];
 	
 	return exception;
 }
 
-- (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+- (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary<NSString *, id> *)userInfo {
 	if ((self = [super initWithName:NEURAL_NET_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
 		
 		// Nothing to do

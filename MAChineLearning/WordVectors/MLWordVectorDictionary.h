@@ -38,6 +38,9 @@
 #import "MLWordExtractorOption.h"
 
 
+typedef void (^MLWordNotFoundHanlder)(NSString * _Nonnull word);
+
+
 @class MLNeuralNetwork;
 @class MLWordDictionary;
 @class MLWordVector;
@@ -48,32 +51,39 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLWordVectorDictionary *) createFromWord2vecFile:(NSString *)vectorFilePath binary:(BOOL)binary;
-+ (MLWordVectorDictionary *) createFromGloVeFile:(NSString *)vectorFilePath;
-+ (MLWordVectorDictionary *) createFromFastTextFile:(NSString *)vectorFilePath;
++ (nonnull MLWordVectorDictionary *) createFromWord2vecFile:(nonnull NSString *)vectorFilePath binary:(BOOL)binary;
++ (nonnull MLWordVectorDictionary *) createFromGloVeFile:(nonnull NSString *)vectorFilePath;
++ (nonnull MLWordVectorDictionary *) createFromFastTextFile:(nonnull NSString *)vectorFilePath;
 
-- (instancetype) initWithDictionary:(NSDictionary *)vectorDictionary;
+- (nonnull instancetype) initWithDictionary:(nonnull NSDictionary<NSString *, NSArray<NSNumber *> *> *)vectorDictionary;
 
 
 #pragma mark -
 #pragma mark Word lookup and comparison
 
-- (BOOL) containsWord:(NSString *)word;
-- (MLWordVector *) vectorForWord:(NSString *)word;
+- (BOOL) containsWord:(nonnull NSString *)word;
+- (nullable MLWordVector *) vectorForWord:(nonnull NSString *)word;
 
-- (NSString *) mostSimilarWordToVector:(MLWordVector *)vector;
-- (NSString *) nearestWordToVector:(MLWordVector *)vector;
+- (nullable NSString *) mostSimilarWordToVector:(nonnull MLWordVector *)vector;
+- (nullable NSString *) nearestWordToVector:(nonnull MLWordVector *)vector;
 
-- (NSArray *) mostSimilarWordsToVector:(MLWordVector *)vector;
-- (NSArray *) nearestWordsToVector:(MLWordVector *)vector;
+- (nonnull NSArray<NSString *> *) mostSimilarWordsToVector:(nonnull MLWordVector *)vector;
+- (nonnull NSArray<NSString *> *) nearestWordsToVector:(nonnull MLWordVector *)vector;
 
 
 #pragma mark -
 #pragma mark Sentence lookup
 
-- (MLWordVector *) vectorForSentence:(NSString *)sentence;
-- (MLWordVector *) vectorForSentence:(NSString *)sentence withLanguage:(NSString *)languageCode;
-- (MLWordVector *) vectorForSentence:(NSString *)sentence withLanguage:(NSString *)languageCode extractorType:(MLWordExtractorType)extractorType options:(MLWordExtractorOption)options wordNotFound:(void (^)(NSString *))wordNotFoundHandler;
+- (nonnull MLWordVector *) vectorForSentence:(nonnull NSString *)sentence;
+
+- (nonnull MLWordVector *) vectorForSentence:(nonnull NSString *)sentence
+                                withLanguage:(nullable NSString *)languageCode;
+
+- (nonnull MLWordVector *) vectorForSentence:(nonnull NSString *)sentence
+                                withLanguage:(nullable NSString *)languageCode
+                               extractorType:(MLWordExtractorType)extractorType
+                                     options:(MLWordExtractorOption)options
+                                wordNotFound:(MLWordNotFoundHanlder)wordNotFoundHandler;
 
 
 #pragma mark -

@@ -54,7 +54,7 @@
 #pragma mark NeuralNetwork extension
 
 @interface MLNeuralNetwork () {
-	NSMutableArray *_layers;
+	NSMutableArray<MLLayer *> *_layers;
 	BOOL _useBias;
 	MLActivationFunctionType _hiddenFuncType;
 	MLActivationFunctionType _funcType;
@@ -92,10 +92,10 @@ static const MLReal __one=                    1.0;
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLNeuralNetwork *) createNetworkFromConfigurationDictionary:(NSDictionary *)config {
++ (MLNeuralNetwork *) createNetworkFromConfigurationDictionary:(NSDictionary<NSString *, id> *)config {
 	
 	// Get sizes and function from configuration
-	NSArray *sizes= [config objectForKey:CONFIG_PARAM_LAYER_SIZES];
+	NSArray<NSNumber *> *sizes= [config objectForKey:CONFIG_PARAM_LAYER_SIZES];
 	if (!sizes)
 		@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration: missing layer sizes"
 																 userInfo:@{@"config": config}];
@@ -139,11 +139,11 @@ static const MLReal __one=                    1.0;
 	
 	// Get weights from configuration
 	for (int i= 1; i < [network.layers count]; i++) {
-		MLNeuronLayer *neuronLayer= [network.layers objectAtIndex:i];
+		MLNeuronLayer *neuronLayer= (MLNeuronLayer *) [network.layers objectAtIndex:i];
 		MLLayer *previousLayer= neuronLayer.previousLayer;
 		
 		NSString *layerParam= [NSString stringWithFormat:CONFIG_PARAM_LAYER, i];
-		NSArray *layerConfig= [config objectForKey:layerParam];
+		NSArray<NSDictionary<NSString *, id> *> *layerConfig= [config objectForKey:layerParam];
 		if (!layerConfig)
 			@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration: missing layer configuration"
 																	 userInfo:@{@"config": config,
@@ -152,14 +152,14 @@ static const MLReal __one=                    1.0;
 		for (int j= 0; j < neuronLayer.size; j++) {
 			MLNeuron *neuron= [neuronLayer.neurons objectAtIndex:j];
 
-			NSDictionary *neuronConfig= [layerConfig objectAtIndex:j];
+			NSDictionary<NSString *, id> *neuronConfig= [layerConfig objectAtIndex:j];
 			if (!neuronConfig)
 				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration: missing neuron configuration"
 																		 userInfo:@{@"config": config,
 																					@"layer": [NSNumber numberWithInt:i],
 																					@"neuron": [NSNumber numberWithInt:j]}];
 			
-			NSArray *weights= [neuronConfig objectForKey:CONFIG_PARAM_WEIGHTS];
+			NSArray<NSNumber *> *weights= [neuronConfig objectForKey:CONFIG_PARAM_WEIGHTS];
 			if (!weights)
 				@throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration: missing neuron weights list"
 																		 userInfo:@{@"config": config,
@@ -183,7 +183,7 @@ static const MLReal __one=                    1.0;
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray<NSNumber *> *)sizes
                                outputFunctionType:(MLActivationFunctionType)funcType {
     
 	MLNeuralNetwork *network= [[MLNeuralNetwork alloc] initWithLayerSizes:sizes
@@ -196,7 +196,7 @@ static const MLReal __one=                    1.0;
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray<NSNumber *> *)sizes
                                  costFunctionType:(MLCostFunctionType)costType
                                outputFunctionType:(MLActivationFunctionType)funcType {
 	
@@ -210,7 +210,7 @@ static const MLReal __one=                    1.0;
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray<NSNumber *> *)sizes
                               backPropagationType:(MLBackPropagationType)backPropType
                                outputFunctionType:(MLActivationFunctionType)funcType {
 	
@@ -224,7 +224,7 @@ static const MLReal __one=                    1.0;
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray<NSNumber *> *)sizes
                                  costFunctionType:(MLCostFunctionType)costType
                               backPropagationType:(MLBackPropagationType)backPropType
                                outputFunctionType:(MLActivationFunctionType)funcType {
@@ -239,7 +239,7 @@ static const MLReal __one=                    1.0;
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray<NSNumber *> *)sizes
                               backPropagationType:(MLBackPropagationType)backPropType
                                hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType
                                outputFunctionType:(MLActivationFunctionType)funcType {
@@ -254,7 +254,7 @@ static const MLReal __one=                    1.0;
 	return network;
 }
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
++ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray<NSNumber *> *)sizes
                                  costFunctionType:(MLCostFunctionType)costType
                               backPropagationType:(MLBackPropagationType)backPropType
                                hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType
@@ -270,7 +270,7 @@ static const MLReal __one=                    1.0;
 	return network;
 }
 
-- (instancetype) initWithLayerSizes:(NSArray *)sizes
+- (instancetype) initWithLayerSizes:(NSArray<NSNumber *> *)sizes
                             useBias:(BOOL)useBias
                    costFunctionType:(MLCostFunctionType)costType
                 backPropagationType:(MLBackPropagationType)backPropType
@@ -385,7 +385,7 @@ static const MLReal __one=                    1.0;
 	
 	// Randomize each layer
 	for (int i= 1; i < [_layers count]; i++) {
-		MLNeuronLayer *layer= [_layers objectAtIndex:i];
+		MLNeuronLayer *layer= (MLNeuronLayer *) [_layers objectAtIndex:i];
 		
 		[layer randomizeWeights];
 	}
@@ -400,7 +400,7 @@ static const MLReal __one=                    1.0;
 	
 	// Apply forward propagation
 	for (int i= 1; i < [_layers count]; i++) {
-		MLNeuronLayer *layer= [_layers objectAtIndex:i];
+		MLNeuronLayer *layer= (MLNeuronLayer *) [_layers objectAtIndex:i];
 		
 		[layer feedForward];
 	}
@@ -451,7 +451,7 @@ static const MLReal __one=                    1.0;
 	
 	// Apply backward propagation
 	for (NSUInteger i= _layers.count -1; i > 0; i--) {
-		MLNeuronLayer *layer= [_layers objectAtIndex:i];
+		MLNeuronLayer *layer= (MLNeuronLayer *) [_layers objectAtIndex:i];
 		
 		if (i == [_layers count] -1) {
 			
@@ -481,7 +481,7 @@ static const MLReal __one=                    1.0;
 
 	// Apply new weights
 	for (int i= 1; i < [_layers count]; i++) {
-		MLNeuronLayer *layer= [_layers objectAtIndex:i];
+		MLNeuronLayer *layer= (MLNeuronLayer *) [_layers objectAtIndex:i];
 		
 		[layer updateWeights];
 	}
@@ -503,8 +503,8 @@ static const MLReal __one=                    1.0;
 #pragma mark -
 #pragma mark Configuration load/save
 
-- (NSDictionary *) saveConfigurationToDictionary {
-	NSMutableDictionary *config= [[NSMutableDictionary alloc] initWithCapacity:[_layers count] +1];
+- (NSDictionary<NSString *, id> *) saveConfigurationToDictionary {
+	NSMutableDictionary<NSString *, id> *config= [[NSMutableDictionary alloc] initWithCapacity:[_layers count] +1];
 	
 	// Save the basic configuration
 	[config setObject:[NSNumber numberWithInt:_costType] forKey:CONFIG_PARAM_COST_FUNCTION_TYPE];
@@ -514,7 +514,7 @@ static const MLReal __one=                    1.0;
 	[config setObject:[NSNumber numberWithBool:_useBias] forKey:CONFIG_PARAM_USE_BIAS];
 
 	// Save layer sizes
-	NSMutableArray *sizes= [[NSMutableArray alloc] initWithCapacity:[_layers count]];
+	NSMutableArray<NSNumber *> *sizes= [[NSMutableArray alloc] initWithCapacity:[_layers count]];
 	for (MLLayer *layer in _layers) {
 		BOOL hasBiasNeuron= ([layer isKindOfClass:[MLNeuronLayer class]] && [(MLNeuronLayer *) layer usingBias]);
 		[sizes addObject:[NSNumber numberWithUnsignedInteger:layer.size - (hasBiasNeuron ? 1 : 0)]];
@@ -524,18 +524,18 @@ static const MLReal __one=                    1.0;
 	
 	// Save weights for each non-input layer
 	for (int i= 1; i < [_layers count]; i++) {
-		MLNeuronLayer *neuronLayer= [_layers objectAtIndex:i];
+		MLNeuronLayer *neuronLayer= (MLNeuronLayer *) [_layers objectAtIndex:i];
 		MLLayer *previousLayer= neuronLayer.previousLayer;
 		
-		NSMutableArray *layerConfig= [[NSMutableArray alloc] initWithCapacity:neuronLayer.size];
+		NSMutableArray<NSDictionary<NSString *, id> *> *layerConfig= [[NSMutableArray alloc] initWithCapacity:neuronLayer.size];
 		for (int j= 0; j < neuronLayer.size; j++) {
 			MLNeuron *neuron= [neuronLayer.neurons objectAtIndex:j];
 			
-			NSMutableArray *weights= [[NSMutableArray alloc] initWithCapacity:previousLayer.size];
+			NSMutableArray<NSNumber *> *weights= [[NSMutableArray alloc] initWithCapacity:previousLayer.size];
 			for (int k= 0; k < previousLayer.size; k++)
 				[weights addObject:[NSNumber numberWithDouble:neuron.weights[k]]];
 			
-			NSMutableDictionary *neuronConfig= [[NSMutableDictionary alloc] initWithCapacity:1];
+			NSMutableDictionary<NSString *, id> *neuronConfig= [[NSMutableDictionary alloc] initWithCapacity:1];
 			[neuronConfig setObject:weights forKey:CONFIG_PARAM_WEIGHTS];
 			
 			[layerConfig addObject:neuronConfig];

@@ -197,11 +197,11 @@
 													   hiddenFunctionType:MLActivationFunctionTypeLinear
 													   outputFunctionType:MLActivationFunctionTypeLinear];
 		
-		MLNeuronLayer *layer1= [net.layers objectAtIndex:1];
+		MLNeuronLayer *layer1= (MLNeuronLayer *) [net.layers objectAtIndex:1];
 		MLNeuron *neuron11= [layer1.neurons objectAtIndex:0];
 		MLNeuron *neuron12= [layer1.neurons objectAtIndex:1];
 		
-		MLNeuronLayer *layer2= [net.layers objectAtIndex:2];
+		MLNeuronLayer *layer2= (MLNeuronLayer *) [net.layers objectAtIndex:2];
 		MLNeuron *neuron2= [layer2.neurons objectAtIndex:0];
 		
 		// Set initial weights
@@ -282,11 +282,11 @@
 		
 		[net randomizeWeights];
 		
-		MLNeuronLayer *layer1= [net.layers objectAtIndex:1];
+		MLNeuronLayer *layer1= (MLNeuronLayer *) [net.layers objectAtIndex:1];
 		MLNeuron *neuron11= [layer1.neurons objectAtIndex:0];
 		MLNeuron *neuron12= [layer1.neurons objectAtIndex:1];
 		
-		MLNeuronLayer *layer2= [net.layers objectAtIndex:2];
+		MLNeuronLayer *layer2= (MLNeuronLayer *) [net.layers objectAtIndex:2];
 		MLNeuron *neuron2= [layer2.neurons objectAtIndex:0];
 		
 		NSDate *begin= [NSDate date];
@@ -339,14 +339,14 @@
 		MLReal output= net.outputBuffer[0];
 		
 		// Save the config and recreate the network
-		NSDictionary *config= [net saveConfigurationToDictionary];
+		NSDictionary<NSString *, id> *config= [net saveConfigurationToDictionary];
 		MLNeuralNetwork *net2= [MLNeuralNetwork createNetworkFromConfigurationDictionary:config];
 		
-		MLNeuronLayer *layer1_2= [net2.layers objectAtIndex:1];
+		MLNeuronLayer *layer1_2= (MLNeuronLayer *) [net2.layers objectAtIndex:1];
 		MLNeuron *neuron11_2= [layer1_2.neurons objectAtIndex:0];
 		MLNeuron *neuron12_2= [layer1_2.neurons objectAtIndex:1];
 		
-		MLNeuronLayer *layer2_2= [net2.layers objectAtIndex:2];
+		MLNeuronLayer *layer2_2= (MLNeuronLayer *) [net2.layers objectAtIndex:2];
 		MLNeuron *neuron2_2= [layer2_2.neurons objectAtIndex:0];
 		
 		/* Uncomment to dump network status after recreation

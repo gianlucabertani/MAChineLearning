@@ -40,15 +40,15 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (IOLineReader *) lineReaderWithFilePath:(NSString *)filePath;
++ (nonnull IOLineReader *) lineReaderWithFilePath:(nonnull NSString *)filePath;
 
-- (instancetype) initWithFilePath:(NSString *)filePath;
+- (nonnull instancetype) initWithFilePath:(nonnull NSString *)filePath;
 
 
 #pragma mark -
 #pragma mark Reading
 
-- (NSString *) readLine;
+- (nullable NSString *) readLine;
 
 
 #pragma mark -

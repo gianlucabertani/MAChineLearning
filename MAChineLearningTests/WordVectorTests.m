@@ -356,7 +356,7 @@
     // Original accuracy checkers of both word2vec and GloVe do not
     // consider first three words, so here we look if the expected
     // resulting word is within the first four similar words
-    NSArray *similarWords= [map mostSimilarWordsToVector:vec4];
+    NSArray<NSString *> *similarWords= [map mostSimilarWordsToVector:vec4];
     NSUInteger index= [similarWords indexOfObject:word4 inRange:NSMakeRange(0, 4)];
     XCTAssertTrue(index != NSNotFound);
     

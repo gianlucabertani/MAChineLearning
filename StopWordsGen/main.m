@@ -51,12 +51,12 @@ int main(int argc, const char * argv[]) {
 		if (argc != 2)
 			return MISSING_ARGUMENT;
 		
-		NSMutableDictionary *stopWords= [NSMutableDictionary dictionary];
+		NSMutableDictionary<NSString *> *stopWords= [NSMutableDictionary dictionary];
 		
 		// Get directory list at path of first argument
 		NSFileManager *manager= [NSFileManager defaultManager];
 		NSString *path= [[NSString alloc] initWithCString:argv[1] encoding:NSUTF8StringEncoding];
-		NSArray *fileNames= [manager contentsOfDirectoryAtPath:path error:nil];
+		NSArray<NSString *> *fileNames= [manager contentsOfDirectoryAtPath:path error:nil];
 
 		// Loop all the files
 		for (NSString *fileName in fileNames) {
@@ -74,11 +74,11 @@ int main(int argc, const char * argv[]) {
 			NSString *textContent= [[NSString alloc] initWithData:fileContent encoding:NSUTF8StringEncoding];
 
 			// Loop all the lines
-			NSArray *lines= [textContent componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+			NSArray<NSString *> *lines= [textContent componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 			
-			NSMutableArray *words= [NSMutableArray array];
+			NSMutableArray<NSString *> *words= [NSMutableArray array];
 			for (NSString *line in lines) {
-				NSArray *tokens= [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+				NSArray<NSString *> *tokens= [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 				
 				// Skip empty lines
 				if (tokens.count == 0)
@@ -114,7 +114,7 @@ int main(int argc, const char * argv[]) {
 		for (NSString *language in [stopWords allKeys]) {
 			[output appendFormat:@"\t\t@\"%@\": [NSSet setWithArray:@[", language];
 			
-			NSArray *words= [stopWords objectForKey:language];
+			NSArray<NSString *> *words= [stopWords objectForKey:language];
 			for (int i= 0; i < words.count; i++) {
 				if (i > 0)
 					[output appendString:@", "];

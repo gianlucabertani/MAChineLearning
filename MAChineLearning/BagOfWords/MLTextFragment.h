@@ -40,26 +40,34 @@
 #pragma -
 #pragma Initialization
 
-- (instancetype) initWithFrament:(NSString *)fragment range:(NSRange)range sentenceRange:(NSRange)sentenceRange tokenIndex:(float)index;
-- (instancetype) initWithFrament:(NSString *)fragment range:(NSRange)range sentenceRange:(NSRange)sentenceRange tokenIndex:(float)index linguisticTag:(NSString *)linguisticTag;
+- (nonnull instancetype) initWithFrament:(nonnull NSString *)fragment
+                                   range:(NSRange)range
+                           sentenceRange:(NSRange)sentenceRange
+                              tokenIndex:(float)index;
+
+- (nonnull instancetype) initWithFrament:(nonnull NSString *)fragment
+                                   range:(NSRange)range
+                           sentenceRange:(NSRange)sentenceRange
+                              tokenIndex:(float)index
+                           linguisticTag:(nullable NSString *)linguisticTag;
 
 
 #pragma -
 #pragma Continuity check and combination
 
-- (BOOL) isContiguous:(MLTextFragment *)previousFragment;
+- (BOOL) isContiguous:(nonnull MLTextFragment *)previousFragment;
 
-- (MLTextFragment *) combineWithFragment:(MLTextFragment *)previousFragment;
+- (nonnull MLTextFragment *) combineWithFragment:(nonnull MLTextFragment *)previousFragment;
 
 
 #pragma -
 #pragma Properties
 
-@property (nonatomic, readonly) NSString *fragment;
+@property (nonatomic, readonly, nonnull) NSString *fragment;
 @property (nonatomic, readonly) NSRange range;
 @property (nonatomic, readonly) NSRange sentenceRange;
 @property (nonatomic, readonly) float tokenIndex;
-@property (nonatomic, readonly) NSString *linguisticTag;
+@property (nonatomic, readonly, nullable) NSString *linguisticTag;
 
 
 @end

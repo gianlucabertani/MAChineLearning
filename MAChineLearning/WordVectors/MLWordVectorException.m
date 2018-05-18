@@ -42,13 +42,13 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLWordVectorException *) wordVectorExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
++ (MLWordVectorException *) wordVectorExceptionWithReason:(NSString *)reason userInfo:(NSDictionary<NSString *, id> *)userInfo {
 	MLWordVectorException *exception= [[MLWordVectorException alloc] initWithReason:reason userInfo:userInfo];
 	
 	return exception;
 }
 
-- (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo {
+- (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary<NSString *, id> *)userInfo {
 	if ((self = [super initWithName:WORD_VECTOR_EXCEPTION_NAME reason:reason userInfo:userInfo])) {
 		
 		// Nothing to do

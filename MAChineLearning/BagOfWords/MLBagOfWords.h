@@ -49,46 +49,60 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLBagOfWords *) bagOfWordsForTopicClassificationWithText:(NSString *)text
-												 documentID:(NSString *)documentID
-												 dictionary:(MLMutableWordDictionary *)dictionary
-												   language:(NSString *)languageCode
-									   featureNormalization:(MLFeatureNormalizationType)normalizationType;
++ (nonnull MLBagOfWords *) bagOfWordsForTopicClassificationWithText:(nonnull NSString *)text
+                                                         documentID:(nullable NSString *)documentID
+                                                         dictionary:(nonnull MLMutableWordDictionary *)dictionary
+                                                           language:(nonnull NSString *)languageCode
+                                               featureNormalization:(MLFeatureNormalizationType)normalizationType;
 
-+ (MLBagOfWords *) bagOfWordsForSentimentAnalysisWithText:(NSString *)text
-											   documentID:(NSString *)documentID
-											   dictionary:(MLMutableWordDictionary *)dictionary
-												 language:(NSString *)languageCode
-									 featureNormalization:(MLFeatureNormalizationType)normalizationType;
++ (nonnull MLBagOfWords *) bagOfWordsForSentimentAnalysisWithText:(nonnull NSString *)text
+                                                       documentID:(nullable NSString *)documentID
+                                                       dictionary:(nonnull MLMutableWordDictionary *)dictionary
+                                                         language:(nonnull NSString *)languageCode
+                                             featureNormalization:(MLFeatureNormalizationType)normalizationType;
 
-+ (MLBagOfWords *) bagOfWordsWithText:(NSString *)text
-						   documentID:(NSString *)documentID
-						   dictionary:(MLWordDictionary *)dictionary
-					  buildDictionary:(BOOL)buildDictionary
-							 language:(NSString *)languageCode
-						wordExtractor:(MLWordExtractorType)extractorType
-					 extractorOptions:(MLWordExtractorOption)extractorOptions
-				 featureNormalization:(MLFeatureNormalizationType)normalizationType
-						 outputBuffer:(MLReal *)outputBuffer;
++ (nonnull MLBagOfWords *) bagOfWordsWithText:(nonnull NSString *)text
+                                   documentID:(nullable NSString *)documentID
+                                   dictionary:(nonnull MLWordDictionary *)dictionary
+                              buildDictionary:(BOOL)buildDictionary
+                                     language:(nonnull NSString *)languageCode
+                                wordExtractor:(MLWordExtractorType)extractorType
+                             extractorOptions:(MLWordExtractorOption)extractorOptions
+                         featureNormalization:(MLFeatureNormalizationType)normalizationType
+                                 outputBuffer:(nullable MLReal *)outputBuffer;
 
-+ (MLBagOfWords *) bagOfWordsWithWords:(NSArray *)words
-							documentID:(NSString *)documentID
-							dictionary:(MLWordDictionary *)dictionary
-					   buildDictionary:(BOOL)buildDictionary
-				  featureNormalization:(MLFeatureNormalizationType)normalizationType
-						  outputBuffer:(MLReal *)outputBuffer;
++ (nonnull MLBagOfWords *) bagOfWordsWithWords:(nonnull NSArray<NSString *> *)words
+                                    documentID:(nullable NSString *)documentID
+                                    dictionary:(nonnull MLWordDictionary *)dictionary
+                               buildDictionary:(BOOL)buildDictionary
+                          featureNormalization:(MLFeatureNormalizationType)normalizationType
+                                  outputBuffer:(nullable MLReal *)outputBuffer;
 
-- (instancetype) initWithText:(NSString *)text documentID:(NSString *)documentID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary language:(NSString *)languageCode wordExtractor:(MLWordExtractorType)extractorType extractorOptions:(MLWordExtractorOption)extractorOptions featureNormalization:(MLFeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer;
-- (instancetype) initWithWords:(NSArray *)words documentID:(NSString *)documentID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(MLFeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer;
+- (nonnull instancetype) initWithText:(nonnull NSString *)text
+                           documentID:(nullable NSString *)documentID
+                           dictionary:(nonnull MLWordDictionary *)dictionary
+                      buildDictionary:(BOOL)buildDictionary
+                             language:(nonnull NSString *)languageCode
+                        wordExtractor:(MLWordExtractorType)extractorType
+                     extractorOptions:(MLWordExtractorOption)extractorOptions
+                 featureNormalization:(MLFeatureNormalizationType)normalizationType
+                         outputBuffer:(nullable MLReal *)outputBuffer;
+
+- (nonnull instancetype) initWithWords:(nonnull NSArray<NSString *> *)words
+                            documentID:(nullable NSString *)documentID
+                            dictionary:(nonnull MLWordDictionary *)dictionary
+                       buildDictionary:(BOOL)buildDictionary
+                  featureNormalization:(MLFeatureNormalizationType)normalizationType
+                          outputBuffer:(nullable MLReal *)outputBuffer;
 
 
 #pragma mark -
 #pragma mark Dictionary building
 
-+ (void) buildDictionaryWithText:(NSString *)text
-					  documentID:(NSString *)documentID
-					  dictionary:(MLMutableWordDictionary *)dictionary
-						language:(NSString *)languageCode
++ (void) buildDictionaryWithText:(nonnull NSString *)text
+					  documentID:(nullable NSString *)documentID
+					  dictionary:(nonnull MLMutableWordDictionary *)dictionary
+						language:(nonnull NSString *)languageCode
 				   wordExtractor:(MLWordExtractorType)extractorType
 				extractorOptions:(MLWordExtractorOption)extractorOptions;
 
@@ -96,25 +110,30 @@
 #pragma mark -
 #pragma mark Languages guessing
 
-+ (NSString *) guessLanguageCodeWithLinguisticTaggerForText:(NSString *)text;
-+ (NSString *) guessLanguageCodeWithStopWordsForText:(NSString *)text;
++ (nullable NSString *) guessLanguageCodeWithLinguisticTaggerForText:(nonnull NSString *)text;
++ (nullable NSString *) guessLanguageCodeWithStopWordsForText:(nonnull NSString *)text;
 
 
 #pragma mark -
 #pragma mark Word extractors
 
-+ (NSArray *) extractWordsWithSimpleTokenizerFromText:(NSString *)text withLanguage:(NSString *)languageCode extractorOptions:(MLWordExtractorOption)extractorOptions;
-+ (NSArray *) extractWordsWithLinguisticTaggerFromText:(NSString *)text withLanguage:(NSString *)languageCode extractorOptions:(MLWordExtractorOption)extractorOptions;
++ (nonnull NSArray<NSString *> *) extractWordsWithSimpleTokenizerFromText:(nonnull NSString *)text
+                                                             withLanguage:(nonnull NSString *)languageCode
+                                                         extractorOptions:(MLWordExtractorOption)extractorOptions;
+
++ (nonnull NSArray<NSString *> *) extractWordsWithLinguisticTaggerFromText:(nonnull NSString *)text
+                                                              withLanguage:(nonnull NSString *)languageCode
+                                                          extractorOptions:(MLWordExtractorOption)extractorOptions;
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) NSString *documentID;
-@property (nonatomic, readonly) NSArray *words;
+@property (nonatomic, readonly, nullable) NSString *documentID;
+@property (nonatomic, readonly, nonnull) NSArray<NSString *> *words;
 
 @property (nonatomic, readonly) NSUInteger outputSize;
-@property (nonatomic, readonly) MLReal *outputBuffer;
+@property (nonatomic, readonly, nonnull) MLReal *outputBuffer;
 
 
 @end

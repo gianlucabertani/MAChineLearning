@@ -40,9 +40,11 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLWordVectorException *) wordVectorExceptionWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
++ (nonnull MLWordVectorException *) wordVectorExceptionWithReason:(nonnull NSString *)reason
+                                                         userInfo:(nullable NSDictionary<NSString *, id> *)userInfo;
 
-- (instancetype) initWithReason:(NSString *)reason userInfo:(NSDictionary *)userInfo;
+- (nonnull instancetype) initWithReason:(nonnull NSString *)reason
+                               userInfo:(nonnull NSDictionary<NSString *, id> *)userInfo;
 
 
 @end

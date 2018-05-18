@@ -52,7 +52,7 @@
 
 @interface MLBagOfWords () {
 	NSString *_documentID;
-	NSArray *_words;
+	NSArray<NSString *> *_words;
 
 	NSUInteger _outputSize;
 	MLReal *_outputBuffer;
@@ -64,7 +64,7 @@
 #pragma mark Extractor support
 
 + (NSString *) addSpaceInText:(NSString *)text afterCharactersInSet:(NSCharacterSet *)charSet;
-+ (void) insertEmoticonFragments:(NSString *)text fragments:(NSMutableArray *)fragments;
++ (void) insertEmoticonFragments:(NSString *)text fragments:(NSMutableArray<MLTextFragment *> *)fragments;
 
 
 #pragma mark -
@@ -81,7 +81,7 @@
 #pragma mark -
 #pragma mark BagOfWords statics
 
-static NSDictionary *__stopWords= nil;
+static NSDictionary<NSString *, NSSet<NSString *> *> *__stopWords= nil;
 
 
 #pragma mark -
@@ -131,7 +131,7 @@ static NSDictionary *__stopWords= nil;
 	return bagOfWords;
 }
 
-+ (MLBagOfWords *) bagOfWordsWithWords:(NSArray *)words documentID:(NSString *)documentID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(MLFeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer {
++ (MLBagOfWords *) bagOfWordsWithWords:(NSArray<NSString *> *)words documentID:(NSString *)documentID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(MLFeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer {
 	MLBagOfWords *bagOfWords= [[MLBagOfWords alloc] initWithWords:words
 														   documentID:documentID
 													   dictionary:dictionary
@@ -214,7 +214,7 @@ static NSDictionary *__stopWords= nil;
 	return self;
 }
 
-- (instancetype) initWithWords:(NSArray *)words documentID:(NSString *)documentID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(MLFeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer {
+- (instancetype) initWithWords:(NSArray<NSString *> *)words documentID:(NSString *)documentID dictionary:(MLWordDictionary *)dictionary buildDictionary:(BOOL)buildDictionary featureNormalization:(MLFeatureNormalizationType)normalizationType outputBuffer:(MLReal *)outputBuffer {
 	if ((self = [super init])) {
 		
 		// Checks
@@ -361,7 +361,7 @@ static NSDictionary *__stopWords= nil;
 #pragma mark Dictionary building
 
 + (void) buildDictionaryWithText:(NSString *)text documentID:(NSString *)documentID dictionary:(MLMutableWordDictionary *)dictionary language:(NSString *)languageCode wordExtractor:(MLWordExtractorType)extractorType extractorOptions:(MLWordExtractorOption)extractorOptions {
-	NSArray *words= nil;
+	NSArray<NSString *> *words= nil;
 	
 	// Run the appropriate word extractor
 	switch (extractorType) {
@@ -403,11 +403,11 @@ static NSDictionary *__stopWords= nil;
 			__stopWords= ML_STOP_WORDS;
 		
 		// Prepare the score table
-		NSMutableDictionary *scores= [NSMutableDictionary dictionary];
+		NSMutableDictionary<NSString *, NSNumber *> *scores= [NSMutableDictionary dictionary];
 		
 		// Search for stopwords in text, each occurrence counts as 1
 		int wordsCount= 0;
-		NSArray *words= [text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		NSArray<NSString *> *words= [text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		for (NSString *word in words) {
 			NSString *trimmedWord= [word stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
 			
@@ -448,7 +448,7 @@ static NSDictionary *__stopWords= nil;
 			return [[scores allKeys] firstObject];
 		
 		// Sort languages by scores and take the highest one
-		NSArray *sortedScores= [[scores allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		NSArray<NSString *> *sortedScores= [[scores allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 			NSString *language1= (NSString *) obj1;
 			NSString *language2= (NSString *) obj2;
 			
@@ -466,7 +466,7 @@ static NSDictionary *__stopWords= nil;
 #pragma mark -
 #pragma mark Word extractors
 
-+ (NSArray *) extractWordsWithLinguisticTaggerFromText:(NSString *)text withLanguage:(NSString *)languageCode extractorOptions:(MLWordExtractorOption)extractorOptions {
++ (NSArray<NSString *> *) extractWordsWithLinguisticTaggerFromText:(NSString *)text withLanguage:(NSString *)languageCode extractorOptions:(MLWordExtractorOption)extractorOptions {
 
 	// Checks
 	if ((extractorOptions & MLWordExtractorOptionOmitStopWords) &&
@@ -487,9 +487,9 @@ static NSDictionary *__stopWords= nil;
 		text= [MLBagOfWords addSpaceInText:text afterCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
 		
 		// Prepare containers and stopwords list
-		NSMutableArray *fragments= [NSMutableArray arrayWithCapacity:text.length / 5];
-		NSMutableArray *combinedFragments= [NSMutableArray arrayWithCapacity:text.length / 10];
-		NSMutableArray *fragmentsToBeOmitted= [NSMutableArray arrayWithCapacity:text.length / 10];
+		NSMutableArray<MLTextFragment *> *fragments= [NSMutableArray arrayWithCapacity:text.length / 5];
+		NSMutableArray<MLTextFragment *> *combinedFragments= [NSMutableArray arrayWithCapacity:text.length / 10];
+		NSMutableArray<MLTextFragment *> *fragmentsToBeOmitted= [NSMutableArray arrayWithCapacity:text.length / 10];
 		NSSet *stopWords= (languageCode ? [__stopWords objectForKey:languageCode] : nil);
 		
 		// Scan text with the linguistic tagger
@@ -703,7 +703,7 @@ static NSDictionary *__stopWords= nil;
 			[self insertEmoticonFragments:originalText fragments:fragments];
 
 		// Return the tokens
-		NSMutableArray *words= [[NSMutableArray alloc] initWithCapacity:fragments.count];
+		NSMutableArray<NSString *> *words= [[NSMutableArray alloc] initWithCapacity:fragments.count];
 		
 		for (MLTextFragment *fragment in fragments)
 			[words addObject:fragment.fragment];
@@ -712,7 +712,7 @@ static NSDictionary *__stopWords= nil;
 	}
 }
 
-+ (NSArray *) extractWordsWithSimpleTokenizerFromText:(NSString *)text withLanguage:(NSString *)languageCode extractorOptions:(MLWordExtractorOption)extractorOptions {
++ (NSArray<NSString *> *) extractWordsWithSimpleTokenizerFromText:(NSString *)text withLanguage:(NSString *)languageCode extractorOptions:(MLWordExtractorOption)extractorOptions {
 	
 	// Checks
 	if ((extractorOptions & MLWordExtractorOptionOmitStopWords) &&
@@ -733,8 +733,8 @@ static NSDictionary *__stopWords= nil;
 		text= [MLBagOfWords addSpaceInText:text afterCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
 		
 		// Prepare containers and stopword list
-		NSMutableArray *fragments= [NSMutableArray arrayWithCapacity:text.length / 5];
-		NSMutableArray *combinedFragments= [NSMutableArray arrayWithCapacity:text.length / 10];
+		NSMutableArray<MLTextFragment *> *fragments= [NSMutableArray arrayWithCapacity:text.length / 5];
+		NSMutableArray<MLTextFragment *> *combinedFragments= [NSMutableArray arrayWithCapacity:text.length / 10];
 		NSSet *stopWords= (languageCode ? [__stopWords objectForKey:languageCode] : nil);
 
 		// Split text by spaces and new lines
@@ -823,7 +823,7 @@ static NSDictionary *__stopWords= nil;
 			[MLBagOfWords insertEmoticonFragments:originalText fragments:fragments];
 		
 		// Return the tokens
-		NSMutableArray *words= [[NSMutableArray alloc] initWithCapacity:fragments.count];
+		NSMutableArray<NSString *> *words= [[NSMutableArray alloc] initWithCapacity:fragments.count];
 		
 		for (MLTextFragment *fragment in fragments)
 			[words addObject:fragment.fragment];
@@ -857,8 +857,8 @@ static NSDictionary *__stopWords= nil;
 	return expandedText;
 }
 
-+ (void) insertEmoticonFragments:(NSString *)text fragments:(NSMutableArray *)fragments {
-	NSMutableArray *matches= [NSMutableArray array];
++ (void) insertEmoticonFragments:(NSString *)text fragments:(NSMutableArray<MLTextFragment *> *)fragments {
+	NSMutableArray<NSTextCheckingResult *> *matches= [NSMutableArray array];
 	
 	// Look for emoticons with a couple of regex
 	NSRegularExpression *regex= [NSRegularExpression regularExpressionWithPattern:LEFT_TO_RIGHT_EMOTICON

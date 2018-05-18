@@ -41,7 +41,11 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithLayer:(MLNeuronLayer *)layer index:(NSUInteger)index outputBuffer:(MLReal *)outputBuffer inputSize:(NSUInteger)inputSize inputBuffer:(MLReal *)inputBuffer;
+- (nonnull instancetype) initWithLayer:(nonnull MLNeuronLayer *)layer
+                                 index:(NSUInteger)index
+                          outputBuffer:(nonnull MLReal *)outputBuffer
+                             inputSize:(NSUInteger)inputSize
+                           inputBuffer:(nonnull MLReal *)inputBuffer;
 
 
 @end

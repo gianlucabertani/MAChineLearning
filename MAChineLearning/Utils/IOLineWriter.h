@@ -40,16 +40,18 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (IOLineWriter *) lineWriterWithFilePath:(NSString *)filePath append:(BOOL)append;
++ (nonnull IOLineWriter *) lineWriterWithFilePath:(nonnull NSString *)filePath
+                                           append:(BOOL)append;
 
-- (instancetype) initWithFilePath:(NSString *)filePath append:(BOOL)append;
+- (nonnull instancetype) initWithFilePath:(nonnull NSString *)filePath
+                                   append:(BOOL)append;
 
 
 #pragma mark -
 #pragma mark Writing
 
-- (void) write:(NSString *)format, ...;
-- (void) writeLine:(NSString *)format, ...;
+- (void) write:(nonnull NSString *)format, ...;
+- (void) writeLine:(nonnull NSString *)format, ...;
 - (void) writeLine;
 
 

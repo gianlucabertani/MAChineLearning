@@ -50,20 +50,23 @@
 #pragma -
 #pragma Initialization
 
-- (instancetype) initWithWord:(NSString *)word position:(NSUInteger)position;
-- (instancetype) initWithWordInfo:(MLWordInfo *)wordInfo newPosition:(NSUInteger)newPosition;
+- (nonnull instancetype) initWithWord:(nonnull NSString *)word
+                             position:(NSUInteger)position;
+
+- (nonnull instancetype) initWithWordInfo:(nonnull MLWordInfo *)wordInfo
+                              newPosition:(NSUInteger)newPosition;
 
 
 #pragma -
 #pragma Properties
 
-@property (nonatomic, readonly) NSString *word;
+@property (nonatomic, readonly, nonnull) NSString *word;
 @property (nonatomic, readonly) NSUInteger position;
 
 @property (nonatomic, readonly) NSUInteger totalOccurrencies;
 @property (nonatomic, readonly) NSUInteger documentOccurrencies;
 
-@property (nonatomic, readonly) NSSet *documentIDs;
+@property (nonatomic, readonly, nullable) NSSet *documentIDs;
 
 
 @end

@@ -41,47 +41,49 @@
 #import "MLCostFunctionType.h"
 
 
+@class MLLayer;
+
 @interface MLNeuralNetwork : NSObject
 
 
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLNeuralNetwork *) createNetworkFromConfigurationDictionary:(NSDictionary *)config;
++ (nonnull MLNeuralNetwork *) createNetworkFromConfigurationDictionary:(nonnull NSDictionary<NSString *, id> *)config;
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
-                               outputFunctionType:(MLActivationFunctionType)funcType;
++ (nonnull MLNeuralNetwork *) createNetworkWithLayerSizes:(nonnull NSArray<NSNumber *> *)sizes
+                                       outputFunctionType:(MLActivationFunctionType)funcType;
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
-                                 costFunctionType:(MLCostFunctionType)costType
-                               outputFunctionType:(MLActivationFunctionType)funcType;
++ (nonnull MLNeuralNetwork *) createNetworkWithLayerSizes:(nonnull NSArray<NSNumber *> *)sizes
+                                         costFunctionType:(MLCostFunctionType)costType
+                                       outputFunctionType:(MLActivationFunctionType)funcType;
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
-                              backPropagationType:(MLBackPropagationType)backPropType
-                               outputFunctionType:(MLActivationFunctionType)funcType;
++ (nonnull MLNeuralNetwork *) createNetworkWithLayerSizes:(nonnull NSArray<NSNumber *> *)sizes
+                                      backPropagationType:(MLBackPropagationType)backPropType
+                                       outputFunctionType:(MLActivationFunctionType)funcType;
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
-                                 costFunctionType:(MLCostFunctionType)costType
-                              backPropagationType:(MLBackPropagationType)backPropType
-                               outputFunctionType:(MLActivationFunctionType)funcType;
++ (nonnull MLNeuralNetwork *) createNetworkWithLayerSizes:(nonnull NSArray<NSNumber *> *)sizes
+                                         costFunctionType:(MLCostFunctionType)costType
+                                      backPropagationType:(MLBackPropagationType)backPropType
+                                       outputFunctionType:(MLActivationFunctionType)funcType;
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
-                              backPropagationType:(MLBackPropagationType)backPropType
-                               hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType
-                               outputFunctionType:(MLActivationFunctionType)funcType;
++ (nonnull MLNeuralNetwork *) createNetworkWithLayerSizes:(nonnull NSArray<NSNumber *> *)sizes
+                                      backPropagationType:(MLBackPropagationType)backPropType
+                                       hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType
+                                       outputFunctionType:(MLActivationFunctionType)funcType;
 
-+ (MLNeuralNetwork *) createNetworkWithLayerSizes:(NSArray *)sizes
-                                 costFunctionType:(MLCostFunctionType)costType
-                              backPropagationType:(MLBackPropagationType)backPropType
-                               hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType
-                               outputFunctionType:(MLActivationFunctionType)funcType;
++ (nonnull MLNeuralNetwork *) createNetworkWithLayerSizes:(nonnull NSArray<NSNumber *> *)sizes
+                                         costFunctionType:(MLCostFunctionType)costType
+                                      backPropagationType:(MLBackPropagationType)backPropType
+                                       hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType
+                                       outputFunctionType:(MLActivationFunctionType)funcType;
 
-- (instancetype) initWithLayerSizes:(NSArray *)sizes
-                            useBias:(BOOL)useBias
-                   costFunctionType:(MLCostFunctionType)costType
-                backPropagationType:(MLBackPropagationType)backPropType
-                 hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType
-                 outputFunctionType:(MLActivationFunctionType)funcType;
+- (nonnull instancetype) initWithLayerSizes:(nonnull NSArray<NSNumber *> *)sizes
+                                    useBias:(BOOL)useBias
+                           costFunctionType:(MLCostFunctionType)costType
+                        backPropagationType:(MLBackPropagationType)backPropType
+                         hiddenFunctionType:(MLActivationFunctionType)hiddenFuncType
+                         outputFunctionType:(MLActivationFunctionType)funcType;
 
 
 #pragma mark -
@@ -104,20 +106,20 @@
 #pragma mark -
 #pragma mark Configuration
 
-- (NSDictionary *) saveConfigurationToDictionary;
+- (nonnull NSDictionary<NSString *, id> *) saveConfigurationToDictionary;
 
 
 #pragma mark -
 #pragma mark Properties
 
-@property (nonatomic, readonly) NSArray *layers;
+@property (nonatomic, readonly, nonnull) NSArray<MLLayer *> *layers;
 
 @property (nonatomic, readonly) NSUInteger inputSize;
-@property (nonatomic, readonly) MLReal *inputBuffer;
+@property (nonatomic, readonly, nonnull) MLReal *inputBuffer;
 
 @property (nonatomic, readonly) NSUInteger outputSize;
-@property (nonatomic, readonly) MLReal *outputBuffer;
-@property (nonatomic, readonly) MLReal *expectedOutputBuffer;
+@property (nonatomic, readonly, nonnull) MLReal *outputBuffer;
+@property (nonatomic, readonly, nonnull) MLReal *expectedOutputBuffer;
 @property (nonatomic, readonly) MLReal cost;
 
 @property (nonatomic, readonly) MLNeuralNetworkStatus status;

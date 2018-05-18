@@ -88,7 +88,7 @@
 		
 		// Get file size (we have no other way to check for EOF)
 		unsigned long long fileSize= ULONG_LONG_MAX;
-		NSDictionary *attribures= [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
+		NSDictionary<NSFileAttributeKey, id> *attribures= [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
 		if (attribures)
 			fileSize= [attribures fileSize];
 		

@@ -41,13 +41,18 @@
 #import "MLCostFunctionType.h"
 
 
+@class MLNeuron;
+
 @interface MLNeuronLayer : MLLayer
 
 
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size useBias:(BOOL)useBias activationFunctionType:(MLActivationFunctionType)funcType;
+- (nonnull instancetype) initWithIndex:(NSUInteger)index
+                                  size:(NSUInteger)size
+                               useBias:(BOOL)useBias
+                activationFunctionType:(MLActivationFunctionType)funcType;
 
 
 #pragma mark -
@@ -60,8 +65,13 @@
 #pragma mark Operations
 
 - (void) feedForward;
+
 - (void) fetchErrorFromNextLayer;
-- (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType learningRate:(MLReal)learningRate costFunction:(MLCostFunctionType)costType;
+
+- (void) backPropagateWithAlgorithm:(MLBackPropagationType)backPropType
+                       learningRate:(MLReal)learningRate
+                       costFunction:(MLCostFunctionType)costType;
+
 - (void) updateWeights;
 
 
@@ -70,13 +80,13 @@
 
 @property (nonatomic, readonly) MLActivationFunctionType funcType;
 
-@property (nonatomic, readonly) MLReal *errorBuffer;
-@property (nonatomic, readonly) MLReal *deltaBuffer;
+@property (nonatomic, readonly, nonnull) MLReal *errorBuffer;
+@property (nonatomic, readonly, nonnull) MLReal *deltaBuffer;
 
-@property (nonatomic, readonly) MLReal *outputBuffer;
+@property (nonatomic, readonly, nonnull) MLReal *outputBuffer;
 
 @property (nonatomic, readonly) BOOL usingBias;
-@property (nonatomic, readonly) NSArray *neurons;
+@property (nonatomic, readonly, nonnull) NSArray<MLNeuron *> *neurons;
 
 
 @end

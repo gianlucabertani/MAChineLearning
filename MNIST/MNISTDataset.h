@@ -41,13 +41,13 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithFileName:(NSString *)fileName;
+- (nonnull instancetype) initWithFileName:(nonnull NSString *)fileName;
 
 
 #pragma mark -
 #pragma mark Accessors
 
-- (MLReal *) itemAtIndex:(NSUInteger)index;
+- (nonnull MLReal *) itemAtIndex:(NSUInteger)index;
 
 
 #pragma mark -

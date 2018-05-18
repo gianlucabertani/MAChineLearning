@@ -66,7 +66,7 @@
 	return [self initWithWordInfos:dictionary.wordInfos];
 }
 
-- (instancetype) initWithWordInfos:(NSArray *)wordInfos {
+- (instancetype) initWithWordInfos:(NSArray<MLWordInfo *> *)wordInfos {
 	if ((self = [self init])) {
 		
 		// Initialization
@@ -116,7 +116,7 @@
 #pragma mark Dictionary filtering
 
 - (MLWordDictionary *) keepWordsWithHighestOccurrenciesUpToSize:(NSUInteger)size {
-	NSArray *sortedWordInfos= [[_dictionary allValues] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+	NSArray<MLWordInfo *> *sortedWordInfos= [[_dictionary allValues] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		MLWordInfo *info1= (MLWordInfo *) obj1;
 		MLWordInfo *info2= (MLWordInfo *) obj2;
 		
@@ -124,7 +124,7 @@
 		((info1.totalOccurrencies > info2.totalOccurrencies) ? NSOrderedAscending : NSOrderedSame);
 	}];
 	
-	NSMutableArray *newWordInfos= [[NSMutableArray alloc] initWithCapacity:size];
+	NSMutableArray<MLWordInfo *> *newWordInfos= [[NSMutableArray alloc] initWithCapacity:size];
 	for (MLWordInfo *wordInfo in sortedWordInfos) {
 		if (newWordInfos.count == size)
 			break;
@@ -148,9 +148,9 @@
 }
 
 - (MLWordDictionary *) filterWordsWith:(MLWordFilter)filter {
-	NSMutableArray *newWordInfos= [[NSMutableArray alloc] init];
+	NSMutableArray<MLWordInfo *> *newWordInfos= [[NSMutableArray alloc] init];
 
-	NSArray *wordInfos= [_dictionary allValues];
+	NSArray<MLWordInfo *> *wordInfos= [_dictionary allValues];
 	for (MLWordInfo *wordInfo in wordInfos) {
 		MLWordFilterOutcome outcome= filter(wordInfo);
 
@@ -176,7 +176,7 @@
 	
 	[descr appendString:@"{\n"];
 	
-	NSArray *wordInfos= [_dictionary allValues];
+	NSArray<MLWordInfo *> *wordInfos= [_dictionary allValues];
 	for (MLWordInfo *wordInfo in wordInfos)
         [descr appendFormat:@"\t'%@': %lu (%lu)\n", wordInfo.word, (unsigned long) wordInfo.totalOccurrencies, (unsigned long) wordInfo.documentOccurrencies];
 	
@@ -197,7 +197,7 @@
 
 @dynamic wordInfos;
 
-- (NSArray *) wordInfos {
+- (NSArray<MLWordInfo *> *) wordInfos {
 	return [_dictionary allValues];
 }
 

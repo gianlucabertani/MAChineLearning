@@ -42,15 +42,16 @@
 #pragma mark -
 #pragma mark Initialization
 
-+ (MLMutableWordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize;
++ (nonnull MLMutableWordDictionary *) dictionaryWithMaxSize:(NSUInteger)maxSize;
 
-- (instancetype) initWithMaxSize:(NSUInteger)maxSize;
+- (nonnull instancetype) initWithMaxSize:(NSUInteger)maxSize;
 
 
 #pragma mark -
 #pragma mark Dictionary building
 
-- (void) countOccurrenceForWord:(NSString *)word documentID:(NSString *)documentID;
+- (void) countOccurrenceForWord:(nonnull NSString *)word
+                     documentID:(nullable NSString *)documentID;
 
 
 #pragma mark -

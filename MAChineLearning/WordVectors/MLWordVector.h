@@ -44,23 +44,25 @@
 #pragma -
 #pragma Initialization
 
-- (instancetype) initWithVector:(MLReal *)vector size:(NSUInteger)size freeVectorOnDealloc:(BOOL)freeOnDealloc;
+- (nonnull instancetype) initWithVector:(nonnull MLReal *)vector
+                                   size:(NSUInteger)size
+                    freeVectorOnDealloc:(BOOL)freeOnDealloc;
 
 
 #pragma -
 #pragma Vector algebra and comparison
 
-- (MLWordVector *) addVector:(MLWordVector *)vector;
-- (MLWordVector *) subtractVector:(MLWordVector *)vector;
+- (nonnull MLWordVector *) addVector:(nonnull MLWordVector *)vector;
+- (nonnull MLWordVector *) subtractVector:(nonnull MLWordVector *)vector;
 
-- (MLReal) similarityToVector:(MLWordVector *)vector;
-- (MLReal) distanceToVector:(MLWordVector *)vector;
+- (MLReal) similarityToVector:(nonnull MLWordVector *)vector;
+- (MLReal) distanceToVector:(nonnull MLWordVector *)vector;
 
 
 #pragma -
 #pragma Properties
 
-@property (nonatomic, readonly) MLReal *vector;
+@property (nonatomic, readonly, nonnull) MLReal *vector;
 @property (nonatomic, readonly) NSUInteger size;
 @property (nonatomic, readonly) MLReal magnitude;
 

@@ -45,7 +45,8 @@
 #pragma mark -
 #pragma mark Initialization
 
-- (instancetype) initWithIndex:(NSUInteger)index size:(NSUInteger)size;
+- (nonnull instancetype) initWithIndex:(NSUInteger)index
+                                  size:(NSUInteger)size;
 
 
 #pragma mark -
@@ -60,8 +61,8 @@
 @property (nonatomic, readonly) NSUInteger index;
 @property (nonatomic, readonly) NSUInteger size;
 
-@property (nonatomic, weak) MLLayer *previousLayer;
-@property (nonatomic, weak) MLLayer *nextLayer;
+@property (nonatomic, weak, nullable) MLLayer *previousLayer;
+@property (nonatomic, weak, nullable) MLLayer *nextLayer;
 
 
 @end
