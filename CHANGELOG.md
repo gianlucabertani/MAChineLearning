@@ -1,6 +1,14 @@
 # MAChineLearning Change Log
 
 
+## 1.0.3
+
+Minor changes:
+
+- Improved memory consumption of MLWordVectorDictionary.
+- Added generics and nullability annotations.
+
+
 ## 1.0.2
 
 Minor changes:

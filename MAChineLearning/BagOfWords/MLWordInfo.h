@@ -3,7 +3,7 @@
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 10/05/15.
-//  Copyright (c) 2015-2017 Gianluca Bertani. All rights reserved.
+//  Copyright (c) 2015-2018 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
@@ -50,12 +50,15 @@
 #pragma -
 #pragma Initialization
 
+- (nonnull instancetype) init NS_UNAVAILABLE;
+
 - (nonnull instancetype) initWithWord:(nonnull NSString *)word
                              position:(NSUInteger)position
                                       NS_DESIGNATED_INITIALIZER;
 
 - (nonnull instancetype) initWithWordInfo:(nonnull MLWordInfo *)wordInfo
-                              newPosition:(NSUInteger)newPosition;
+                              newPosition:(NSUInteger)newPosition
+                                          NS_DESIGNATED_INITIALIZER;
 
 
 #pragma -

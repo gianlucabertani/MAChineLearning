@@ -3,13 +3,13 @@ Pod::Spec.new do |s|
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
   s.name         = "MAChineLearning"
-  s.version      = "1.0.2"
-  s.summary      = "Machine Learning for the Mac."
+  s.version      = "1.0.3"
+  s.summary      = "Machine Learning for the Mac and iOS."
 
   s.description  = <<-DESC
                    MAChineLearning is framework that provides a quick and easy way to experiment Machine Learning with
-                   native code on the Mac, with some specific support for Natural Language Processing. It is written in Objective-C, but it is
-                   compatible by Swift.
+                   native code on the Mac and iOS, with some specific support for Natural Language Processing.
+                   It is written in Objective-C, but it is compatible by Swift.
 
                    Currently the framework supports:
 

@@ -3,7 +3,7 @@
 //  MAChineLearning
 //
 //  Created by Gianluca Bertani on 26/02/2017.
-//  Copyright © 2017 Gianluca Bertani. All rights reserved.
+//  Copyright © 2017-2018 Gianluca Bertani. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions
