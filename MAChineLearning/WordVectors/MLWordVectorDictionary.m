@@ -534,7 +534,12 @@
             break;
         }
     }
-    
+
+    // Check that we have something to compute the vector on
+    if (words.count == 0)
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"Sentence reduced to nothing with the specified extractor options"
+                                                           userInfo:@{@"sentence": sentence}];
+
     // Compute the sentence vector
     MLWordVector *sentenceVector= nil;
     for (NSString *word in words) {
@@ -555,6 +560,11 @@
         }
     }
     
+    // Check also that we found at least one word in the dictionary
+    if (!sentenceVector)
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"No words could be found in the dictionary"
+                                                           userInfo:@{@"sentence": sentence}];
+
     // Normalization of vector
     MLReal magnitude= sentenceVector.magnitude;
     MLReal *mag1sentenceVector= MLAllocRealBuffer(sentenceVector.size);
