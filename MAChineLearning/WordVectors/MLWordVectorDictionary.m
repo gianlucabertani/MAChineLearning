@@ -541,6 +541,7 @@
                                                            userInfo:@{@"sentence": sentence}];
 
     // Compute the sentence vector
+    MLReal wordCount= 0.0;
     MLWordVector *sentenceVector= nil;
     for (NSString *word in words) {
         @autoreleasepool {
@@ -557,6 +558,8 @@
                 
             } else
                 sentenceVector= wordVector;
+            
+            wordCount += 1.0;
         }
     }
     
@@ -564,14 +567,20 @@
     if (!sentenceVector)
         @throw [MLWordVectorException wordVectorExceptionWithReason:@"No words could be found in the dictionary"
                                                            userInfo:@{@"sentence": sentence}];
-
-    // Normalization of vector
-    MLReal magnitude= sentenceVector.magnitude;
-    MLReal *mag1sentenceVector= MLAllocRealBuffer(sentenceVector.size);
-    ML_VSDIV(sentenceVector.vector, 1, &magnitude, mag1sentenceVector, 1, sentenceVector.size);
     
+    // Compute the centroid
+    MLReal *centroidVector= MLAllocRealBuffer(sentenceVector.size);
+    ML_VSDIV(sentenceVector.vector, 1, &wordCount, centroidVector, 1, sentenceVector.size);
+    
+    // Normalize the centroid
+    MLReal normL2= 0.0;
+    ML_SVESQ(centroidVector, 1, &normL2, sentenceVector.size);
+    normL2= ML_SQRT(normL2);
+    
+    ML_VSDIV(centroidVector, 1, &normL2, centroidVector, 1, sentenceVector.size);
+
     // Return the resulting vector
-    return [[MLWordVector alloc] initWithVector:mag1sentenceVector size:sentenceVector.size freeVectorOnDealloc:YES];
+    return [[MLWordVector alloc] initWithVector:centroidVector size:sentenceVector.size freeVectorOnDealloc:YES];
 }
 
 
