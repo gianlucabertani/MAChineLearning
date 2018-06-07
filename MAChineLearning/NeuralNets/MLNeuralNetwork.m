@@ -102,30 +102,30 @@ static const MLReal __one=                    1.0;
     
     // Get use of bias from configuration
     NSNumber *useBias= config[CONFIG_PARAM_USE_BIAS];
-    if (!useBias)
+    if (useBias == nil)
         @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration: missing flag for use of bias"
                                                                  userInfo:@{@"config": config}];
     
     // Get hidden activation function type from configuration
     NSNumber *hiddenFuncType= config[CONFIG_PARAM_HIDDEN_FUNCTION_TYPE];
-    if (!hiddenFuncType)
+    if (hiddenFuncType == nil)
         @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration: missing hidden function type"
                                                                  userInfo:@{@"config": config}];
     
     NSNumber *funcType= config[CONFIG_PARAM_OUTPUT_FUNCTION_TYPE];
-    if (!funcType)
+    if (funcType == nil)
         @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration: missing output function type"
                                                                  userInfo:@{@"config": config}];
     
     // Get backpropagation type from configuration
     NSNumber *backPropType= config[CONFIG_PARAM_BACK_PROPAGATION_TYPE];
-    if (!backPropType)
+    if (backPropType == nil)
         @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration: missing backpropagation type"
                                                                  userInfo:@{@"config": config}];
     
     // Get backpropagation type from configuration
     NSNumber *costType= config[CONFIG_PARAM_COST_FUNCTION_TYPE];
-    if (!costType)
+    if (costType == nil)
         @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration: missing cost function type"
                                                                  userInfo:@{@"config": config}];
     
@@ -148,10 +148,10 @@ static const MLReal __one=                    1.0;
             @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration: missing layer configuration"
                                                                      userInfo:@{@"config": config,
                                                                                 @"layer": @(i)}];
-
+        
         for (int j= 0; j < neuronLayer.size; j++) {
             MLNeuron *neuron= neuronLayer.neurons[j];
-
+            
             NSDictionary<NSString *, id> *neuronConfig= layerConfig[j];
             if (!neuronConfig)
                 @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration: missing neuron configuration"
@@ -168,7 +168,7 @@ static const MLReal __one=                    1.0;
             
             for (int k= 0; k < previousLayer.size; k++) {
                 NSNumber *weight= weights[k];
-                if (!weight)
+                if (weight == nil)
                     @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid configuration: missing neuron weight"
                                                                              userInfo:@{@"config": config,
                                                                                         @"layer": @(i),
@@ -301,25 +301,25 @@ static const MLReal __one=                    1.0;
         _hiddenFuncType= hiddenFuncType;
         _funcType= funcType;
         _costType= costType;
-
+        
         int i= 0;
         for (NSNumber *size in sizes) {
             if (![size isKindOfClass:[NSNumber class]])
                 @throw [MLNeuralNetworkException neuralNetworkExceptionWithReason:@"Invalid size specified"
                                                                          userInfo:@{@"size": size}];
-
+            
             if (i == 0) {
                 
                 // Create input layer
                 MLInputLayer *layer= [[MLInputLayer alloc] initWithIndex:i size:size.intValue];
                 [_layers addObject:layer];
-            
+                
             } else if (i == sizes.count -1) {
                 
                 // Create output neuron layer
                 MLNeuronLayer *layer= [[MLNeuronLayer alloc] initWithIndex:i size:size.intValue useBias:NO activationFunctionType:funcType];
                 [_layers addObject:layer];
-            
+                
             } else {
                 
                 // Create hidden neuron layer
@@ -344,7 +344,7 @@ static const MLReal __one=                    1.0;
             if (i == 0) {
                 _inputSize= layer.size;
                 _inputBuffer= ((MLInputLayer *) layer).inputBuffer;
-            
+                
             } else if (i == _layers.count -1) {
                 _outputSize= layer.size;
                 _outputBuffer= ((MLNeuronLayer *) layer).outputBuffer;
@@ -437,7 +437,7 @@ static const MLReal __one=                    1.0;
                                                                          userInfo:nil];
             break;
     }
-
+    
     // Check call sequence
     switch (_status) {
         case MLNeuralNetworkStatusFeededForward:
@@ -479,7 +479,7 @@ static const MLReal __one=                    1.0;
     }
     
     _status= MLNeuralNetworkStatusWeightsUpdated;
-
+    
     // Apply new weights
     for (int i= 1; i < _layers.count; i++) {
         MLNeuronLayer *layer= (MLNeuronLayer *) _layers[i];
@@ -513,7 +513,7 @@ static const MLReal __one=                    1.0;
     config[CONFIG_PARAM_BACK_PROPAGATION_TYPE]= @(_backPropType);
     config[CONFIG_PARAM_HIDDEN_FUNCTION_TYPE]= @(_hiddenFuncType);
     config[CONFIG_PARAM_USE_BIAS]= @(_useBias);
-
+    
     // Save layer sizes
     NSMutableArray<NSNumber *> *sizes= [[NSMutableArray alloc] initWithCapacity:_layers.count];
     for (MLLayer *layer in _layers) {
@@ -583,7 +583,7 @@ static const MLReal __one=                    1.0;
             // An "int" size is needed by vvlog,
             // the others still use _outputSize
             int outputSize= (int) _outputSize;
-
+            
             // Apply formula: cost = -Sum(expectedOutput[i] * ln(output[i]) + (1 - expectedOutput[i]) * ln(1 - output[i]))
             ML_VSMUL(_outputBuffer, 1, &__minusOne, tempBuffer, 1, _outputSize);
             ML_VSADD(tempBuffer, 1, &__one, tempBuffer, 1, _outputSize);
