@@ -52,7 +52,7 @@
     NSUInteger _wordCount;
     NSUInteger _vectorSize;
     
-    NSDictionary<NSString *, MLWordVector *> *_vectors;
+    NSMutableDictionary<NSString *, MLWordVector *> *_vectors;
 }
 
 @end
@@ -375,11 +375,12 @@
                                                        userInfo:nil];
 }
 
-- (instancetype) initWithDictionary:(NSDictionary<NSString *, MLWordVector *> *)vectorDictionary {
+- (instancetype) initWithDictionary:(NSMutableDictionary<NSString *, MLWordVector *> *)vectorDictionary {
     if ((self = [super init])) {
     
         // Initialization
         _vectors= vectorDictionary;
+        
         _vectorSize= vectorDictionary.allValues.firstObject.size;
         _wordCount= _vectors.count;
     }
@@ -490,7 +491,7 @@
     return [self vectorForSentence:sentence withLanguage:languageCode extractorType:MLWordExtractorTypeLinguisticTagger options:0 wordNotFound:nil];
 }
 
-- (MLWordVector *) vectorForSentence:(NSString *)sentence withLanguage:(NSString *)languageCode extractorType:(MLWordExtractorType)extractorType options:(MLWordExtractorOption)options wordNotFound:(void (^)(NSString *))wordNotFoundHandler {
+- (MLWordVector *) vectorForSentence:(NSString *)sentence withLanguage:(NSString *)languageCode extractorType:(MLWordExtractorType)extractorType options:(MLWordExtractorOption)options wordNotFound:(MLWordVector *(^)(NSString *))wordNotFoundHandler {
     if (!languageCode) {
         
         // Guess the language
@@ -547,10 +548,30 @@
         @autoreleasepool {
             MLWordVector *wordVector= [self vectorForWord:word.lowercaseString];
             if (!wordVector) {
-                if (wordNotFoundHandler)
-                    wordNotFoundHandler(word);
+                if (wordNotFoundHandler) {
+                    
+                    // Try ask the handler if it has a word vector
+                    wordVector= wordNotFoundHandler(word);
+                    if (wordVector) {
+                        
+                        // Check vector size
+                        if (wordVector.size != self.vectorSize)
+                            @throw [MLWordVectorException wordVectorExceptionWithReason:@"Size of new vector does not match vector size for the rest of the dictionary"
+                                                                               userInfo:@{@"size": @(self.vectorSize),
+                                                                                          @"newVectorSize": @(wordVector.size)}];
+                        
+                        // Check vector magnitude
+                        if (ABS(wordVector.magnitude - 1.0) > 0.001)
+                            @throw [MLWordVectorException wordVectorExceptionWithReason:@"New vector is not normalized"
+                                                                               userInfo:@{@"magnitude": @(wordVector.magnitude)}];
 
-                continue;
+                        // Add the word vector to the dictionary
+                        [_vectors setObject:wordVector forKey:word.lowercaseString];
+                    }
+                }
+
+                if (!wordVector)
+                    continue;
             }
             
             if (sentenceVector) {

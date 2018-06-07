@@ -38,12 +38,12 @@
 #import "MLWordExtractorOption.h"
 
 
-typedef void (^MLWordNotFoundHanlder)(NSString * _Nonnull word);
-
-
 @class MLNeuralNetwork;
 @class MLWordDictionary;
 @class MLWordVector;
+
+typedef MLWordVector * _Nullable (^MLWordNotFoundHanlder)(NSString * _Nonnull word);
+
 
 @interface MLWordVectorDictionary : NSObject
 
@@ -57,7 +57,7 @@ typedef void (^MLWordNotFoundHanlder)(NSString * _Nonnull word);
 
 - (nonnull instancetype) init NS_UNAVAILABLE;
 
-- (nonnull instancetype) initWithDictionary:(nonnull NSDictionary<NSString *, MLWordVector *> *)vectorDictionary NS_DESIGNATED_INITIALIZER;
+- (nonnull instancetype) initWithDictionary:(nonnull NSMutableDictionary<NSString *, MLWordVector *> *)vectorDictionary NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark -
