@@ -1,6 +1,15 @@
 # MAChineLearning Change Log
 
 
+## 1.0.4
+
+Minor changes to MLWordVectorDictionary:
+
+- Added backup and restore.
+- Added add and remove of words.
+- Added support for words that include no-break spaces.
+
+
 ## 1.0.3
 
 Minor changes:

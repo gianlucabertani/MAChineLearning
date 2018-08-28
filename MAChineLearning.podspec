@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
   s.name         = "MAChineLearning"
-  s.version      = "1.0.3"
+  s.version      = "1.0.4"
   s.summary      = "Machine Learning for the Mac and iOS."
 
   s.description  = <<-DESC
