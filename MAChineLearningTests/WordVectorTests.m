@@ -333,6 +333,72 @@
     }
 }
 
+- (void) testBackupAndRestore {
+    NSURL *tempFile= nil;
+    
+    @try {
+        NSBundle *bundle= [NSBundle bundleForClass:[self class]];
+        NSString *fastTextSamplePath= [bundle pathForResource:@"FastText-sample" ofType:@"txt"];
+        XCTAssertNotNil(fastTextSamplePath);
+        
+        // Here we use a pre-trained sample vector file of 1000 words, obtained from the
+        // pretrained vector library availble at https://github.com/facebookresearch/fastText
+        MLWordVectorDictionary *map= [MLWordVectorDictionary createFromFastTextFile:fastTextSamplePath];
+        XCTAssertNotNil(map);
+        
+        // We test the vector map for just one equivalence,
+        // only to ensure the dictionary is correct
+        [self checkEquivalenceOf:@"washington" to:@"u.s." with:@"london" to:@"uk" on:map];
+        
+        // Dump the dictionary to a file
+        NSURL *tempDir= [[NSFileManager defaultManager] temporaryDirectory];
+        NSURL *tempFile= [tempDir URLByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
+        
+        [map backupToFile:tempFile.path];
+        
+        // Now restore the dictionary
+        MLWordVectorDictionary *map2= [MLWordVectorDictionary restoreFromBackupFile:tempFile.path];
+        
+        XCTAssertNotNil(map2);
+        XCTAssertEqual(map.wordCount, map2.wordCount);
+        XCTAssertEqual(map.vectorSize, map2.vectorSize);
+        
+        NSSet<NSString *> *allWords1= [NSSet setWithArray:map.allWords];
+        NSSet<NSString *> *allWords2= [NSSet setWithArray:map2.allWords];
+
+        XCTAssertEqualObjects(allWords1, allWords2);
+        
+        // Compare all the word vectors
+        for (NSString *word in map.allWords) {
+            MLWordVector *vector1= [map vectorForWord:word];
+            MLWordVector *vector2= [map2 vectorForWord:word];
+            
+            XCTAssertNotNil(vector1);
+            XCTAssertNotNil(vector2);
+            
+            // Check the sum of the difference is 0
+            MLReal *difference= MLAllocRealBuffer(map.vectorSize);
+            
+            ML_VCLR(difference, 1, map.vectorSize);
+            ML_VADD(vector1.vector, 1, difference, 1, difference, 1, map.vectorSize);
+            ML_VSUB(vector2.vector, 1, difference, 1, difference, 1, map.vectorSize);
+            
+            MLReal sum= 0.0;
+            ML_SVE(difference, 1, &sum, map.vectorSize);
+            
+            XCTAssertEqualWithAccuracy(0.0, sum, 0.001);
+        }
+        
+    } @catch (NSException *e) {
+        XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
+    
+    } @finally {
+        
+        // Delete the temp file
+        [[NSFileManager defaultManager] removeItemAtURL:tempFile error:nil];
+    }
+}
+
 
 #pragma mark -
 #pragma mark Internal

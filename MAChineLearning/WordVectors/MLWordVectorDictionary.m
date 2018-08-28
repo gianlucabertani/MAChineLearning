@@ -44,6 +44,9 @@
 
 #define WORD2VEC_MAX_WORD_LENGTH            (200)
 
+#define BACKUP_FILE_SENTINEL                  ((('M' & 0xff) << 24) | (('L' & 0xff) << 16) | (('V' & 0xff) << 8) | ('D' & 0xff))
+#define BACKUP_FILE_VERSION                   (1)
+
 
 #pragma mark -
 #pragma mark MLWordVectorDictionary extension
@@ -198,6 +201,14 @@
     
     // Prepare the reader
     IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:vectorFilePath];
+    
+    // Prepare the character sets: the no-break
+    // space is considered a valid character
+    NSMutableCharacterSet *trimSet= [NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
+    [trimSet removeCharactersInString:@"\u00A0"];
+    
+    NSMutableCharacterSet *splitSet= [NSMutableCharacterSet whitespaceCharacterSet];
+    [splitSet removeCharactersInString:@"\u00A0"];
 
     NSUInteger vectorSize= 0;
     NSMutableDictionary<NSString *, MLWordVector *> *vectorDictionary= nil;
@@ -216,8 +227,7 @@
                     break;
                 
                 // Split the line
-                NSArray<NSString *> *components= [[line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                  componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                NSArray<NSString *> *components= [[line stringByTrimmingCharactersInSet:trimSet] componentsSeparatedByCharactersInSet:splitSet];
                 
                 // Check vector size
                 if (!vectorSize) {
@@ -288,6 +298,14 @@
     // Prepare the reader
     IOLineReader *reader= [[IOLineReader alloc] initWithFilePath:vectorFilePath];
     
+    // Prepare the splitting character set: the no-break
+    // space is considered a valid character
+    NSMutableCharacterSet *trimSet= [NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
+    [trimSet removeCharactersInString:@"\u00A0"];
+    
+    NSMutableCharacterSet *splitSet= [NSMutableCharacterSet whitespaceCharacterSet];
+    [splitSet removeCharactersInString:@"\u00A0"];
+
     NSUInteger vectorSize= 0;
     NSMutableDictionary<NSString *, MLWordVector *> *vectorDictionary= nil;
     @try {
@@ -306,8 +324,7 @@
                     break;
                 
                 // Split the line
-                NSArray<NSString *> *components= [[line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                  componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                NSArray<NSString *> *components= [[line stringByTrimmingCharactersInSet:trimSet] componentsSeparatedByCharactersInSet:splitSet];
                 
                 if (firstLine) {
                     firstLine= NO;
@@ -365,6 +382,129 @@
         
     } @finally {
         [reader close];
+    }
+    
+    return [[MLWordVectorDictionary alloc] initWithDictionary:vectorDictionary];
+}
+
++ (MLWordVectorDictionary *) restoreFromBackupFile:(NSString *)backupFilePath {
+    
+    // Checks
+    NSFileManager *fileManger= [NSFileManager defaultManager];
+    if (![fileManger fileExistsAtPath:backupFilePath])
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"File does not exist"
+                                                           userInfo:@{@"filePath": backupFilePath}];
+    
+    NSFileHandle *handle= nil;
+    NSMutableDictionary<NSString *, MLWordVector *> *vectorDictionary= nil;
+    @try {
+        
+        // Open the handle
+        handle= [NSFileHandle fileHandleForReadingAtPath:backupFilePath];
+        
+        // Read the sentinel and version
+        NSUInteger sentinel= BACKUP_FILE_SENTINEL;
+        NSData *buffer= [handle readDataOfLength:sizeof(sentinel)];
+        if (![buffer isEqualToData:[NSData dataWithBytesNoCopy:&sentinel length:sizeof(sentinel) freeWhenDone:NO]])
+            @throw [MLWordVectorException wordVectorExceptionWithReason:@"Invalid file format: missing initial sentinel"
+                                                               userInfo:@{@"filePath": backupFilePath}];
+
+        NSUInteger version= 0;
+        buffer= [handle readDataOfLength:sizeof(version)];
+        if (buffer.length < sizeof(version))
+            @throw [MLWordVectorException wordVectorExceptionWithReason:@"Corrupted file format: missing version"
+                                                               userInfo:@{@"filePath": backupFilePath}];
+
+        version= *((NSUInteger *) buffer.bytes);
+        if (version > BACKUP_FILE_VERSION)
+            @throw [MLWordVectorException wordVectorExceptionWithReason:@"Corrupted file format: version is greater than maximum supported version"
+                                                               userInfo:@{@"filePath": backupFilePath,
+                                                                          @"version": @(version),
+                                                                          @"maxSupportedVersion": @(BACKUP_FILE_VERSION)}];
+        
+        // Read the word count, vector size and MLReal size
+        NSUInteger wordCount= 0;
+        buffer= [handle readDataOfLength:sizeof(wordCount)];
+        if (buffer.length < sizeof(wordCount))
+            @throw [MLWordVectorException wordVectorExceptionWithReason:@"Corrupted file format: missing word count"
+                                                               userInfo:@{@"filePath": backupFilePath}];
+        
+        wordCount= *((NSUInteger *) buffer.bytes);
+
+        NSUInteger vectorSize= 0;
+        buffer= [handle readDataOfLength:sizeof(vectorSize)];
+        if (buffer.length < sizeof(vectorSize))
+            @throw [MLWordVectorException wordVectorExceptionWithReason:@"Corrupted file format: missing vector size"
+                                                               userInfo:@{@"filePath": backupFilePath}];
+        
+        vectorSize= *((NSUInteger *) buffer.bytes);
+
+        NSUInteger realSize= 0;
+        buffer= [handle readDataOfLength:sizeof(realSize)];
+        if (buffer.length < sizeof(realSize))
+            @throw [MLWordVectorException wordVectorExceptionWithReason:@"Corrupted file format: missing MLReal size"
+                                                               userInfo:@{@"filePath": backupFilePath}];
+
+        realSize= *((NSUInteger *) buffer.bytes);
+        if (realSize != sizeof(MLReal))
+            @throw [MLWordVectorException wordVectorExceptionWithReason:@"Corrupted file format: MLReal size is different than supported MLReal size"
+                                                               userInfo:@{@"filePath": backupFilePath,
+                                                                          @"realSize": @(realSize),
+                                                                          @"supportedRealSize": @(sizeof(MLReal))}];
+        
+        // Prepare the dictionary
+        vectorDictionary= [[NSMutableDictionary alloc] init];
+        
+        // Loop for every word
+        for (NSUInteger i= 0; i < wordCount; i++) {
+            @autoreleasepool {
+                
+                // Read the word length and then the word (including its terminator)
+                NSUInteger length= 0;
+                buffer= [handle readDataOfLength:sizeof(length)];
+                if (buffer.length < sizeof(length))
+                    @throw [MLWordVectorException wordVectorExceptionWithReason:@"Corrupted file format: missing word length"
+                                                                       userInfo:@{@"filePath": backupFilePath,
+                                                                                  @"wordIndex": @(i)}];
+                
+                length= *((NSUInteger *) buffer.bytes);
+                
+                buffer= [handle readDataOfLength:length + sizeof(char)];
+                if (buffer.length != (length + sizeof(char)))
+                    @throw [MLWordVectorException wordVectorExceptionWithReason:@"Corrupted file format: missing word"
+                                                                       userInfo:@{@"filePath": backupFilePath,
+                                                                                  @"wordIndex": @(i)}];
+                
+                NSString *word= [NSString stringWithUTF8String:(const char *) buffer.bytes];
+                
+                // Read the vector
+                buffer= [handle readDataOfLength:realSize * vectorSize];
+                if (buffer.length < realSize * vectorSize)
+                    @throw [MLWordVectorException wordVectorExceptionWithReason:@"Corrupted file format: missing vector"
+                                                                       userInfo:@{@"filePath": backupFilePath,
+                                                                                  @"wordIndex": @(i)}];
+                
+                MLReal *vectorData= MLAllocRealBuffer(vectorSize);
+                ML_VCLR(vectorData, 1, vectorSize);
+                ML_VADD((MLReal *) buffer.bytes, 1, vectorData, 1, vectorData, 1, vectorSize);
+
+                MLWordVector *vector= [[MLWordVector alloc] initWithVector:vectorData size:vectorSize freeVectorOnDealloc:YES];
+
+                // Store the vector in the dictionary
+                vectorDictionary[word] = vector;
+            }
+        }
+
+        // Read again the sentinel
+        buffer= [handle readDataOfLength:sizeof(sentinel)];
+        if (![buffer isEqualToData:[NSData dataWithBytesNoCopy:&sentinel length:sizeof(sentinel) freeWhenDone:NO]])
+            @throw [MLWordVectorException wordVectorExceptionWithReason:@"Invalid file format: missing final sentinel"
+                                                               userInfo:@{@"filePath": backupFilePath}];
+
+    } @finally {
+        
+        // In any case close the handle
+        [handle closeFile];
     }
     
     return [[MLWordVectorDictionary alloc] initWithDictionary:vectorDictionary];
@@ -479,6 +619,31 @@
     
     return sortedKeys;
 }
+
+- (void) addWord:(nonnull NSString *)word withVector:(nonnull MLWordVector *)vector {
+
+    // Check vector size
+    if (vector.size != _vectorSize)
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"Size of new vector does not match vector size for the rest of the dictionary"
+                                                           userInfo:@{@"size": @(_vectorSize),
+                                                                      @"newVectorSize": @(vector.size)}];
+    
+    // Check vector magnitude
+    if (ABS(vector.magnitude - 1.0) > 0.001)
+        @throw [MLWordVectorException wordVectorExceptionWithReason:@"New vector is not normalized"
+                                                           userInfo:@{@"magnitude": @(vector.magnitude)}];
+
+    NSString *lowercaseWord= word.lowercaseString;
+    
+    _vectors[lowercaseWord]= vector;
+}
+
+- (void) removeWord:(nonnull NSString *)word {
+    NSString *lowercaseWord= word.lowercaseString;
+    
+    [_vectors removeObjectForKey:lowercaseWord];
+}
+
 
 #pragma mark -
 #pragma mark Sentence lookup and comparison
@@ -606,10 +771,79 @@
 
 
 #pragma mark -
+#pragma mark Backup
+
+- (void) backupToFile:(NSString *)backupFilePath {
+    NSFileHandle *handle= nil;
+    
+    @try {
+    
+        // Create (or empty) the file at path
+        [[NSFileManager defaultManager] createFileAtPath:backupFilePath
+                                                contents:[NSData data]
+                                              attributes:nil];
+        
+        // Open the handle
+        handle= [NSFileHandle fileHandleForWritingAtPath:backupFilePath];
+        
+        // Write the backup file sentinel and version
+        NSUInteger sentinel= BACKUP_FILE_SENTINEL;
+        [handle writeData:[NSData dataWithBytesNoCopy:&sentinel length:sizeof(sentinel) freeWhenDone:NO]];
+
+        NSUInteger version= BACKUP_FILE_VERSION;
+        [handle writeData:[NSData dataWithBytesNoCopy:&version length:sizeof(version) freeWhenDone:NO]];
+
+        // Write the word count, the vector size and the MLReal size
+        [handle writeData:[NSData dataWithBytesNoCopy:&_wordCount length:sizeof(_wordCount) freeWhenDone:NO]];
+        [handle writeData:[NSData dataWithBytesNoCopy:&_vectorSize length:sizeof(_vectorSize) freeWhenDone:NO]];
+
+        NSUInteger realSize= sizeof(MLReal);
+        [handle writeData:[NSData dataWithBytesNoCopy:&realSize length:sizeof(realSize) freeWhenDone:NO]];
+
+        // Write each word
+        for (NSString *word in _vectors.allKeys) {
+            @autoreleasepool {
+                MLWordVector *vector= _vectors[word];
+                
+                // Write the word length and then the word
+                NSUInteger length= [word lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+                [handle writeData:[NSData dataWithBytesNoCopy:&length length:sizeof(length) freeWhenDone:NO]];
+                [handle writeData:[NSData dataWithBytesNoCopy:(void *) word.UTF8String length:length freeWhenDone:NO]];
+                
+                // Write the word terminator
+                char terminator= '\0';
+                [handle writeData:[NSData dataWithBytesNoCopy:&terminator length:sizeof(terminator) freeWhenDone:NO]];
+
+                // Write the vector
+                [handle writeData:[NSData dataWithBytesNoCopy:vector.vector length:realSize * _vectorSize freeWhenDone:NO]];
+            }
+        }
+        
+        // Write again he backup file sentinel
+        [handle writeData:[NSData dataWithBytesNoCopy:&sentinel length:sizeof(sentinel) freeWhenDone:NO]];
+
+        // Flush buffers
+        [handle synchronizeFile];
+
+    } @finally {
+        
+        // In any case close the handle
+        [handle closeFile];
+    }
+}
+
+
+#pragma mark -
 #pragma mark Properties
 
 @synthesize wordCount= _wordCount;
 @synthesize vectorSize= _vectorSize;
+
+@dynamic allWords;
+
+- (NSArray<NSString *> *) allWords {
+    return _vectors.allKeys;
+}
 
 
 @end

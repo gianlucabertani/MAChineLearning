@@ -54,6 +54,7 @@ typedef MLWordVector * _Nullable (^MLWordNotFoundHanlder)(NSString * _Nonnull wo
 + (nonnull MLWordVectorDictionary *) createFromWord2vecFile:(nonnull NSString *)vectorFilePath binary:(BOOL)binary;
 + (nonnull MLWordVectorDictionary *) createFromGloVeFile:(nonnull NSString *)vectorFilePath;
 + (nonnull MLWordVectorDictionary *) createFromFastTextFile:(nonnull NSString *)vectorFilePath;
++ (nonnull MLWordVectorDictionary *) restoreFromBackupFile:(nonnull NSString *)backupFilePath;
 
 - (nonnull instancetype) init NS_UNAVAILABLE;
 
@@ -72,6 +73,9 @@ typedef MLWordVector * _Nullable (^MLWordNotFoundHanlder)(NSString * _Nonnull wo
 - (nonnull NSArray<NSString *> *) mostSimilarWordsToVector:(nonnull MLWordVector *)vector;
 - (nonnull NSArray<NSString *> *) nearestWordsToVector:(nonnull MLWordVector *)vector;
 
+- (void) addWord:(nonnull NSString *)word withVector:(nonnull MLWordVector *)vector;
+- (void) removeWord:(nonnull NSString *)word;
+
 
 #pragma mark -
 #pragma mark Sentence lookup
@@ -89,10 +93,18 @@ typedef MLWordVector * _Nullable (^MLWordNotFoundHanlder)(NSString * _Nonnull wo
 
 
 #pragma mark -
+#pragma mark Backup
+
+- (void) backupToFile:(nonnull NSString *)backupFilePath;
+
+
+#pragma mark -
 #pragma mark Properties
 
 @property (nonatomic, readonly) NSUInteger wordCount;
 @property (nonatomic, readonly) NSUInteger vectorSize;
+
+@property (nonatomic, readonly, nonnull) NSArray<NSString *> *allWords;
 
 
 @end
