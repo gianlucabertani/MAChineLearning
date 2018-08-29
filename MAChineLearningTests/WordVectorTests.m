@@ -389,6 +389,9 @@
             XCTAssertEqualWithAccuracy(0.0, sum, 0.001);
         }
         
+        // Test again the restored vector map for the equivalence
+        [self checkEquivalenceOf:@"washington" to:@"u.s." with:@"london" to:@"uk" on:map2];
+
     } @catch (NSException *e) {
         XCTFail(@"Exception caught while testing: %@, reason: '%@', user info: %@\nStack trace:%@", e.name, e.reason, e.userInfo, e.callStackSymbols);
     
