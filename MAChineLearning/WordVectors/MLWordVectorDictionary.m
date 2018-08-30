@@ -636,12 +636,14 @@
     NSString *lowercaseWord= word.lowercaseString;
     
     _vectors[lowercaseWord]= vector;
+    _wordCount= _vectors.count;
 }
 
 - (void) removeWord:(nonnull NSString *)word {
     NSString *lowercaseWord= word.lowercaseString;
     
     [_vectors removeObjectForKey:lowercaseWord];
+    _wordCount= _vectors.count;
 }
 
 
@@ -732,6 +734,7 @@
 
                         // Add the word vector to the dictionary
                         [_vectors setObject:wordVector forKey:word.lowercaseString];
+                        _wordCount= _vectors.count;
                     }
                 }
 
