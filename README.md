@@ -571,7 +571,7 @@ The following two resources may be of help to understand how to use word vectors
 
 ## About me
 
-I am a professional developer but not a data scientist. I wrote this library because, you know, they say you haven't really understood something until you can code it. So, here it is. Use it to experiment and have fun, and if you find it useful I will be happy to hear it at [@self_vs_this](http://www.twitter.com/self_vs_this).
+I am a professional developer but not a data scientist. I wrote this library because, you know, they say you haven't really understood something until you can code it. So, here it is. Use it to experiment and have fun, and if you find it useful I will be happy to hear it.
 
 Every effort has been taken to guarantee the framework is error-free, including a side-by-side weights/results comparision with other open source software. If you find bugs or conceptual mistakes please report them. So I can fix them and, most importantly, learn something new.
 
