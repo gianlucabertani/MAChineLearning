@@ -43,7 +43,7 @@ typedef NS_ENUM(NSUInteger, MLWordFilterOutcome) {
 	MLWordFilterOutcomeKeepWord= 1
 };
 
-typedef MLWordFilterOutcome (^MLWordFilter)(MLWordInfo *wordInfo);
+typedef MLWordFilterOutcome (^MLWordFilter)(MLWordInfo * _Nonnull wordInfo);
 
 
 @interface MLWordDictionary : NSObject {
@@ -83,7 +83,7 @@ typedef MLWordFilterOutcome (^MLWordFilter)(MLWordInfo *wordInfo);
 - (nonnull MLWordDictionary *) discardWordsWithOccurrenciesLessThan:(NSUInteger)minOccurrencies;
 - (nonnull MLWordDictionary *) discardWordsWithOccurrenciesGreaterThan:(NSUInteger)maxOccurrencies;
 
-- (nonnull MLWordDictionary *) filterWordsWith:(MLWordFilter)filter;
+- (nonnull MLWordDictionary *) filterWordsWith:(nonnull MLWordFilter)filter;
 
 
 #pragma mark -

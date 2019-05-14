@@ -89,7 +89,7 @@ typedef MLWordVector * _Nullable (^MLWordNotFoundHanlder)(NSString * _Nonnull wo
                                 withLanguage:(nullable NSString *)languageCode
                                extractorType:(MLWordExtractorType)extractorType
                                      options:(MLWordExtractorOption)options
-                                wordNotFound:(MLWordNotFoundHanlder)wordNotFoundHandler;
+                                wordNotFound:(nullable MLWordNotFoundHanlder)wordNotFoundHandler;
 
 
 #pragma mark -

@@ -39,8 +39,8 @@
 MLReal * _Nonnull MLAllocRealBuffer(NSUInteger size);
 void MLFreeRealBuffer(MLReal * _Nonnull buffer);
 
-MLReal ** _Nonnull MLAllocRealPointerBuffer(NSUInteger size);
-void MLFreeRealPointerBuffer(MLReal ** _Nonnull buffer);
+MLReal * _Nonnull * _Nullable MLAllocRealPointerBuffer(NSUInteger size);
+void MLFreeRealPointerBuffer(MLReal * _Nonnull * _Nullable buffer);
 
 int * _Nonnull MLAllocIntBuffer(NSUInteger size);
 void MLFreeIntBuffer(int * _Nonnull buffer);

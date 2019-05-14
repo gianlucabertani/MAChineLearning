@@ -90,8 +90,8 @@
 @property (nonatomic, readonly, nonnull) MLReal *weights;
 @property (nonatomic, readonly, nonnull) MLReal *weightsDelta;
 
-@property (nonatomic, readonly) MLReal * _Nonnull *nextLayerWeightPtrs;
-@property (nonatomic, readonly) MLReal * _Nonnull *nextLayerWeightDeltaPtrs;
+@property (nonatomic, readonly) MLReal * _Nonnull * _Nullable nextLayerWeightPtrs;
+@property (nonatomic, readonly) MLReal * _Nonnull * _Nullable nextLayerWeightDeltaPtrs;
 
 @property (nonatomic, readonly) MLReal error;
 @property (nonatomic, readonly) MLReal delta;
