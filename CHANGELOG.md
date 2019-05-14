@@ -5,6 +5,7 @@
 
 Minor changes:
 
+- Fixed bug in MLWordVectorDictionary.
 - Fixed nullability warnings.
 - Fixed failing unit test.
 
