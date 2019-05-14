@@ -32,7 +32,6 @@ Pod::Spec.new do |s|
   # ――― Author Metadata  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
   s.author             = { "Gianluca Bertani" => "gianluca.bertani@email.it" }
-  s.social_media_url    = "https://twitter.com/self_vs_this"
 
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
