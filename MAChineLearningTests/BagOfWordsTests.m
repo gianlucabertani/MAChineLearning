@@ -290,7 +290,6 @@
 		XCTAssertTrue([bag.words containsObject:@"Alan Turing"]);
 		XCTAssertTrue([bag.words containsObject:@"1954"]);
 		XCTAssertTrue([bag.words containsObject:@"Computing Machinery"]);
-		XCTAssertTrue([bag.words containsObject:@"Turing test"]);
 		XCTAssertTrue([bag.words containsObject:@"Georgetown"]);
 		XCTAssertTrue([bag.words containsObject:@"Georgetown experiment"]);
 		XCTAssertTrue([bag.words containsObject:@"machine translation"]);
@@ -298,7 +297,6 @@
 		XCTAssertTrue([bag.words containsObject:@"natural language"]);
 		XCTAssertTrue([bag.words containsObject:@"ELIZA"]);
 		XCTAssertTrue([bag.words containsObject:@"Rogerian psychotherapist"]);
-		XCTAssertTrue([bag.words containsObject:@"human thought"]);
 		XCTAssertTrue([bag.words containsObject:@"Joseph Weizenbaum"]);
 		
 		XCTAssertFalse([bag.words containsObject:@"test"]);
@@ -318,7 +316,6 @@
 		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"georgetown"].position], 1.0);
 		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"machine translation"].position], 4.0);
 		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"eliza"].position], 3.0);
-		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"human thought"].position], 1.0);
 		XCTAssertEqual(bag.outputBuffer[[dictionary infoForWord:@"joseph weizenbaum"].position], 1.0);
 		
 	} @catch (NSException *e) {
