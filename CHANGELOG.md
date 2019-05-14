@@ -1,6 +1,14 @@
 # MAChineLearning Change Log
 
 
+## 1.0.5
+
+Minor changes:
+
+- Fixed nullability warnings.
+- Fixed failing unit test.
+
+
 ## 1.0.4
 
 Minor changes to MLWordVectorDictionary:
