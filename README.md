@@ -3,6 +3,11 @@
 Machine Learning for the Mac
 
 
+## Deprecated
+
+**This library is deprecated.** If you are still using it, you are encouraged to find alternatives.
+
+
 ## Intro
 
 *MAChineLearning* (pron. ˈmækʃiːn ˈlɜːnɪŋ) is framework that provides a quick and easy way to experiment Machine Learning with native code on the Mac, with some specific support for Natural Language Processing. It is written in Objective-C, but it is compatible by Swift.
